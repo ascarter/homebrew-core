@@ -4,26 +4,29 @@ class Gitg < Formula
   url "https://download.gnome.org/sources/gitg/44/gitg-44.tar.xz"
   sha256 "342a31684dab9671cd341bd3e3ce665adcee0460c2a081ddc493cdbc03132530"
   license "GPL-2.0-or-later"
-  revision 4
+  revision 7
 
   livecheck do
     url :stable
     regex(/gitg[._-]v?(\d+(?:\.\d+)*)\.t/i)
   end
 
+  no_autobump! because: :requires_manual_review
+
   bottle do
-    sha256 arm64_sequoia: "4a4166491817b8eadee5a1bd6774f5b23516f54661aa120d5ba9f84cb49466b6"
-    sha256 arm64_sonoma:  "2c01486f3f82a1b9eb7ba8ff00d8ee5207671f8353f79d49d2c62b1da208a3f6"
-    sha256 arm64_ventura: "1790af181f11994bd36b965b0ff044a6b109d98f76dde3ca91fc50a6580cc545"
-    sha256 sonoma:        "b4cd70bb9e6834bf8fa1087da17ffb4c2d689ed0fab8bdb49ac06eb39558e33b"
-    sha256 ventura:       "391b2a3164edbca47ea114e6877114cab7e7d2837830f60570cb4431d28e72f7"
-    sha256 x86_64_linux:  "b78db1a31d523be329532fcb6e861e4420d3d1918239d7a325651d2d98e92c5c"
+    sha256 arm64_sequoia: "4028f294581707bbf199f5ff73c017cf8f038c42624be131fefa85604743f42e"
+    sha256 arm64_sonoma:  "685263322a42dacb348f6df3e00a7feb5c1848277e8acd4630e009c29814d324"
+    sha256 arm64_ventura: "67c8e9d95c5a1245c3fa87a32a769b63e404926e2a38a18bf769131a3f85effc"
+    sha256 sonoma:        "031c605fa3aacbdb1d98191b437836f221d4c25001095f5702664b2374f2472b"
+    sha256 ventura:       "09b98443b56e74ddf4c05db0712e2f537e972d27c44f403ad2df856410b0e6e8"
+    sha256 arm64_linux:   "88e01965c7dd3989359c8510f8370b9fd0b0bc5e4a746085ae38dbd98f3d16e0"
+    sha256 x86_64_linux:  "cc0d17fcf6594d48911e83c12a07c84be0e53b0878ff565b5dcf39baeb63e973"
   end
 
   depends_on "gettext" => :build # for `msgfmt`
   depends_on "meson" => :build
   depends_on "ninja" => :build
-  depends_on "pkg-config" => [:build, :test]
+  depends_on "pkgconf" => [:build, :test]
   depends_on "vala" => :build
 
   depends_on "adwaita-icon-theme"
@@ -80,8 +83,8 @@ class Gitg < Formula
       }
     C
 
-    ENV.prepend_path "PKG_CONFIG_PATH", Formula["libgit2@1.7"].opt_lib/"pkgconfig"
-    flags = shell_output("pkg-config --cflags --libs libgitg-1.0").chomp.split
+    ENV.prepend_path "PKG_CONFIG_PATH", Formula["libgit2"].opt_lib/"pkgconfig"
+    flags = shell_output("pkgconf --cflags --libs libgitg-1.0").chomp.split
     system ENV.cc, "test.c", "-o", "test", *flags
     system "./test"
   end

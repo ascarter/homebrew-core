@@ -1,19 +1,19 @@
 class Diesel < Formula
   desc "Command-line tool for Rust ORM Diesel"
   homepage "https://diesel.rs"
-  url "https://github.com/diesel-rs/diesel/archive/refs/tags/v2.2.4.tar.gz"
-  sha256 "519e761055dea9abf6172b8ec15c0fd0da53c859e6b6809daeb104bbecd6fe57"
+  url "https://github.com/diesel-rs/diesel/archive/refs/tags/v2.2.12.tar.gz"
+  sha256 "583f2d71a14b2bb318222474bd1f26f93e945a3e98dcf1b892c67463abe13897"
   license any_of: ["Apache-2.0", "MIT"]
-  revision 1
   head "https://github.com/diesel-rs/diesel.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any,                 arm64_sequoia: "0901df8acb9ccfba1784db14f3c5dc79df2a6c6843aaa0936275d4f185076ca7"
-    sha256 cellar: :any,                 arm64_sonoma:  "fa7ef403349a05852da68bc8977e8704ace5f3af3d461b6eefe99963a0f5c019"
-    sha256 cellar: :any,                 arm64_ventura: "11ca7c015cd6911a5483800606d47db6b1203391079498d8418f97ba1a575fdc"
-    sha256 cellar: :any,                 sonoma:        "04bb398d544d79dd47a4c5bd255e7fe11abc7892fb35c3b2a44d5200fd3ed45e"
-    sha256 cellar: :any,                 ventura:       "d0b1a014350e07498bca6fe3cbc47c387e02de04645a9e3b9a5703632329a55b"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "719172aeb95db6caf68f932878b6f091f3f182de49e33e8062f73f864d7d60b2"
+    sha256 cellar: :any,                 arm64_sequoia: "c1d432e2906544eb1c778d7a600c648ac8bbe6f7d184552dfb1e5037483a808d"
+    sha256 cellar: :any,                 arm64_sonoma:  "ea7d5e7663e95e05fac2c0f9febb3f06c8d2ea6ae01c9e45e830422bc9518d3b"
+    sha256 cellar: :any,                 arm64_ventura: "4efdee80dc2786ae276f3942e0afd28956770721938fd40db4413e4b8cc28805"
+    sha256 cellar: :any,                 sonoma:        "38b3a3daf0c5aa396f2aff72d6c02f7a5a0ffcb6c3a690638a2369a664e48167"
+    sha256 cellar: :any,                 ventura:       "3493c9508d3fcf55e8f64242dd23843bb37837d89ff03eeb8f6b4363d2426640"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "54d452e7afae56304c1180ae1dec7de96569fdc26c53ee45f1fd9570cb4af62e"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "2ff6d2f7204686a2c23d36b3ad64787a207c8a8885facc0e2cfb5a52b4dde446"
   end
 
   depends_on "rust" => [:build, :test]
@@ -31,6 +31,6 @@ class Diesel < Formula
     ENV["DATABASE_URL"] = "db.sqlite"
     system "cargo", "init"
     system bin/"diesel", "setup"
-    assert_predicate testpath/"db.sqlite", :exist?, "SQLite database should be created"
+    assert_path_exists testpath/"db.sqlite", "SQLite database should be created"
   end
 end

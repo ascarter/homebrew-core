@@ -2,8 +2,8 @@ class Rdkit < Formula
   desc "Open-source chemoinformatics library"
   homepage "https://rdkit.org/"
   # NOTE: Make sure to update RPATHs if any "@rpath-referenced libraries" show up in `brew linkage`
-  url "https://github.com/rdkit/rdkit/archive/refs/tags/Release_2024_09_2.tar.gz"
-  sha256 "0f35a088da9594e362fb7c9c68d96a18af1cff502ddec334ff1d2baf1a4dd6d3"
+  url "https://github.com/rdkit/rdkit/archive/refs/tags/Release_2025_03_5.tar.gz"
+  sha256 "8bdb3c774ed4ae9e2727b6ce005004191447d630d8e857d36839cd8f1bca55b5"
   license "BSD-3-Clause"
   head "https://github.com/rdkit/rdkit.git", branch: "master"
 
@@ -16,17 +16,18 @@ class Rdkit < Formula
   end
 
   bottle do
-    sha256 cellar: :any,                 arm64_sequoia: "61674359a743393a777b44ce39de07ec9a1fcc0352093f772f4c882ed1a7c55e"
-    sha256 cellar: :any,                 arm64_sonoma:  "8e611d0361fd1872190aea4567a708eef22a95c335843bdbd239539f35218564"
-    sha256 cellar: :any,                 arm64_ventura: "2ddb01cb87c2037eb26f4abc943da0e6fe1034798ed9d4f5dc874933fd53eaff"
-    sha256 cellar: :any,                 sonoma:        "445790fbfac2605edfddf32375c46f7b89f3337c0786175003fe5445f5ea8b90"
-    sha256 cellar: :any,                 ventura:       "bc070e3ad07b0ee7b52e03adc1330b09bee83ba4975937d2e5902a1fe169460e"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "4c16a7271b4724a39caf14a6b6ac6878f6b81c56bcd0340de05ae5ef831990c1"
+    sha256                               arm64_sequoia: "08e28d77deb6f515002c08be743333e32af820aea1f36981d93cacca3da8fbbc"
+    sha256                               arm64_sonoma:  "ddf7b60a0dbcb0e6bde11d85e49474bee64d9876f137c9312797e33563a2f89a"
+    sha256                               arm64_ventura: "2e587bfcab8b75818d3ad2d8ef3bc01ab75ac5ddaa9ac05365ce5bf8102fffca"
+    sha256 cellar: :any,                 sonoma:        "d0f1e7da6291389dffa3f7795f9f98abce65e31a2825053af3a344863f4c6981"
+    sha256 cellar: :any,                 ventura:       "6129d7af067c6f979c0d2b19f52aa2173643798a6abae8523aa54b47f09c0e70"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "cf123bc3458d825bf555f98fe22aa7cef6457aa4dd6ff58555c52c030baf1ee9"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "ac12c1b214f680af245767e1d9b95df04202a405bac5967a38cbaf367acb767f"
   end
 
   depends_on "catch2" => :build
   depends_on "cmake" => :build
-  depends_on "pkg-config" => :build
+  depends_on "pkgconf" => :build
   depends_on "postgresql@14" => [:build, :test]
   depends_on "postgresql@17" => [:build, :test]
   depends_on "boost"
@@ -39,18 +40,15 @@ class Rdkit < Formula
   depends_on "maeparser"
   depends_on "numpy"
   depends_on "py3cairo"
-  depends_on "python@3.12"
+  depends_on "python@3.13"
 
-  # Apply open PR commit to use .dylib for PostgreSQL 16+ modules
-  # TODO: Remove if merged and available in a release
-  # PR ref: https://github.com/rdkit/rdkit/pull/7869
-  patch do
-    url "https://github.com/rdkit/rdkit/commit/3ade0f8cd31be54fc267b9f5e94e8aa755f56f36.patch?full_index=1"
-    sha256 "09696dc4c26832f5c5126d059ae0d71a12ab404438e55e8f9a90880a1fad6c03"
+  resource "better_enums" do
+    url "https://github.com/aantron/better-enums/archive/refs/tags/0.11.3.tar.gz"
+    sha256 "1b1597f0aa5452b971a94ab13d8de3b59cce17d9c43c8081aa62f42b3376df96"
   end
 
   def python3
-    "python3.12"
+    "python3.13"
   end
 
   def postgresqls
@@ -59,14 +57,18 @@ class Rdkit < Formula
   end
 
   def install
+    (buildpath/"better_enums").install resource("better_enums")
+
     python_rpath = rpath(source: lib/Language::Python.site_packages(python3))
     python_rpaths = [python_rpath, "#{python_rpath}/..", "#{python_rpath}/../.."]
     args = %W[
       -DCMAKE_INSTALL_RPATH=#{rpath}
       -DCMAKE_MODULE_LINKER_FLAGS=#{python_rpaths.map { |path| "-Wl,-rpath,#{path}" }.join(" ")}
+      -DCMAKE_PREFIX_PATH='#{Formula["maeparser"].opt_lib};#{Formula["coordgen"].opt_lib}'
       -DCMAKE_REQUIRE_FIND_PACKAGE_coordgen=ON
       -DCMAKE_REQUIRE_FIND_PACKAGE_maeparser=ON
       -DCMAKE_REQUIRE_FIND_PACKAGE_Inchi=ON
+      -DFETCHCONTENT_SOURCE_DIR_BETTER_ENUMS=#{buildpath}/better_enums
       -DINCHI_INCLUDE_DIR=#{Formula["inchi"].opt_include}/inchi
       -DRDK_INSTALL_INTREE=OFF
       -DRDK_BUILD_SWIG_WRAPPERS=OFF

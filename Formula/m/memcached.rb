@@ -1,8 +1,8 @@
 class Memcached < Formula
   desc "High performance, distributed memory object caching system"
   homepage "https://memcached.org/"
-  url "https://www.memcached.org/files/memcached-1.6.32.tar.gz"
-  sha256 "4ab234219865191e8d1ba57a2f9167d8b573248fa4ff00b4d8296be13d24a82c"
+  url "https://www.memcached.org/files/memcached-1.6.39.tar.gz"
+  sha256 "23e5507e933b15463161d4c5d3921b0c5f340b542d6edd7f6c5e17c34f11a363"
   license "BSD-3-Clause"
   head "https://github.com/memcached/memcached.git", branch: "master"
 
@@ -12,12 +12,13 @@ class Memcached < Formula
   end
 
   bottle do
-    sha256 cellar: :any,                 arm64_sequoia: "87355661847d0e1cd535df12cbeb58010a48413e5047db293ab4f4c34dd2fb77"
-    sha256 cellar: :any,                 arm64_sonoma:  "b2a8bd8c8314ae53f869395e29e908586488d4bdb9e9bfd34d9bdf55d6da2808"
-    sha256 cellar: :any,                 arm64_ventura: "d1ecc272f88b4f17cff3ab3128a4ba67c682c55fb39d347dd279ba2ed558b90b"
-    sha256 cellar: :any,                 sonoma:        "4ff23581f8d4a634af5af50e389b9b91d7bb4cc063577bafdbc58c672647126d"
-    sha256 cellar: :any,                 ventura:       "81fa30371ee729dc85148cc5b41edac7024dee83c7b84cf7e78a3c678a943f8d"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "6630d97de5281864e089dc2b22d5740a75aa3b60f5909394a156d709f09cee95"
+    sha256 cellar: :any,                 arm64_sequoia: "31337325dcc134bb77d83d33b7f6a3d99a0f9bade5ab749882034851f1761124"
+    sha256 cellar: :any,                 arm64_sonoma:  "77963530e4940c64fb42637f6291f756af1ed9aa4700aac5186d624b3cb979ca"
+    sha256 cellar: :any,                 arm64_ventura: "552c05a69b61918075ba9db6d67fc3b5638d8c8eca1322f9905366d925f30853"
+    sha256 cellar: :any,                 sonoma:        "8576506edee1fcefee427ebd62b1f439f4600d05ad1fe7a370760e47b5265c68"
+    sha256 cellar: :any,                 ventura:       "9456e42982b53252e44ae3713f42d73d52d6c14065ec3d6dd4fec66fda5a22fc"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "1d2b8d7ca02e02bf98134d3b431381a1988d6f8c71aea024554d97ca87fd93a2"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "ce90e5a036314fde45812076c56c18d80805c08e3be5fd1162b56a499e87824f"
   end
 
   depends_on "libevent"
@@ -47,7 +48,7 @@ class Memcached < Formula
     args << "--user=#{ENV["USER"]}" if OS.linux? && ENV["HOMEBREW_GITHUB_ACTIONS"]
     system bin/"memcached", *args
     sleep 1
-    assert_predicate pidfile, :exist?, "Failed to start memcached daemon"
+    assert_path_exists pidfile, "Failed to start memcached daemon"
     pid = (testpath/"memcached.pid").read.chomp.to_i
     Process.kill "TERM", pid
   end

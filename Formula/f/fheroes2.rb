@@ -1,8 +1,8 @@
 class Fheroes2 < Formula
   desc "Recreation of the Heroes of Might and Magic II game engine"
   homepage "https://ihhub.github.io/fheroes2/"
-  url "https://github.com/ihhub/fheroes2/archive/refs/tags/1.1.3.tar.gz"
-  sha256 "f91760f7e8a512fa4b2b5eb02d852d358106fca50faa13db942d8314926ca6d8"
+  url "https://github.com/ihhub/fheroes2/archive/refs/tags/1.1.10.tar.gz"
+  sha256 "c44e25e1b3874718382bb9b545d5181b56cbd01cf773337851111a03bb8577af"
   license "GPL-2.0-or-later"
   head "https://github.com/ihhub/fheroes2.git", branch: "master"
 
@@ -12,12 +12,13 @@ class Fheroes2 < Formula
   end
 
   bottle do
-    sha256 arm64_sequoia: "abd77f3c7b0748848798a86ced7e6db626a2d5e30a2a8d209d70ae7614b3699a"
-    sha256 arm64_sonoma:  "73c1a13e93e0ebc14e5f8c50cdba23ccc54b4865e4d5ede1a1155e89946fd817"
-    sha256 arm64_ventura: "929d227e53e7e290a1e65ea7571c97e0a0866e2338dc3d634474d92cced55603"
-    sha256 sonoma:        "d73ad420578eee3093ac978ce6c3718f4b5baefb723c3b7a25517f0a3edaca7c"
-    sha256 ventura:       "90909dd4ea8a865b40bcc9d5c388bae3e4cf5011c91bb9c018c0656dd03dc2fa"
-    sha256 x86_64_linux:  "0831cfb9c4feb8703f716628d937685457164e33d88bb90ae2269ca28a9379f5"
+    sha256 arm64_sequoia: "9baff8c515153e27ddd79c53d8de8e3210861bd76fc60bd759ea31faaa14be9b"
+    sha256 arm64_sonoma:  "5f4ea1d81b9b14583e73b590dfe9a2d438e7a412b3299ccd7e8592c2eae44c86"
+    sha256 arm64_ventura: "c02c0b4798619fc514afa126dc6a02c087aecf61704b872549ff6a37efdddeb5"
+    sha256 sonoma:        "8316866908ec657a368de88b5a8d590d8ab792a8ef29d529a1e1b4a3f0c3b70c"
+    sha256 ventura:       "9eb43a08f27e477aa1877b003c552227a07bf6bc6de499a9de1b1a97bc35c8c5"
+    sha256 arm64_linux:   "4da1889d3e7e44ae23f47bbd83daaeead19daa2d246ec770a3990974dc8331cc"
+    sha256 x86_64_linux:  "16d973f411077f01a5a78987a51df81117ce5257de7d59b75f4dd23946bc4767"
   end
 
   depends_on "cmake" => :build
@@ -29,28 +30,65 @@ class Fheroes2 < Formula
 
   uses_from_macos "zlib"
 
-  fails_with gcc: "5"
+  on_macos do
+    depends_on "dylibbundler" => :build
+  end
 
   def install
-    system "cmake", "-S", ".", "-B", "build", *std_cmake_args
+    args = std_cmake_args
+    args << "-DMACOS_APP_BUNDLE=ON" if OS.mac?
+    system "cmake", "-S", ".", "-B", "build", *args
     system "cmake", "--build", "build"
     system "cmake", "--install", "build"
 
-    bin.install "script/demo/download_demo_version.sh" => "fheroes2-install-demo"
-    bin.install "script/homm2/extract_homm2_resources.sh" => "fheroes2-extract-resources"
+    if OS.mac?
+      prefix.install "build/fheroes2.app"
+      bin.write_exec_script "#{prefix}/fheroes2.app/Contents/MacOS/fheroes2"
+
+      libexec.install "script/demo/download_demo_version.sh"
+      libexec.install "script/demo/download_demo_version_for_app_bundle.sh"
+      libexec.install "script/homm2/extract_homm2_resources.sh"
+      libexec.install "script/homm2/extract_homm2_resources_for_app_bundle.sh"
+      chmod "+x", Dir["#{libexec}/*"]
+      bin.write_exec_script libexec/"download_demo_version_for_app_bundle.sh"
+      bin.write_exec_script libexec/"extract_homm2_resources_for_app_bundle.sh"
+      mv bin/"download_demo_version_for_app_bundle.sh", bin/"fheroes2-install-demo"
+      mv bin/"extract_homm2_resources_for_app_bundle.sh", bin/"fheroes2-extract-resources"
+    else
+      bin.install "script/demo/download_demo_version.sh" => "fheroes2-install-demo"
+      bin.install "script/homm2/extract_homm2_resources.sh" => "fheroes2-extract-resources"
+    end
   end
 
   def caveats
     <<~EOS
+      Run fheroes2-install-demo command to download and install all the necessary
+      files from the demo version of the original Heroes of Might and Magic II game.
+
+      Run fheroes2-extract-resources command to extract all the necessary resource
+      files from a legally purchased copy of the original game.
+
       Documentation is available at:
       #{share}/doc/fheroes2/README.txt
     EOS
   end
 
   test do
-    io = IO.popen("#{bin}/fheroes2 2>&1")
-    io.any? do |line|
-      line.include?("fheroes2 engine, version:")
+    assert_path_exists bin/"fheroes2"
+    assert_predicate bin/"fheroes2", :executable?
+    if OS.mac?
+      begin
+        pid = spawn(bin/"fheroes2")
+        sleep 2
+      ensure
+        Process.kill("SIGINT", pid)
+        Process.wait(pid)
+      end
+    else
+      io = IO.popen("#{bin}/fheroes2 2>&1")
+      io.any? do |line|
+        line.include?("fheroes2 engine, version:")
+      end
     end
   end
 end

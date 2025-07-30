@@ -3,17 +3,18 @@ class PassGitHelper < Formula
 
   desc "Git credential helper interfacing with pass"
   homepage "https://github.com/languitar/pass-git-helper"
-  url "https://github.com/languitar/pass-git-helper/archive/refs/tags/v3.0.0.tar.gz"
-  sha256 "3b0cda7a5eae2e93cc1ccec0ea02716db5a2ce3105c6d631f20fa20152b7a163"
+  url "https://github.com/languitar/pass-git-helper/archive/refs/tags/v3.3.1.tar.gz"
+  sha256 "3e90c567b4cb6223aaca270c853328a4bc9fe0c22b7d3eae06f443301e4c394a"
   license "LGPL-3.0-or-later"
 
   bottle do
-    rebuild 1
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "cc49479ad804837704f42f901f352a8b1b12c05eca21abb8bc20c51022cd51a1"
-    sha256 cellar: :any_skip_relocation, arm64_ventura: "cc49479ad804837704f42f901f352a8b1b12c05eca21abb8bc20c51022cd51a1"
-    sha256 cellar: :any_skip_relocation, sonoma:        "352862920179610c7c5414fff296d3f5c373f0cc983bbddc42c64a49306f8bbb"
-    sha256 cellar: :any_skip_relocation, ventura:       "352862920179610c7c5414fff296d3f5c373f0cc983bbddc42c64a49306f8bbb"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "1317d6bf961f2a4ca1b114e526d292153b332bbebba6c8b78682f075a04154c5"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "6446919f05a0f6f432fd8db7a472e16c997bd34e012eaa1f7d90d2042debb8a4"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "6446919f05a0f6f432fd8db7a472e16c997bd34e012eaa1f7d90d2042debb8a4"
+    sha256 cellar: :any_skip_relocation, arm64_ventura: "6446919f05a0f6f432fd8db7a472e16c997bd34e012eaa1f7d90d2042debb8a4"
+    sha256 cellar: :any_skip_relocation, sonoma:        "7a6a534472dc493515a3b87ba3df9b60b0c9e969cdc86cc61e7d2d04706dcc36"
+    sha256 cellar: :any_skip_relocation, ventura:       "7a6a534472dc493515a3b87ba3df9b60b0c9e969cdc86cc61e7d2d04706dcc36"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "6446919f05a0f6f432fd8db7a472e16c997bd34e012eaa1f7d90d2042debb8a4"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "6446919f05a0f6f432fd8db7a472e16c997bd34e012eaa1f7d90d2042debb8a4"
   end
 
   depends_on "gnupg" => :test

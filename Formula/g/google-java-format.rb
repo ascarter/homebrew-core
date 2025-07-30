@@ -3,21 +3,20 @@ class GoogleJavaFormat < Formula
 
   desc "Reformats Java source code to comply with Google Java Style"
   homepage "https://github.com/google/google-java-format"
-  url "https://github.com/google/google-java-format/releases/download/v1.24.0/google-java-format-1.24.0-all-deps.jar"
-  sha256 "812f805f58112460edf01bf202a8e61d0fd1f35c0d4fabd54220640776ec57a1"
+  url "https://github.com/google/google-java-format/releases/download/v1.28.0/google-java-format-1.28.0-all-deps.jar"
+  sha256 "32342e7c1b4600f80df3471da46aee8012d3e1445d5ea1be1fb71289b07cc735"
   license "Apache-2.0"
 
   bottle do
-    rebuild 1
-    sha256 cellar: :any_skip_relocation, all: "20a31ba5e39edfae6c7628ae945fc67e82a0f58ca5429bbea8d48ba809fd7727"
+    sha256 cellar: :any_skip_relocation, all: "e06153707967aed9b949074872dcf84b08a5a94432a1e47058743e1a5a66cc97"
   end
 
   depends_on "openjdk"
 
-  uses_from_macos "python"
+  uses_from_macos "python", since: :catalina
 
   resource "google-java-format-diff" do
-    url "https://raw.githubusercontent.com/google/google-java-format/v1.24.0/scripts/google-java-format-diff.py"
+    url "https://raw.githubusercontent.com/google/google-java-format/v1.28.0/scripts/google-java-format-diff.py"
     sha256 "c1f2c6e8af0fc34a04adfcb01b35e522a359df5da1f5db5102ca9e0ca1f670fd"
   end
 
@@ -35,27 +34,30 @@ class GoogleJavaFormat < Formula
   end
 
   test do
-    (testpath/"foo.java").write "public class Foo{\n}\n"
+    (testpath/"foo.java").write <<~JAVA
+      public class Foo{
+      }
+    JAVA
 
-    assert_match "public class Foo {}", shell_output("#{bin}/google-java-format foo.java")
-
-    (testpath/"bar.java").write <<~BAR
+    (testpath/"bar.java").write <<~JAVA
       class Bar{
         int  x;
       }
-    BAR
+    JAVA
 
-    patch = <<~PATCH
+    patch = <<~DIFF
       --- a/bar.java
       +++ b/bar.java
       @@ -1,0 +2 @@ class Bar{
       +  int x  ;
-    PATCH
-    `echo '#{patch}' | #{bin}/google-java-format-diff -p1 -i`
-    assert_equal <<~BAR, File.read(testpath/"bar.java")
+    DIFF
+
+    assert_match "public class Foo {}", shell_output("#{bin}/google-java-format foo.java")
+    assert_empty pipe_output("#{bin}/google-java-format-diff -p1 -i", patch)
+    assert_equal <<~JAVA, (testpath/"bar.java").read
       class Bar{
         int x;
       }
-    BAR
+    JAVA
   end
 end

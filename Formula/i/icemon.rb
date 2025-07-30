@@ -1,10 +1,12 @@
 class Icemon < Formula
   desc "Icecream GUI Monitor"
-  homepage "https://github.com/icecc/icemon"
+  homepage "https://kfunk.org/tag/icemon/"
   url "https://github.com/icecc/icemon/archive/refs/tags/v3.3.tar.gz"
   sha256 "3caf14731313c99967f6e4e11ff261b061e4e3d0c7ef7565e89b12e0307814ca"
   license "GPL-2.0-or-later"
   revision 1
+
+  no_autobump! because: :requires_manual_review
 
   bottle do
     rebuild 1
@@ -23,7 +25,7 @@ class Icemon < Formula
 
   depends_on "cmake" => :build
   depends_on "extra-cmake-modules" => :build
-  depends_on "pkg-config" => :build
+  depends_on "pkgconf" => :build
   depends_on "sphinx-doc" => :build
 
   depends_on "icecream"
@@ -39,10 +41,8 @@ class Icemon < Formula
     depends_on "libcap-ng"
   end
 
-  fails_with gcc: "5"
-
   def install
-    args = "-DECM_DIR=#{Formula["extra-cmake-modules"].opt_share}/ECM/cmake"
+    args = ["-DECM_DIR=#{Formula["extra-cmake-modules"].opt_share}/ECM/cmake"]
     system "cmake", "-S", ".", "-B", "build", *args, *std_cmake_args
     system "cmake", "--build", "build"
     system "cmake", "--install", "build"

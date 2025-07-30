@@ -1,25 +1,24 @@
 class Whois < Formula
   desc "Lookup tool for domain names and other internet resources"
   homepage "https://github.com/rfc1036/whois"
-  url "https://github.com/rfc1036/whois/archive/refs/tags/v5.5.23.tar.gz"
-  sha256 "dcfc08f3362c74ec8ae30691941909ebccf0cb3d27da04236f7e2790dbc7757c"
+  url "https://github.com/rfc1036/whois/archive/refs/tags/v5.6.3.tar.gz"
+  sha256 "5bdaf291465ef185384d9b5c4482f377a8040c008433b51d3cb8a4627f7aab14"
   license "GPL-2.0-or-later"
   head "https://github.com/rfc1036/whois.git", branch: "next"
 
   bottle do
-    sha256 cellar: :any,                 arm64_sequoia:  "6bbafe8f28a7bc249fa13317f3214a3d337514804fb2b08ad71249d4c6000d5c"
-    sha256 cellar: :any,                 arm64_sonoma:   "8d6091c37f0dacdfc405f47bccf139e045b7e25c8a80308b39e0e86dcd52244e"
-    sha256 cellar: :any,                 arm64_ventura:  "c57142742802829d13211473d7ec414d0d160aee0ac6d8d28c185add741c05c4"
-    sha256 cellar: :any,                 arm64_monterey: "624fdd325d3df32e527638eebbcf96bf102a671b81edb03500a2f759874c53a6"
-    sha256 cellar: :any,                 sonoma:         "a600dfa4f23f1dca739a6db788bc8e3195919aa6c579c91543e987ce08a56da1"
-    sha256 cellar: :any,                 ventura:        "cc3648f1c7a32ce79016a47160f023b31784d2d5f69960cd21c062c5eebd98aa"
-    sha256 cellar: :any,                 monterey:       "8a9bbfded4c82b0cc9fcca6baade71b6302407fa364b5330e45c6d4cc6a1e179"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:   "cd142b3ede0a61f81a5170d74999237bb663cce79de305d607d4d88a28216571"
+    sha256 cellar: :any,                 arm64_sequoia: "79bc7ee8d13e233bf2c0ef7816d0ed2827b41a3e6c85ee21ec0eca8cc0b1b82f"
+    sha256 cellar: :any,                 arm64_sonoma:  "35fadb940b2dd257004747b51e08498f3139114e3ac962f75d599f00f67d2b90"
+    sha256 cellar: :any,                 arm64_ventura: "6c455212cf834f68f8ffd302adb9749e6afac6c2fe47c49daa17089154a200e0"
+    sha256 cellar: :any,                 sonoma:        "87305e85c2556cbe55957d7da430f56fdfeed7d40e5d5ac8a9208869be51a4df"
+    sha256 cellar: :any,                 ventura:       "c3e2c6c63e161ea6193de0999aa8935dcbf4ff7d75b308a205dbd266f81a8871"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "b9beb3e0f57be3f71e81942236c7cdf6f2c13983b7f1c88ab5d2d40febeafe96"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "75584d231d37a8b730bdae459bc63cff0c1164d12d9506dc25b07eccf000a1e2"
   end
 
   keg_only :provided_by_macos
 
-  depends_on "pkg-config" => :build
+  depends_on "pkgconf" => :build
   depends_on "libidn2"
 
   def install
@@ -34,10 +33,7 @@ class Whois < Formula
       "HAVE_ICONV=0"
     end
 
-    system "make", "whois", have_iconv
-    bin.install "whois"
-    man1.install "whois.1"
-    man5.install "whois.conf.5"
+    system "make", "install-whois", "prefix=#{prefix}", have_iconv
   end
 
   test do

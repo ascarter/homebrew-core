@@ -1,17 +1,18 @@
 class Odpi < Formula
   desc "Oracle Database Programming Interface for Drivers and Applications"
   homepage "https://oracle.github.io/odpi/"
-  url "https://github.com/oracle/odpi/archive/refs/tags/v5.4.0.tar.gz"
-  sha256 "1cf9b0c9faee11514474a35d30713892ffd0a1513265c9689f48a343e7ebb99f"
+  url "https://github.com/oracle/odpi/archive/refs/tags/v5.6.2.tar.gz"
+  sha256 "37c9faaa883df7a3e9e02fb43c33f53e5b6f047361ef51aa1393c34395fd801f"
   license any_of: ["Apache-2.0", "UPL-1.0"]
 
   bottle do
-    sha256 cellar: :any,                 arm64_sequoia: "de81858e088981f8356758889209fc38cd046b78a90fd8b4d0c377d1a5c5acd8"
-    sha256 cellar: :any,                 arm64_sonoma:  "e630e68359496407049213673b09c555188b73c178f17b7e3c4fc2d66e2d131c"
-    sha256 cellar: :any,                 arm64_ventura: "103e57a6b45e0f05a3504883e06b820402dbf711b41a1ff65e1144806d199ca9"
-    sha256 cellar: :any,                 sonoma:        "2f67517af25b3942aff07d4c97e46de999e5cd6b097ea5d06c4f5976128d9985"
-    sha256 cellar: :any,                 ventura:       "ee250343206980cff83b81645f67cb9069f0eaefe20b90a44f291bef769ccf2b"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "3d6da6de1fcbaa2183ab531e29173162f271f30ce0ce178235085e86c63b1cae"
+    sha256 cellar: :any,                 arm64_sequoia: "b2c296f7ed7f72a6c61c29317ee0dfd6662903a44242232f93b521e6f77ddf8c"
+    sha256 cellar: :any,                 arm64_sonoma:  "6835813cdcf8e2123353f61156927548b85a139aca02fe4f6785f3bc23d61562"
+    sha256 cellar: :any,                 arm64_ventura: "5f01c67756cb8f42f7088ed45e6d3a37d52198f58e666fae3cce9271cc0285fc"
+    sha256 cellar: :any,                 sonoma:        "310372b69f89db3a23aabb5bae53fee57251a8f7acd27462366d93671a890b00"
+    sha256 cellar: :any,                 ventura:       "ecf062cd13fdb9b685e7545a1e54469cb216dfbdb8abc7995e1c8eca974efbb7"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "76c2389fc364dc985c1a5b71d9f9a4af3d2981cee5764381dbf0888a07738c18"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "be3c0aa33dea75b209fee7fa72ce27be8d58fa2ad1a034d3bb5c2b8a3939182b"
   end
 
   def install

@@ -1,18 +1,19 @@
 class Numpy < Formula
   desc "Package for scientific computing with Python"
   homepage "https://www.numpy.org/"
-  url "https://files.pythonhosted.org/packages/25/ca/1166b75c21abd1da445b97bf1fa2f14f423c6cfb4fc7c4ef31dccf9f6a94/numpy-2.1.3.tar.gz"
-  sha256 "aa08e04e08aaf974d4458def539dece0d28146d866a39da5639596f4921fd761"
+  url "https://files.pythonhosted.org/packages/37/7d/3fec4199c5ffb892bed55cff901e4f39a58c81df9c44c280499e92cad264/numpy-2.3.2.tar.gz"
+  sha256 "e0486a11ec30cdecb53f184d496d1c6a20786c81e55e41640270130056f8ee48"
   license "BSD-3-Clause"
   head "https://github.com/numpy/numpy.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any,                 arm64_sequoia: "2f200bdc987706a148d0d27b8e04a4985919115143143269434f14b7c3cf5862"
-    sha256 cellar: :any,                 arm64_sonoma:  "57282ea0d427a55fcc107b3bd583ce94cf7f052e649f2d9151033e32c1e7226c"
-    sha256 cellar: :any,                 arm64_ventura: "4a3f265f4767d15e1dc9ae74285a202b54933d376f78e29a4bee654153a35eb3"
-    sha256 cellar: :any,                 sonoma:        "9d673e339b3e923d3fc44bb94f02c7c4e293a0cbf5d7349645d328b6716ccc6c"
-    sha256 cellar: :any,                 ventura:       "c886bcf4c4d8321b64438895adc823f069583fc335decece51fb39095b68aebf"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "3c4c1045279d796d31b8583083d81651090ec41aa9e46b2badfc0d5333fa5d0a"
+    sha256 cellar: :any,                 arm64_sequoia: "94e1574d0dd23e0a2abd5c926020998dfdd913ef0cdfd714e04e69e81ec17699"
+    sha256 cellar: :any,                 arm64_sonoma:  "846d2df4274515dc5b30db7b1272a7b699e3ccd0077a7d7e3a3b6ad536a5ed3c"
+    sha256 cellar: :any,                 arm64_ventura: "035357f8b394f7921e0aef7698b31071a47d36cf9ea3a1d17b9df450c8f1c5c8"
+    sha256 cellar: :any,                 sonoma:        "7bd78f32c65e4997a5471de972911a671746d0f62192412b3e2d474313f05985"
+    sha256 cellar: :any,                 ventura:       "a87557e21a6ade4c92000156ad1d9268b5404a79635b9110eadfc7f2348d54e2"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "fff34d2d8ebe65428c939b8cdf9429c8b52b45b64f862ccee963e5119f571d56"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "807fe716734a45b22bbbcf05be80dad0c42976fd8674f7887fb04bbd32cd07bd"
   end
 
   depends_on "gcc" => :build # for gfortran
@@ -25,8 +26,6 @@ class Numpy < Formula
   on_linux do
     depends_on "patchelf" => :build
   end
-
-  fails_with gcc: "5"
 
   def pythons
     deps.map(&:to_formula)
@@ -52,12 +51,12 @@ class Numpy < Formula
   test do
     pythons.each do |python|
       python3 = python.opt_libexec/"bin/python"
-      system python3, "-c", <<~EOS
+      system python3, "-c", <<~PYTHON
         import numpy as np
         t = np.ones((3,3), int)
         assert t.sum() == 9
         assert np.dot(t, t).sum() == 27
-      EOS
+      PYTHON
     end
   end
 end

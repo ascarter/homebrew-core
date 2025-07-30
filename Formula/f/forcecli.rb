@@ -1,26 +1,26 @@
 class Forcecli < Formula
   desc "Command-line interface to Force.com"
   homepage "https://force-cli.herokuapp.com/"
-  url "https://github.com/ForceCLI/force/archive/refs/tags/v1.0.6.tar.gz"
-  sha256 "c133bdb1d421dfabeff0f8f38c9b72e8e2b046b5dd124afb3b5a6cc9f89c3fb1"
+  url "https://github.com/ForceCLI/force/archive/refs/tags/v1.1.1.tar.gz"
+  sha256 "a7dbb98ef80e2a94a0065e63a37115a025ba8f6b97a19a1ffb63c4264dc790bf"
   license "MIT"
   head "https://github.com/ForceCLI/force.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_sequoia:  "3fa95c383b69f69f514c7eb7dc3422f24eccef502ccd192b237c171ffbc0e1b5"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:   "eae7a40c55ca2a79f4629c946920e4c2b7419dd9019876e43876760d346f07a9"
-    sha256 cellar: :any_skip_relocation, arm64_ventura:  "eae7a40c55ca2a79f4629c946920e4c2b7419dd9019876e43876760d346f07a9"
-    sha256 cellar: :any_skip_relocation, arm64_monterey: "eae7a40c55ca2a79f4629c946920e4c2b7419dd9019876e43876760d346f07a9"
-    sha256 cellar: :any_skip_relocation, sonoma:         "bf32c0a68c8e5481f844f581d830920e4d4bab04104df62b4c1403d4c2450b69"
-    sha256 cellar: :any_skip_relocation, ventura:        "bf32c0a68c8e5481f844f581d830920e4d4bab04104df62b4c1403d4c2450b69"
-    sha256 cellar: :any_skip_relocation, monterey:       "bf32c0a68c8e5481f844f581d830920e4d4bab04104df62b4c1403d4c2450b69"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:   "f809d52c95330ee517c51fdc9cfbae44f4a9f74e68e8f890b382dcc214054f14"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "782c2f9066c57f9598d3aa9f17544a401732cc84f1284e70aeadb7b6b1cbb281"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "782c2f9066c57f9598d3aa9f17544a401732cc84f1284e70aeadb7b6b1cbb281"
+    sha256 cellar: :any_skip_relocation, arm64_ventura: "782c2f9066c57f9598d3aa9f17544a401732cc84f1284e70aeadb7b6b1cbb281"
+    sha256 cellar: :any_skip_relocation, sonoma:        "aac768af1f98d9d238cd99c817999eea72eb80293385df56f1f70154cde1e583"
+    sha256 cellar: :any_skip_relocation, ventura:       "aac768af1f98d9d238cd99c817999eea72eb80293385df56f1f70154cde1e583"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "d89018ab68f977a6b4785f90cdd74a109a21163b45ad20ff55746fc20949e236"
   end
 
   depends_on "go" => :build
 
   def install
-    system "go", "build", *std_go_args(output: bin/"force")
+    system "go", "build", *std_go_args(ldflags: "-s -w", output: bin/"force")
+
+    generate_completions_from_executable(bin/"force", "completion")
   end
 
   test do

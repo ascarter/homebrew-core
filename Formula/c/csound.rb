@@ -2,8 +2,8 @@ class Csound < Formula
   desc "Sound and music computing system"
   homepage "https://csound.com"
   license "LGPL-2.1-or-later"
-  revision 10
-  head "https://github.com/csound/csound.git", branch: "master"
+  revision 12
+  head "https://github.com/csound/csound.git", branch: "develop"
 
   # Remove `stable` block when patches are no longer needed
   stable do
@@ -21,6 +21,12 @@ class Csound < Formula
       url "https://github.com/csound/csound/commit/2a071ae8ca89bc21b5c80037f8c95a01bb670ac9.patch?full_index=1"
       sha256 "c7026330b5c89ab399e74aff17019067705011b7e35b9c75f9ed1a5878f53b4b"
     end
+
+    # Fix build failure due to incorrect member name on macOS 15+
+    patch do
+      url "https://github.com/csound/csound/commit/bb9bafcfa17a87d3733eda1e25a812fd0be08ac6.patch?full_index=1"
+      sha256 "b1492e344a7cc067989ef600a08319d388bebb344fee616d83dce969f3afe8cb"
+    end
   end
 
   livecheck do
@@ -28,13 +34,16 @@ class Csound < Formula
     strategy :github_latest
   end
 
+  no_autobump! because: :requires_manual_review
+
   bottle do
-    rebuild 1
-    sha256 arm64_sequoia: "c7b3678be39fa2ada7ebad51325aed51d21b7b5eb523843c4bfe8d95d5dc2ee0"
-    sha256 arm64_sonoma:  "0850bed4c09a449a302d64a0fd2e9276874c71fb0623a8c32d85097b7c31d6fd"
-    sha256 arm64_ventura: "8e12ae6a32c9204a1809e8bc07a8b6b53d5f38351f62a5993374a70b00aadeb8"
-    sha256 sonoma:        "b1e9791dad3293beb6f67eac9f5d616ec6063cb5b22108a71de9dd0ae08ccdc7"
-    sha256 ventura:       "a76a9a9f213cb160632eb024ba95858ff5989e621c95fe7b70b3a280d8df4384"
+    sha256 arm64_sequoia: "8d4643c7facbb44a86760a6e4aed9c9d8d64693ed974cbab8df35ae34299b7c6"
+    sha256 arm64_sonoma:  "59e91a6e3ceb3e5ce1a2a846643b6e695ba7d45ee1683a4d90922cb0295b2d4d"
+    sha256 arm64_ventura: "924021067daaa589b49dc7d87697c0dcc0354c55ddbf849b5d99f7f8c6d2ff89"
+    sha256 sonoma:        "5bc33817212bf9e58d2110d263038ba087753d934cf1b229892aef0b48a0a903"
+    sha256 ventura:       "9a087479d355399ef4515d10406c0e2852059cb4bb21a6b3a7523cc93a480560"
+    sha256 arm64_linux:   "b8258413994957c8095201a023403318a253eb56bf01ca95afcdd19db88c8e55"
+    sha256 x86_64_linux:  "58d3320da2d409e1f462bf7544c585cd4b4ee3b922fc9b6fbdf8f3b6a8813b2b"
   end
 
   depends_on "asio" => :build
@@ -74,11 +83,9 @@ class Csound < Formula
 
   conflicts_with "libextractor", because: "both install `extract` binaries"
 
-  fails_with gcc: "5"
-
   resource "ableton-link" do
-    url "https://github.com/Ableton/link/archive/refs/tags/Link-3.1.2.tar.gz"
-    sha256 "2673dfad75b1484e8388deb8393673c3304b3ab5662dd5828e08e029ca8797aa"
+    url "https://github.com/Ableton/link/archive/refs/tags/Link-3.1.3.tar.gz"
+    sha256 "b0eba86d40a46b01ab821cdfb53041bfc693f0266538ea8163f1cea7ac42f476"
   end
 
   resource "csound-plugins" do
@@ -131,7 +138,10 @@ class Csound < Formula
       resource("ableton-link").stage buildpath/"ableton-link"
       resource("getfem").stage { cp_r "src/gmm", buildpath }
 
+      # Can remove minimum policy in a release with
+      # https://github.com/csound/plugins/commit/0a95ad72b5eb0a81bc680c2ac04da9a7c220715b
       args = %W[
+        -DCMAKE_POLICY_VERSION_MINIMUM=3.5
         -DABLETON_LINK_HOME=#{buildpath}/ableton-link
         -DBUILD_ABLETON_LINK_OPCODES=ON
         -DBUILD_CHUA_OPCODES=ON
@@ -205,7 +215,6 @@ class Csound < Formula
     (testpath/"test.orc").write <<~ORC
       0dbfs = 1
       gi_peer link_create
-      gi_programHandle faustcompile "process = _;", "--vectorize --loop-variant 1"
       FLrun
       gi_fluidEngineNumber fluidEngine
       gi_realVector la_i_vr_create 1
@@ -236,11 +245,12 @@ class Csound < Formula
 
     system bin/"csound", "test.orc", "test.sco"
 
-    assert_predicate testpath/"test.#{OS.mac? ? "aif" : "wav"}", :exist?
-    assert_predicate testpath/"test.h5", :exist?
-    assert_predicate testpath/"test.mp3", :exist?
+    assert_path_exists testpath/"test.#{OS.mac? ? "aif" : "wav"}"
+    assert_path_exists testpath/"test.h5"
+    assert_path_exists testpath/"test.mp3"
 
     (testpath/"opcode-existence.orc").write <<~ORC
+      gi_programHandle faustcompile "process = _;", "--vectorize --loop-variant 1"
       JackoInfo
       instr 1
           i_ websocket 8888, 0

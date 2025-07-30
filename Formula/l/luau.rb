@@ -1,8 +1,8 @@
 class Luau < Formula
   desc "Fast, safe, gradually typed embeddable scripting language derived from Lua"
-  homepage "https://luau-lang.org"
-  url "https://github.com/luau-lang/luau/archive/refs/tags/0.651.tar.gz"
-  sha256 "bedc98f8df872041e8ac956bab4269e279140220d69c56032365307c36733580"
+  homepage "https://luau.org"
+  url "https://github.com/luau-lang/luau/archive/refs/tags/0.684.tar.gz"
+  sha256 "0783ed238f20bf879a89091da0c36d79db29c1a748e8d46077a89cd8922e5afe"
   license "MIT"
   version_scheme 1
   head "https://github.com/luau-lang/luau.git", branch: "master"
@@ -13,17 +13,16 @@ class Luau < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "f95c9788e8d41b69c05c2fbbee3b5330fb279536fc42c6d47aaa8a7d055f0417"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "eb59558e056730c24569f25fbf595442cc772d889fe99bf9d5ce8efcd238b046"
-    sha256 cellar: :any_skip_relocation, arm64_ventura: "5ccdafafa01f9195857976b2b1aacc96fdd0f115dbbe9acc7f29f131aa688ecd"
-    sha256 cellar: :any_skip_relocation, sonoma:        "a85cf9eacee3dff00169dd44fdf1350f18a7109b4f5f84b8a687058c087d2165"
-    sha256 cellar: :any_skip_relocation, ventura:       "b5c3158a6cf0d7538c0bc86df6ab740e9e31facd1039613656e07121079f5ab2"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "83974378a3e4b7e35cabe877d0d3e05529850e594e515a351307ee35f2c46b87"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "a36e19243d0f1df5825d91f72d3f7e3f5080b0aab3bf0f33f9a9d47b36528c4a"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "c92e92eb628f1400f09b23cdcacc5cc79b484540637ff69c970b8faff0527629"
+    sha256 cellar: :any_skip_relocation, arm64_ventura: "2441e98d8ebc73c9581bdda1d17305b1421a0018a33448f568cf139161e86c36"
+    sha256 cellar: :any_skip_relocation, sonoma:        "9815e9a859b1b20ed16652cfbf8157b858405740afacf509915ab1816f2b98f6"
+    sha256 cellar: :any_skip_relocation, ventura:       "89f8796e8019cfd2c0ed43bd0d86dbea474339f46296892936524d1c705fb137"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "cfd8d80bb93fe29fb33f088878fb2d68058f36c31c08f3f26f2ae407c3dc5f08"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "4f674fadeb35e6a7fa7efe2529e583232730dfe591dfd6cf26af85d14583036c"
   end
 
   depends_on "cmake" => :build
-
-  fails_with gcc: "5"
 
   def install
     system "cmake", "-S", ".", "-B", "build", "-DLUAU_BUILD_TESTS=OFF", *std_cmake_args

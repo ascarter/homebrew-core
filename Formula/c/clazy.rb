@@ -1,10 +1,9 @@
 class Clazy < Formula
   desc "Qt oriented static code analyzer"
   homepage "https://www.kdab.com/"
-  url "https://download.kde.org/stable/clazy/1.12/src/clazy-1.12.tar.xz"
-  sha256 "611749141d07ce1e006f8a1253f9b2dbd5b7b44d2d5322d471d62430ec2849ac"
+  url "https://download.kde.org/stable/clazy/1.15/src/clazy-1.15.tar.xz"
+  sha256 "43189460b366ea3126242878c36ee8a403e37ec4baef7e61ccfa124b1414e7a9"
   license "LGPL-2.0-or-later"
-  revision 1
   head "https://invent.kde.org/sdk/clazy.git", branch: "master"
 
   livecheck do
@@ -13,24 +12,23 @@ class Clazy < Formula
   end
 
   bottle do
-    sha256 cellar: :any,                 arm64_sequoia: "4c414da467a6431fa3fcb801a9782193e4bc33c79e5c46ce89225d59ad89f0cd"
-    sha256 cellar: :any,                 arm64_sonoma:  "de510c93eac7168ae31e41ddf5c016a143ca82cfd303155dc00869ea58a777d6"
-    sha256 cellar: :any,                 arm64_ventura: "48c9b07863a47b5d5e53a97ccaf6e1ae5dfa19c9ee484a800cf342fd43b9967f"
-    sha256 cellar: :any,                 sonoma:        "c1ea2d9d4092095114db97f32bb67c008c865e0724366724305d13272d495e5b"
-    sha256 cellar: :any,                 ventura:       "2795771a1d25fd000c81613aedf48ffaf9a394fa30e2e4ff140d83b85e69076f"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "60afe9ee7a03dbee90248110fd343c0c3a4be1192e86050562d76ff0add050d4"
+    rebuild 1
+    sha256 cellar: :any,                 arm64_sequoia: "8e82a24432fe70dbdc57d15a6e000f9965862570357db03f6fa7f24b8b179b9b"
+    sha256 cellar: :any,                 arm64_sonoma:  "e9615987f29c4795cbe367210445d23ac6288a9162f2b14fa16011cf92ca3342"
+    sha256 cellar: :any,                 arm64_ventura: "71125eaff0f77b0ff435fb1a994743c557fb39c411297437f765ddeddf1b8a7b"
+    sha256 cellar: :any,                 sonoma:        "3f5a1d5289b111d1c313034902c77bb56373fac7d4eb93dea8a55c691496c3e4"
+    sha256 cellar: :any,                 ventura:       "1a901cc6580997ddcd7f6d4f5f963c73875edc2dca0b911939b824ccb98731a7"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "10e829a29aa7e265e7e1f482a86cef69cb3a45190326475390f00b323af5217b"
   end
 
   depends_on "cmake" => [:build, :test]
   depends_on "qt" => :test
   depends_on "coreutils"
-  depends_on "llvm@18"
+  depends_on "llvm"
 
   uses_from_macos "libxml2"
   uses_from_macos "ncurses"
   uses_from_macos "zlib"
-
-  fails_with gcc: "5" # C++17
 
   def install
     system "cmake", "-S", ".", "-B", "build", "-DCLAZY_LINK_CLANG_DYLIB=ON", *std_cmake_args

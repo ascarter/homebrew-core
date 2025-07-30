@@ -10,14 +10,14 @@ class Luajit < Formula
   # Get the latest commit with:
   #   `git ls-remote --heads https://github.com/LuaJIT/LuaJIT.git v2.1`
   # This is a rolling release model so take care not to ignore CI failures that may be regressions.
-  url "https://github.com/LuaJIT/LuaJIT/archive/97813fb924edf822455f91a5fbbdfdb349e5984f.tar.gz"
+  url "https://github.com/LuaJIT/LuaJIT/archive/871db2c84ecefd70a850e03a6c340214a81739f0.tar.gz"
   # Use the version scheme `2.1.timestamp` where `timestamp` is the Unix timestamp of the
   # latest commit at the time of updating.
   # `brew livecheck luajit` will generate the correct version for you automatically.
-  version "2.1.1727870382"
-  sha256 "cbf1647acbd340c62b9c342dae43290762efa1b26d8bf8457f143fabf8ed86c7"
+  version "2.1.1753364724"
+  sha256 "ab3f16d82df6946543565cfb0d2810d387d79a3a43e0431695b03466188e2680"
   license "MIT"
-  head "https://luajit.org/git/luajit.git", branch: "v2.1"
+  head "https://github.com/LuaJIT/LuaJIT.git", branch: "v2.1"
 
   livecheck do
     url "https://api.github.com/repos/LuaJIT/LuaJIT/branches/v2.1"
@@ -27,13 +27,16 @@ class Luajit < Formula
     end
   end
 
+  no_autobump! because: :incompatible_version_format
+
   bottle do
-    sha256 cellar: :any,                 arm64_sequoia: "70d41bd527edfe2b0bc41e19880ac406fc4a4f4ef899e74bb507a38e177463b2"
-    sha256 cellar: :any,                 arm64_sonoma:  "a0bea16dad84de03010eda673111178182ea0339592f8cd348e4f96f664c2fd8"
-    sha256 cellar: :any,                 arm64_ventura: "2a2b5405a992b5f1f20b925b918c81ecfbd89961884113d2c72eee5f06b7656a"
-    sha256 cellar: :any,                 sonoma:        "c8d406a9dd11b0b5b8eaad6f06fc7cfb4f8c9016e7e4bf0eb6239f9f3e3e1530"
-    sha256 cellar: :any,                 ventura:       "c36d72cb83fd257576436b703641475cc002801b368982c4e3f61053ec25dae2"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "7adcd3e442ecd3f7f93f32b0bbeb0f4fc57d46a66badf3567b21211f5ecff84b"
+    sha256 cellar: :any,                 arm64_sequoia: "f9a3a9c72e6bbe82bd9587813c6804de1e85bb87e70ecc524502a222291cafdc"
+    sha256 cellar: :any,                 arm64_sonoma:  "0572bf48468c4c3a3e6c5c7419d0fcd6022bfd426b12d1bc8c5ede6d2e1187ce"
+    sha256 cellar: :any,                 arm64_ventura: "d9c2c7fa133f65ac675ade63eb71320f3184d9020c849df1b0d0a8e13c9f46f0"
+    sha256 cellar: :any,                 sonoma:        "5e9cfd12ed12b75cca2cd454b1eaad50c733ba3162ea0b4b79920227faecca6d"
+    sha256 cellar: :any,                 ventura:       "138c74f5c169882ef0a794a4706b7587d39bdbe07e27efa2a080390eb5ea8823"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "3b10a0d67ca6aa79c181dbc225661ada0fc8baf904ce9d6a54e671830328d77e"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "fea6222588a8363f21504b46ad51d3a636c0c981e322841c31b93437da124bd2"
   end
 
   def install
@@ -88,7 +91,7 @@ class Luajit < Formula
     # Check that LuaJIT can find its own `jit.*` modules
     touch "empty.lua"
     system bin/"luajit", "-b", "-o", "osx", "empty.lua", "empty.o"
-    assert_predicate testpath/"empty.o", :exist?
+    assert_path_exists testpath/"empty.o"
 
     # Check that we're not affected by LuaJIT/LuaJIT/issues/865.
     require "macho"

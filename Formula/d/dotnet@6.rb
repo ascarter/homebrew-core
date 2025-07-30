@@ -3,15 +3,17 @@ class DotnetAT6 < Formula
   homepage "https://dotnet.microsoft.com/"
   # Source-build tag announced at https://github.com/dotnet/source-build/discussions
   url "https://github.com/dotnet/installer.git",
-      tag:      "v6.0.135",
-      revision: "9b2a203ee661f837f50486a8caedc688e05dedc4"
+      tag:      "v6.0.136",
+      revision: "d638663530d923adbe0442604b7a6562127321e9"
   license "MIT"
+  revision 1
 
   bottle do
-    sha256 cellar: :any,                 arm64_sequoia: "d4504f7537d39b828fd1090b071d7500b32c1159dec10ce28ab7defa25fe34ba"
-    sha256 cellar: :any,                 arm64_sonoma:  "6112bc7fb910dc62bb68aa2f9bdd93ce9c47d396c8949b46432b9011440e6722"
-    sha256 cellar: :any,                 sonoma:        "2e850d8505cdb3c220370b3cb94b724f446af5009a4429971745ae5e41788e34"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "c656cdbcf9e10e6961b82a4ac9f6f7a96aca9e0705eed54b54676584bfc4d983"
+    sha256 cellar: :any,                 arm64_sequoia: "17a1b695a3859a75a1379c9ff5aa044a1e0d4517d27454ab699a88992ed4054c"
+    sha256 cellar: :any,                 arm64_sonoma:  "3842fe4efbd79ee741fddf3e27f33e9d3a14533c4a7a8b27ebc9fa6423906cf7"
+    sha256 cellar: :any,                 sonoma:        "10a9849193aa400d0542751ba82dfc7c03721f01c38a143fcf7f7bdd1e762349"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "194441cf808cb24d14994881e2f30fd0bce8f28375430f4c8c75881cc801116f"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "a66fa701d2a875604a253d37f89772910bb6aae1ed402abe5c52444f62264ecf"
   end
 
   keg_only :versioned_formula
@@ -20,9 +22,9 @@ class DotnetAT6 < Formula
   deprecate! date: "2024-11-12", because: :unsupported
 
   depends_on "cmake" => :build
-  depends_on "pkg-config" => :build
+  depends_on "pkgconf" => :build
   depends_on "python@3.13" => :build
-  depends_on "icu4c@76"
+  depends_on "icu4c@77"
   depends_on "openssl@3"
 
   uses_from_macos "llvm" => :build

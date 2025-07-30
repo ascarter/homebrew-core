@@ -1,18 +1,19 @@
 class Gql < Formula
   desc "Git Query language is a SQL like language to perform queries on .git files"
-  homepage "https://github.com/AmrDeveloper/GQL"
-  url "https://github.com/AmrDeveloper/GQL/archive/refs/tags/0.30.0.tar.gz"
-  sha256 "2398ae1660a0c018b023913a3b7d826e592b61a09cec519731293e1546b4a155"
+  homepage "https://amrdeveloper.github.io/GQL/"
+  url "https://github.com/AmrDeveloper/GQL/archive/refs/tags/0.39.0.tar.gz"
+  sha256 "f18dcb9bb6f574dfeb6d352bcfb4695903a3d6676633e84365b0f3d96bc295d9"
   license "MIT"
   head "https://github.com/AmrDeveloper/GQL.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "fe5e3b9379121a2556f80ec36b7d32402270734749e5c454f0645043bac63bd7"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "a50d6c8b795974646e1283efbbe0dd04850d6e279a567ffa144e87c86f8e3954"
-    sha256 cellar: :any_skip_relocation, arm64_ventura: "dbce3347a5082968aa9bec27851559bca2a3f2238eb8b9a568349cdcfe25f434"
-    sha256 cellar: :any_skip_relocation, sonoma:        "60e90729870661e0341d8553bdabed8420782a287d70b9a06c5182f2e05e168e"
-    sha256 cellar: :any_skip_relocation, ventura:       "5c12f76fd3105ed1ff8617a720d9e2ef5e1ec0cea38c16a1bf9804e89412d9a6"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "15806c350e5c20d641020b59869df9ea8d85b82defb650b7b989fb8d1b8686f5"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "7a70e0dae86235b6454ea5fad8cb064e20b5b3a6dfe3026fb68a8023b6c10519"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "ec2f8476cf1848dc6409f68759e733e6be5bdb3ce434b8aa036ba75255958320"
+    sha256 cellar: :any_skip_relocation, arm64_ventura: "a1b97a800e5e9115952124e9be43d4c81a8739c32958c949ff5fa3c4a57dbe42"
+    sha256 cellar: :any_skip_relocation, sonoma:        "c1112423136518b23c5e9576178958280c9aeecd74067cc6a7a99fcd38331672"
+    sha256 cellar: :any_skip_relocation, ventura:       "bc2529339d7238a478e596b06b15fce15a03d970287cc50e9f48677b0260d922"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "6066a107532dbbb0c8b616d0fd20eb8319d0aa5184ba5a2486397d03b062bbad"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "6b7ec2d096f0a7954131a023b0968a43402ac55df0b774d2bd4e10236aa682df"
   end
 
   depends_on "cmake" => :build
@@ -27,6 +28,6 @@ class Gql < Formula
   test do
     system "git", "init"
     output = JSON.parse(shell_output("#{bin}/gitql -o json -q 'SELECT 1 + 1 LIMIT 1'"))
-    assert_equal "2", output.first["column_1"]
+    assert_equal "2", output.first["column_0"]
   end
 end

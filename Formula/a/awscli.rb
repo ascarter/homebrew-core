@@ -3,30 +3,31 @@ class Awscli < Formula
 
   desc "Official Amazon AWS command-line interface"
   homepage "https://aws.amazon.com/cli/"
-  url "https://github.com/aws/aws-cli/archive/refs/tags/2.19.5.tar.gz"
-  sha256 "d890e9d09c559052f2a03c8e17df9e05b1cf5288df4263826f3ed9dfe25c8df2"
+  url "https://github.com/aws/aws-cli/archive/refs/tags/2.27.63.tar.gz"
+  sha256 "48b0ef28ab6c2153d7cea5d918a8a4d3d6b8b3f56b135cfa2ec49a0786bc271a"
   license "Apache-2.0"
   head "https://github.com/aws/aws-cli.git", branch: "v2"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "6fce7809e76b396f6525fab65ef44a50a09f22c09445e8889f9694ba3bffb411"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "67643f5e3f29e8e02bef2f1a8fa580b93c5895bf5c1cedaa85a281f74c0f8e1b"
-    sha256 cellar: :any_skip_relocation, arm64_ventura: "11b4e4c3cf98042da5f10c33c6b54be0a649821f417b8df18ed2b50ee5ff5a9d"
-    sha256 cellar: :any_skip_relocation, sonoma:        "58a332c26a1e74facd6047ff0a77905d0d1606c3d736308e3cdfa90ced13f40f"
-    sha256 cellar: :any_skip_relocation, ventura:       "406f1cf491bcbec84bdfec4542c064d7ae9a291dd91ff7fb3c6ca7ec96c4f992"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "0149ef8303c01a1b50303856b375caca25a9345f885256a070e49a81875a6059"
+    sha256 cellar: :any,                 arm64_sequoia: "f48dbe851e8a6532f03feb3c4f1f1dd460ae99907f08bbf7960fa81ef6d3bc4b"
+    sha256 cellar: :any,                 arm64_sonoma:  "86a3b2f6159f796d7723a77f5d3ab3beb777c3dfc94367f551dbc706986f794f"
+    sha256 cellar: :any,                 arm64_ventura: "189c3368dc82e425d25d8246d207eae85701e53e8353012d4a199e60a7d42969"
+    sha256 cellar: :any,                 sonoma:        "43e013256d5622e4a7008c038cc72ffe9aa0f49e231d2f1d4cc40a30ca162afc"
+    sha256 cellar: :any,                 ventura:       "909f81df53cbdf6ffce9435235e34bfbbd81bf2a3d3b3e7abb6bcc3b70809915"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "a283d5ae779795f3ddd051de90f5967994a43420703dd7969c270251b014af3d"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "1ab7243518c4eaee06b4f364d804fb7984757e10a76e4101c9f1f2bf9e5eddc2"
   end
 
   depends_on "cmake" => :build
-  depends_on "cryptography"
-  depends_on "python@3.12"
+  depends_on "openssl@3"
+  depends_on "python@3.13"
 
   uses_from_macos "libffi"
   uses_from_macos "mandoc"
 
   resource "awscrt" do
-    url "https://files.pythonhosted.org/packages/e2/e5/82646e045902c237df1e59c2430ed392377d4dff0755eb30f9ea2c47d15f/awscrt-0.22.0.tar.gz"
-    sha256 "4ca2b0b49328f03f5a3dde2d565132df8ad74cba27352612ecd9fe2505e1d770"
+    url "https://files.pythonhosted.org/packages/42/db/72989a426cdf2b9f38454b1cdba246b2d2e95a77397ad3df18d1d9d4f5b3/awscrt-0.26.1.tar.gz"
+    sha256 "a8d63a7dcc6484c5c1675b31a8d1b6726c3dc85b13796fb143dfb0072260935e"
   end
 
   resource "colorama" do
@@ -45,8 +46,8 @@ class Awscli < Formula
   end
 
   resource "flit-core" do
-    url "https://files.pythonhosted.org/packages/c4/e6/c1ac50fe3eebb38a155155711e6e864e254ce4b6e17fe2429b4c4d5b9e80/flit_core-3.9.0.tar.gz"
-    sha256 "72ad266176c4a3fcfab5f2930d76896059851240570ce9a98733b658cb786eba"
+    url "https://files.pythonhosted.org/packages/69/59/b6fc2188dfc7ea4f936cd12b49d707f66a1cb7a1d2c16172963534db741b/flit_core-3.12.0.tar.gz"
+    sha256 "18f63100d6f94385c6ed57a72073443e1a71a4acb4339491615d0f16d6ff01b2"
   end
 
   resource "jmespath" do
@@ -55,8 +56,8 @@ class Awscli < Formula
   end
 
   resource "prompt-toolkit" do
-    url "https://files.pythonhosted.org/packages/4b/bb/75cdcd356f57d17b295aba121494c2333d26bfff1a837e6199b8b83c415a/prompt_toolkit-3.0.38.tar.gz"
-    sha256 "23ac5d50538a9a38c8bde05fecb47d0b403ecd0662857a86f886f798563d5b9b"
+    url "https://files.pythonhosted.org/packages/bb/6e/9d084c929dfe9e3bfe0c6a47e31f78a25c54627d64a66e884a8bf5474f1c/prompt_toolkit-3.0.51.tar.gz"
+    sha256 "931a162e3b27fc90c86f1b48bb1fb2c528c2761475e57c9c06de13311c7b54ed"
   end
 
   resource "python-dateutil" do
@@ -70,13 +71,13 @@ class Awscli < Formula
   end
 
   resource "ruamel-yaml-clib" do
-    url "https://files.pythonhosted.org/packages/46/ab/bab9eb1566cd16f060b54055dd39cf6a34bfa0240c53a7218c43e974295b/ruamel.yaml.clib-0.2.8.tar.gz"
-    sha256 "beb2e0404003de9a4cab9753a8805a8fe9320ee6673136ed7f04255fe60bb512"
+    url "https://files.pythonhosted.org/packages/20/84/80203abff8ea4993a87d823a5f632e4d92831ef75d404c9fc78d0176d2b5/ruamel.yaml.clib-0.2.12.tar.gz"
+    sha256 "6c8fbb13ec503f99a91901ab46e0b07ae7941cd527393187039aec586fdfd36f"
   end
 
   resource "six" do
-    url "https://files.pythonhosted.org/packages/71/39/171f1c67cd00715f190ba0b100d606d440a28c93c7714febeca8b79af85e/six-1.16.0.tar.gz"
-    sha256 "1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926"
+    url "https://files.pythonhosted.org/packages/94/e7/b2c673351809dca68a0e064b6af791aa332cf192da575fd474ed7d6f16a2/six-1.17.0.tar.gz"
+    sha256 "ff70335d468e7eb6ec65b95b99d3a2836546063f63acc5171de367e834932a81"
   end
 
   resource "urllib3" do
@@ -90,27 +91,21 @@ class Awscli < Formula
   end
 
   def python3
-    which("python3.12")
+    which("python3.13")
   end
 
   def install
-    # The `awscrt` package uses its own libcrypto.a on Linux. When building _awscrt.*.so,
-    # Homebrew's default environment causes issues, which may be due to `openssl` flags.
-    # This causes installation to fail while running `scripts/gen-ac-index` with error:
-    # ImportError: _awscrt.cpython-39-x86_64-linux-gnu.so: undefined symbol: EVP_CIPHER_CTX_init
-    # As workaround, add relative path to local libcrypto.a before openssl's so it gets picked.
-    if OS.linux?
-      python_version = Language::Python.major_minor_version(python3)
-      ENV.prepend "CFLAGS", "-I./build/temp.linux-x86_64-#{python_version}/deps/install/include"
-      ENV.prepend "LDFLAGS", "-L./build/temp.linux-x86_64-#{python_version}/deps/install/lib"
-    end
+    ENV["AWS_CRT_BUILD_USE_SYSTEM_LIBCRYPTO"] = "1"
 
     # Work around ruamel.yaml.clib not building on Xcode 15.3, remove after a new release
     # has resolved: https://sourceforge.net/p/ruamel-yaml-clib/tickets/32/
     ENV.append_to_cflags "-Wno-incompatible-function-pointer-types" if DevelopmentTools.clang_build_version >= 1500
 
     venv = virtualenv_create(libexec, python3, system_site_packages: false)
-    venv.pip_install resources
+    venv.pip_install resources.reject { |r| r.name == "awscrt" }
+    # CPU detection is available in AWS C libraries
+    ENV.runtime_cpu_detection
+    venv.pip_install resource("awscrt")
     venv.pip_install_and_link buildpath, build_isolation: false
 
     pkgshare.install "awscli/examples"

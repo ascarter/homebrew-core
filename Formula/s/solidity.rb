@@ -1,8 +1,8 @@
 class Solidity < Formula
   desc "Contract-oriented programming language"
   homepage "https://soliditylang.org"
-  url "https://github.com/ethereum/solidity/releases/download/v0.8.28/solidity_0.8.28.tar.gz"
-  sha256 "ec756e30f26a5a38d028fd6f401ef0a7f5cfbf4a1ce71f76c2e3e1ffb8730672"
+  url "https://github.com/ethereum/solidity/releases/download/v0.8.30/solidity_0.8.30.tar.gz"
+  sha256 "5e8d58dff551a18205e325c22f1a3b194058efbdc128853afd75d31b0568216d"
   license all_of: ["GPL-3.0-or-later", "MIT", "BSD-3-Clause", "Apache-2.0", "CC0-1.0"]
 
   livecheck do
@@ -10,13 +10,16 @@ class Solidity < Formula
     strategy :github_latest
   end
 
+  no_autobump! because: :requires_manual_review
+
   bottle do
-    sha256 cellar: :any,                 arm64_sequoia: "b9c156677e374eaf59be5495bb5e2762af577ff840149e388ec895d28b6f5cf4"
-    sha256 cellar: :any,                 arm64_sonoma:  "5c9ed4e2f11cb81b1802f8f00a12d896eeed78fb3654f32a571b67c021d3753c"
-    sha256 cellar: :any,                 arm64_ventura: "b5282e586af70de0dacfc75cb625226343bfdba1f6335890adecc91a106a6db7"
-    sha256 cellar: :any,                 sonoma:        "2da60a4a743c85bb3e4d885ff96ed9db94df9076c7b565a9ba51304121384db3"
-    sha256 cellar: :any,                 ventura:       "ac152d013a33817d9f0455d1f052a3d297ae4b0cb7070bcdfb6de7877ede2333"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "22896839ea9da3dd776292c755058b6e11fd1adb67fc23cf526addd10452c75b"
+    sha256 cellar: :any,                 arm64_sequoia: "473fa776a7d59bcddcd39fcae1decae308a7fcf76b955ad737788edb788dd1b1"
+    sha256 cellar: :any,                 arm64_sonoma:  "1fff4b5d4ee6fdfe9f580cb4a0f9102a335c01c3e9cb9b43907b2904e1d9830d"
+    sha256 cellar: :any,                 arm64_ventura: "3056f30a88cf1eb1283ca37ee98d52a3b799f49cc4da481161ff4f5bf6f717e6"
+    sha256 cellar: :any,                 sonoma:        "5c54b89ae94ff561cb13ae3f1a5614a9a0996a1101602aa68fd6d911b8cb05c6"
+    sha256 cellar: :any,                 ventura:       "754784a2bf9a57e6fe88d57c43465af5a721667250faf7767e817421438c4a13"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "e9d10fb6a132c5d5f5b36ef1c9296ad9f4c25a2236822e054150ac057f72154a"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "e88792a9be5d50f8732d8679c3fba67b84c9ecc839e9af1bcd114c4fcb543111"
   end
 
   depends_on "cmake" => :build
@@ -28,22 +31,21 @@ class Solidity < Formula
 
   conflicts_with "solc-select", because: "both install `solc` binaries"
 
-  fails_with gcc: "5"
-
-  # build patch to use system fmt, nlohmann-json, and range-v3, upstream PR ref, https://github.com/ethereum/solidity/pull/15414
-  patch do
-    url "https://github.com/ethereum/solidity/commit/aa47181eef8fa63a6b4f52bff2c05517c66297a2.patch?full_index=1"
-    sha256 "b73e52a235087b184b8813a15a52c4b953046caa5200bf0aa60773ec4bb28300"
-  end
-
   def install
-    system "cmake", "-S", ".", "-B", "build", "-DSTRICT_Z3_VERSION=OFF", *std_cmake_args
+    rm_r("deps")
+
+    system "cmake", "-S", ".", "-B", "build",
+                    "-DBoost_USE_STATIC_LIBS=OFF",
+                    "-DSTRICT_Z3_VERSION=OFF",
+                    "-DTESTS=OFF",
+                    "-DIGNORE_VENDORED_DEPENDENCIES=ON",
+                    *std_cmake_args
     system "cmake", "--build", "build"
     system "cmake", "--install", "build"
   end
 
   test do
-    (testpath/"hello.sol").write <<~EOS
+    (testpath/"hello.sol").write <<~SOLIDITY
       // SPDX-License-Identifier: GPL-3.0
       pragma solidity ^0.8.0;
       contract HelloWorld {
@@ -51,7 +53,7 @@ class Solidity < Formula
           return "Hello, World!";
         }
       }
-    EOS
+    SOLIDITY
 
     output = shell_output("#{bin}/solc --bin hello.sol")
     assert_match "hello.sol:HelloWorld", output

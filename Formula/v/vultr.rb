@@ -1,27 +1,30 @@
 class Vultr < Formula
   desc "Command-line tool for Vultr services"
   homepage "https://github.com/vultr/vultr-cli"
-  url "https://github.com/vultr/vultr-cli/archive/refs/tags/v3.4.0.tar.gz"
-  sha256 "966161efc0f65c6f836503dfba9a3e2240ad6e54c76d83817fc99532808cf049"
+  url "https://github.com/vultr/vultr-cli/archive/refs/tags/v3.6.0.tar.gz"
+  sha256 "b45592d8bce6539b6b35e405f71a3ac4bb6fa3ef5ad4ec8b6a1f31c31f17cdc7"
   license "Apache-2.0"
   head "https://github.com/vultr/vultr-cli.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "d5cef44b52842ad75fc500a57ca0530c985a17aef2ae19de28e87cd59e692ed2"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "d5cef44b52842ad75fc500a57ca0530c985a17aef2ae19de28e87cd59e692ed2"
-    sha256 cellar: :any_skip_relocation, arm64_ventura: "d5cef44b52842ad75fc500a57ca0530c985a17aef2ae19de28e87cd59e692ed2"
-    sha256 cellar: :any_skip_relocation, sonoma:        "2587c93489246ceeb188e6096791f48749f071017c74070b4596a25a58af34b7"
-    sha256 cellar: :any_skip_relocation, ventura:       "2587c93489246ceeb188e6096791f48749f071017c74070b4596a25a58af34b7"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "d59d5aee65a95ea740c5909b096be5d701cd4e353fdf01ea186c245cc6af6029"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "d92694b6931e84ff9587e68405d40e2a6df2c8935edca297e82961cdfae94063"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "d92694b6931e84ff9587e68405d40e2a6df2c8935edca297e82961cdfae94063"
+    sha256 cellar: :any_skip_relocation, arm64_ventura: "d92694b6931e84ff9587e68405d40e2a6df2c8935edca297e82961cdfae94063"
+    sha256 cellar: :any_skip_relocation, sonoma:        "a95b6a24c04d470ed092119a9684910c1a8a70c008ecc84857703183211b694b"
+    sha256 cellar: :any_skip_relocation, ventura:       "a95b6a24c04d470ed092119a9684910c1a8a70c008ecc84857703183211b694b"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "c12cc6b5c04635633f61435eddf9739b90510a3734844ba6deb3d4a5c26c0099"
   end
 
   depends_on "go" => :build
 
   def install
     system "go", "build", *std_go_args(ldflags: "-s -w")
+
+    generate_completions_from_executable(bin/"vultr", "completion")
   end
 
   test do
-    system bin/"vultr", "version"
+    assert_match version.to_s, shell_output("#{bin}/vultr version")
+    assert_match "Custom", shell_output("#{bin}/vultr os list")
   end
 end

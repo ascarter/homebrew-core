@@ -1,8 +1,8 @@
 class NewrelicCli < Formula
   desc "Command-line interface for New Relic"
   homepage "https://github.com/newrelic/newrelic-cli"
-  url "https://github.com/newrelic/newrelic-cli/archive/refs/tags/v0.97.0.tar.gz"
-  sha256 "9dec1c72fbe15fdf880119b1afdfb761968dac30cb1d883bece7973145275a86"
+  url "https://github.com/newrelic/newrelic-cli/archive/refs/tags/v0.100.5.tar.gz"
+  sha256 "2172c6f9de8db3c534283fe6f619d04cd15bc31aee6c58235f6f6fb510bbff5d"
   license "Apache-2.0"
   head "https://github.com/newrelic/newrelic-cli.git", branch: "main"
 
@@ -12,12 +12,13 @@ class NewrelicCli < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "829c1c8742c2ffc853d8f921b89cb9e50389ec5ceb2a3fb68135965f77348b86"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "c47e657c1eb306a87dc815b2cf4152fcfa31437fee3d8d9bbd29e56c0129b248"
-    sha256 cellar: :any_skip_relocation, arm64_ventura: "061eff2fe7671524f1453d8e93a684ff22cdd9ae445cf588ffa22b305799a8a8"
-    sha256 cellar: :any_skip_relocation, sonoma:        "d19ce4c3327d1387c9d7c51523f13c641dd00e8d8c8cfc716842cc54d337882d"
-    sha256 cellar: :any_skip_relocation, ventura:       "1ea5c4c3ed64d6d707309123f5b2a6a4a4fa91f7308ff78f637080df67c592d4"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "34fa71a0b49fcea34882ba62230314c4abc73d82b61d2c1a51016299e88946f0"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "1c65490b9fe2589f613d9c109d43cf5694d1f937a4120b3dd07ba35245d643bc"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "d1cbae732fbca60bc82c8151e5606bcc871c78074338dba01ffc45e4599a097f"
+    sha256 cellar: :any_skip_relocation, arm64_ventura: "abc1d01bf3bfae44aa9d803f98ffe2b3566c95a4b7b4d785f0195574055ed4eb"
+    sha256 cellar: :any_skip_relocation, sonoma:        "f1af19c0d00dfc05cb1898fa9bd686e5ef113eebf9150f07aed65bf67283e6fd"
+    sha256 cellar: :any_skip_relocation, ventura:       "97d7cb87b74c9a21a989eec40e6dece2c0d5860969e1b6276e8468f2da76dfd2"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "5cfa059adbccfeab817840b3bb6f22362927d03e63b93f559725a37efe1e0eeb"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "a884e31d33fdca9dc369ea1994ceb5897cb2583d9f93f00eff92f3bfa21dc694"
   end
 
   depends_on "go" => :build
@@ -27,7 +28,7 @@ class NewrelicCli < Formula
     system "make", "compile-only"
     bin.install "bin/#{OS.kernel_name.downcase}/newrelic"
 
-    generate_completions_from_executable(bin/"newrelic", "completion", "--shell", base_name: "newrelic")
+    generate_completions_from_executable(bin/"newrelic", "completion", "--shell")
   end
 
   test do

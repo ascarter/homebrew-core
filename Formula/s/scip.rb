@@ -1,8 +1,8 @@
 class Scip < Formula
   desc "Solver for mixed integer programming and mixed integer nonlinear programming"
   homepage "https://scipopt.org"
-  url "https://scipopt.org/download/release/scip-9.2.0.tgz"
-  sha256 "f2a1d568ba0801742df062df17b5a1ced9aec8647057050899e9017807280ff3"
+  url "https://scipopt.org/download/release/scip-9.2.3.tgz"
+  sha256 "6f5e81a643bba22d9b4e43cd97583529587c64eafe83b93bb864b07f9f16fab7"
   license "Apache-2.0"
 
   livecheck do
@@ -11,15 +11,17 @@ class Scip < Formula
   end
 
   bottle do
-    sha256 cellar: :any,                 arm64_sequoia: "072edd52f6ce89e7fc81d084916be719688a866c1dd31a2f9ede2a64cb084ae4"
-    sha256 cellar: :any,                 arm64_sonoma:  "a1399b0eff655005f402a11adcc096347374729aadd5ad9d7ce295a0fcaae960"
-    sha256 cellar: :any,                 arm64_ventura: "6621bb96a6bf7f511dcbe740811708df215f64cc88f20ed730136c462186510f"
-    sha256 cellar: :any,                 sonoma:        "9ee388681826cbb9dd84fcf0c4a74c2724955d80ce6f2b6cf59d05a3e8d55dd2"
-    sha256 cellar: :any,                 ventura:       "5e33bec282deb0b3386d8795620dffd1da18ea626867084029f28d30e5e4d59c"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "1515635c7bb25f232df54d00ebe6d247775f6d23a470adf000cc71d01cfd3d69"
+    sha256 cellar: :any,                 arm64_sequoia: "f6e535f1d4849caa3a370c080d62c650781a727b42edb571a994e2167fd22984"
+    sha256 cellar: :any,                 arm64_sonoma:  "c04ca5649c3eaf2e85871b43dde1365581af0ed741e2f9a43994fafefed2cc4d"
+    sha256 cellar: :any,                 arm64_ventura: "558bacec51d5c471dc25e32aa2de30916214a375a84c870b1ccbffea4da9e4c1"
+    sha256 cellar: :any,                 sonoma:        "6dac9de291e0f7e3c273360b576aaff7300f265a35f465e7fbcc77ae6b4286ed"
+    sha256 cellar: :any,                 ventura:       "6df41e98901b04ff56ad50dba1d1744c4cfde6bdbe39e2f5aaa8ca8bb3d45405"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "1e610c3db3ba7a6ede4d264746e438b7d669be5305b5d9b5aaf3f7e639a8c048"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "782accbc4741331d07dd997269283dae94d281b3e3d47b22c7baf927b59511e5"
   end
 
   depends_on "cmake" => :build
+  depends_on "boost"
   depends_on "cppad"
   depends_on "gmp"
   depends_on "ipopt"

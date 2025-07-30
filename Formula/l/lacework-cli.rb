@@ -2,8 +2,8 @@ class LaceworkCli < Formula
   desc "CLI for managing Lacework"
   homepage "https://docs.lacework.com/cli"
   url "https://github.com/lacework/go-sdk.git",
-      tag:      "v2.1.2",
-      revision: "15c6b21b6f22ac366e469f13ce690d5f2ccd628d"
+      tag:      "v2.5.0",
+      revision: "fd88dc3f9762ff3855488e3f263301173224ecde"
   license "Apache-2.0"
   head "https://github.com/lacework/go-sdk.git", branch: "main"
 
@@ -16,12 +16,12 @@ class LaceworkCli < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "f1342de716428365bf04c6552da8d921cf7e2fe61e2cd443a6a0e6af145f2fe8"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "f1342de716428365bf04c6552da8d921cf7e2fe61e2cd443a6a0e6af145f2fe8"
-    sha256 cellar: :any_skip_relocation, arm64_ventura: "f1342de716428365bf04c6552da8d921cf7e2fe61e2cd443a6a0e6af145f2fe8"
-    sha256 cellar: :any_skip_relocation, sonoma:        "494fdc397745e6a6ce1d34b41e71a885637d3ba0eec9bd025ae03210edaac38d"
-    sha256 cellar: :any_skip_relocation, ventura:       "494fdc397745e6a6ce1d34b41e71a885637d3ba0eec9bd025ae03210edaac38d"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "5fce4f3c1066566298dab656e638b9c154e29dc36bb179666219f3d8ac148260"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "61f86f2d1a861f1eb44d0111de2073c545a9d861dbeabbde0aaeb0e36762d955"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "61f86f2d1a861f1eb44d0111de2073c545a9d861dbeabbde0aaeb0e36762d955"
+    sha256 cellar: :any_skip_relocation, arm64_ventura: "61f86f2d1a861f1eb44d0111de2073c545a9d861dbeabbde0aaeb0e36762d955"
+    sha256 cellar: :any_skip_relocation, sonoma:        "e2b34135b02221c19d27150ec78ab0c9ec31f375ce86d1189a160c9c2892d337"
+    sha256 cellar: :any_skip_relocation, ventura:       "e2b34135b02221c19d27150ec78ab0c9ec31f375ce86d1189a160c9c2892d337"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "71ee634270670bc7ebbe5bdb7391fbdb3aeef8f43777248a271edc5553053411"
   end
 
   depends_on "go" => :build
@@ -36,7 +36,7 @@ class LaceworkCli < Formula
     ]
     system "go", "build", *std_go_args(output: bin/"lacework", ldflags:), "./cli"
 
-    generate_completions_from_executable(bin/"lacework", "completion", base_name: "lacework")
+    generate_completions_from_executable(bin/"lacework", "completion")
   end
 
   test do

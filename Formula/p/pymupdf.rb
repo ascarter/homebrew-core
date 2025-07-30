@@ -1,28 +1,29 @@
 class Pymupdf < Formula
   desc "Python bindings for the PDF toolkit and renderer MuPDF"
   homepage "https://pymupdf.readthedocs.io/en/latest/"
-  url "https://files.pythonhosted.org/packages/22/39/84efca63af4e5a014c1d4c21686469f99c3d1c160a3a0b902ac676f6ffd9/PyMuPDF-1.24.13.tar.gz"
-  sha256 "6ec3ab3c6d5cba60bfcf58daaa2d1a5b700b0366ce52be666445007351461fa4"
+  url "https://files.pythonhosted.org/packages/6d/d4/70a265e4bcd43e97480ae62da69396ef4507c8f9cfd179005ee731c92a04/pymupdf-1.26.3.tar.gz"
+  sha256 "b7d2c3ffa9870e1e4416d18862f5ccd356af5fe337b4511093bbbce2ca73b7e5"
   license "AGPL-3.0-only"
   revision 1
 
   bottle do
-    sha256 cellar: :any,                 arm64_sequoia: "3c35b2247d386b64fec494fc39172c86e475fc6f48623a42877e48e8ef1380aa"
-    sha256 cellar: :any,                 arm64_sonoma:  "62d9f3ed691a0c3c7d1afda4a5895b1d5b9db977495de61c95050260a70b8407"
-    sha256 cellar: :any,                 arm64_ventura: "cd388aa0c4f41485ab79902755f07af3a4c46b44c5a1875092966fb996d74e28"
-    sha256 cellar: :any,                 sonoma:        "31eb1223223fa179150571a184357dd9d4df2559e6c7f6dd73fd85bc446c213f"
-    sha256 cellar: :any,                 ventura:       "2b8d209d365e21a73b590df712cfacdf8662fb1e11bbfa08aae2fa8d481721f2"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "ef9fb6c06b5681ab77e49864665db079a0e4f3a4cd953a6474eb05edc67762a4"
+    sha256 cellar: :any,                 arm64_sequoia: "e78c1756ed0faa12cbf9f07c8a0097d611904e551c6a611d43bea193419cd304"
+    sha256 cellar: :any,                 arm64_sonoma:  "c57d533044a876f174abe58aa0aa1432628f208cd6be601c5eb70cf03218932b"
+    sha256 cellar: :any,                 arm64_ventura: "15f18b50f2d2a48b89094a24226ba572485832927bedba9dc673e1b8bd144b85"
+    sha256 cellar: :any,                 sonoma:        "b208383e541c46fd060247651f0bd7d6d165abe3ce3582a6992339e48d346b5e"
+    sha256 cellar: :any,                 ventura:       "4e31734f24e27e75fb13f10e7ce93c32f551938608026d198395027766eade7b"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "2b9d4e47397f940f7ac5dea1b27779254828bc8f30aacd89cbd7a37e9947cbec"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "dba560a067a0f5a8498412d81506f622ac849cc179afb84c516571743bb1da8a"
   end
 
   depends_on "freetype" => :build
   depends_on "python-setuptools" => :build
   depends_on "swig" => :build
   depends_on "mupdf"
-  depends_on "python@3.12"
+  depends_on "python@3.13"
 
   def python3
-    "python3.12"
+    "python3.13"
   end
 
   def install
@@ -57,6 +58,6 @@ class Pymupdf < Formula
     out_png = testpath/"test.png"
 
     system python3, testpath/"test.py", in_pdf, out_png
-    assert_predicate out_png, :exist?
+    assert_path_exists out_png
   end
 end

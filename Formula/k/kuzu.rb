@@ -1,18 +1,19 @@
 class Kuzu < Formula
   desc "Embeddable graph database management system built for query speed & scalability"
   homepage "https://kuzudb.com/"
-  url "https://github.com/kuzudb/kuzu/archive/refs/tags/v0.6.1.tar.gz"
-  sha256 "00bbcae4bd47cdb02c4e23de99188312b6478d5f0a2b64a2d48ea24b239a9704"
+  url "https://github.com/kuzudb/kuzu/archive/refs/tags/v0.11.1.tar.gz"
+  sha256 "479a9943ad9db3b9a28925438c05563a00e7eb72eaeff07ca21b9d3378069eb7"
   license "MIT"
   head "https://github.com/kuzudb/kuzu.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any,                 arm64_sequoia: "218768d818535a97c4d8977dcc386230b81aa757ab816c56afcd2eacdebc1a26"
-    sha256 cellar: :any,                 arm64_sonoma:  "0ea525fc338d0e87b7e49106553670ec0cefa019636f20c3c6e196ae6d001a56"
-    sha256 cellar: :any,                 arm64_ventura: "db3249db98c1f4da40d12b8d9e375d915b695e7059abcc73ba8d94558c411528"
-    sha256 cellar: :any,                 sonoma:        "aa71a7edf5e60da807b58a373cd126d73859f0c39531e945ff3e1e6fd6c8f630"
-    sha256 cellar: :any,                 ventura:       "29ada93bbd297e594fb55397765fef8cbd2568a2eb904182bbdae21f0a115ef5"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "d05b91c67ba816085a1cc5d76bb6b6df3274d37f267299854bcb61ae51e803ec"
+    sha256 cellar: :any,                 arm64_sequoia: "94608aca4d744e3536a11933e8ea3cf7381aa3220eaae7bb9ec3fe9ffe467467"
+    sha256 cellar: :any,                 arm64_sonoma:  "50459e3361e69c0e46f16866e5b58f798ea626e3c7f2f4af1ebbdd471d502ff5"
+    sha256 cellar: :any,                 arm64_ventura: "51e100c08dd1f38764cb16abb16a9ea27f87576cd527511942d797dadb978174"
+    sha256 cellar: :any,                 sonoma:        "dae30f4dceec817bd02b1143e7ba0fc4aba0f6d3b4a62886c38a668f4fb49eea"
+    sha256 cellar: :any,                 ventura:       "d92b394ecef03c0de03400922a73e86ece84b1c27824952e5a1b3f9794d2cbe1"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "f6fa4fa217f1bf64383b991ec183016445b001a6151de2e1708ce95ebaccc4e5"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "9bafad12c8ec515a0ea73275ee2b034609682dec2661e6355d42bf2a16435826"
   end
 
   depends_on "cmake" => :build
@@ -23,14 +24,18 @@ class Kuzu < Formula
     depends_on "llvm" if DevelopmentTools.clang_build_version <= 1400
   end
 
+  on_linux do
+    depends_on "gcc@12" if DevelopmentTools.gcc_version("/usr/bin/gcc") < 12
+  end
+
   fails_with :clang do
     build 1400
     cause "Requires C++20"
   end
 
   fails_with :gcc do
-    version "9"
-    cause "Requires C++20"
+    version "11"
+    cause "needs GCC 12 or newer"
   end
 
   def install
@@ -53,7 +58,7 @@ class Kuzu < Formula
   end
 
   test do
-    db_path = testpath/"testdb/"
+    db_path = testpath/"testdb.kuzu"
     cypher_path = testpath/"test.cypher"
     cypher_path.write <<~EOS
       CREATE NODE TABLE Person(name STRING, age INT64, PRIMARY KEY(name));

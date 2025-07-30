@@ -1,41 +1,45 @@
 class Manticoresearch < Formula
   desc "Open source text search engine"
   homepage "https://manticoresearch.com"
-  url "https://github.com/manticoresoftware/manticoresearch/archive/refs/tags/6.3.6.tar.gz"
-  sha256 "d0409bde33f4fe89358ad7dbbad775e1499d4e61fed16d4fa84f9b29b89482d2"
+  url "https://github.com/manticoresoftware/manticoresearch/archive/refs/tags/10.1.4.tar.gz"
+  sha256 "d655c8a51a87d2a673bd6c0ffdd0b545f1a404a6fb09eb65da764bd0c51b430f"
   license all_of: [
     "GPL-3.0-or-later",
     "GPL-2.0-only", # wsrep
     { "GPL-2.0-only" => { with: "x11vnc-openssl-exception" } }, # galera
     { any_of: ["Unlicense", "MIT"] }, # uni-algo (our formula is too new)
   ]
-  revision 3
   version_scheme 1
   head "https://github.com/manticoresoftware/manticoresearch.git", branch: "master"
 
-  # Only even patch versions are stable releases
+  # There can be a notable gap between when a version is tagged and a
+  # corresponding release is created, so we check the "latest" release instead
+  # of the Git tags. The upstream version scheme uses an even-numbered patch to
+  # indicate stable versions.
   livecheck do
     url :stable
     regex(/^v?(\d+(?:\.\d+)+\.\d*[02468])$/i)
+    strategy :github_latest
   end
 
   bottle do
-    sha256 arm64_sequoia: "92c7e1e0a2460bf6a162cc8b2538b480e4d459e094b012416721f533409fcb41"
-    sha256 arm64_sonoma:  "7fca603aa14ede68b1250ee2682fc4f2566bb2dd7cd8e28d19d1bd2af4a0d920"
-    sha256 arm64_ventura: "3967ad2018ad828025d507b82c54e77793fdd929858127ebcff047b6fdf95b3e"
-    sha256 sonoma:        "a18224ed44c2c3c7fbf3b22dee6a2094ce5bb8872843598d75439a02dddd178d"
-    sha256 ventura:       "075d222eb10a8267ce03cfa1db387fd87e7b75894ff2b5d028ff00d839c986e5"
-    sha256 x86_64_linux:  "9d015d69fc39acb3abf55b7502b7d89a29ab1f288a9c8b3aef3c117ae96882a3"
+    sha256 arm64_sequoia: "1f87fc89a3c8103e9205aa32bf0ce4918499b2e03162257c8658f152ba5019d9"
+    sha256 arm64_sonoma:  "71b5b349c90b1fda6442ff399de8f8b75584a905084141721a15e9f48a9bf5b4"
+    sha256 arm64_ventura: "217874dc0d579a528b286dc5a65e428eb02776fd945f927a991bec994eed7a97"
+    sha256 sonoma:        "8b97c5cfd16d40cf2019c5b75de97515acf68f7515f9ac6f1697a9e5ec2f7058"
+    sha256 ventura:       "0487bb6119fa68b1d05c25eb4978b8f4ca95a332eb1e60aa5376b78f150aa5f0"
+    sha256 arm64_linux:   "6b3aab2fc8f83985f769b1325c87b97ec41278078dab181c61b2e56aec9894dd"
+    sha256 x86_64_linux:  "bdbbac0799c487f1dcd7f333221723e356ece124940b117b4aede39502270054"
   end
 
-  depends_on "boost" => :build
   depends_on "cmake" => :build
   depends_on "nlohmann-json" => :build
   depends_on "snowball" => :build # for libstemmer.a
 
   # NOTE: `libpq`, `mariadb-connector-c`, `unixodbc` and `zstd` are dynamically loaded rather than linked
+  depends_on "boost"
   depends_on "cctz"
-  depends_on "icu4c@76"
+  depends_on "icu4c@77"
   depends_on "libpq"
   depends_on "mariadb-connector-c"
   depends_on "openssl@3"
@@ -51,9 +55,8 @@ class Manticoresearch < Formula
   uses_from_macos "zlib"
 
   def install
-    # Work around error when building with GCC
-    # Issue ref: https://github.com/manticoresoftware/manticoresearch/issues/2393
-    ENV.append_to_cflags "-fpermissive" if OS.linux?
+    # Avoid statically linking to boost
+    inreplace "src/CMakeLists.txt", "set ( Boost_USE_STATIC_LIBS ON )", "set ( Boost_USE_STATIC_LIBS OFF )"
 
     ENV["ICU_ROOT"] = deps.find { |dep| dep.name.match?(/^icu4c(@\d+)?$/) }
                           .to_formula.opt_prefix.to_s

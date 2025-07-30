@@ -1,8 +1,8 @@
 class Gtk4 < Formula
   desc "Toolkit for creating graphical user interfaces"
   homepage "https://gtk.org/"
-  url "https://download.gnome.org/sources/gtk/4.16/gtk-4.16.5.tar.xz"
-  sha256 "302d6813fbed95c419fb3ab67c5da5e214882b6a645c3eab9028dfb91ab418a4"
+  url "https://download.gnome.org/sources/gtk/4.18/gtk-4.18.6.tar.xz"
+  sha256 "e1817c650ddc3261f9a8345b3b22a26a5d80af154630dedc03cc7becefffd0fa"
   license "LGPL-2.1-or-later"
 
   livecheck do
@@ -11,12 +11,13 @@ class Gtk4 < Formula
   end
 
   bottle do
-    sha256 arm64_sequoia: "d09b632449c02e758422d1b02b9afcb0a6090e3669017b8aa0336cf59de4ca7a"
-    sha256 arm64_sonoma:  "9ee780effa65ac8aeb5a0e3d4352ac4a2fb164207e6bce98f906f45fe9f1651a"
-    sha256 arm64_ventura: "0bb7950f030ccaa97288b910371563db7efbe98f5fd9f05fde24f7be1a806d5d"
-    sha256 sonoma:        "8fe9f40d3f90344b3cb57e59d6355019da76f0c9f90414a960dcf8899a4c7dde"
-    sha256 ventura:       "23ff5a36956d5d8ec4906ed59f74f1d1e75b5b12a1c0f54713940371fafbf2c3"
-    sha256 x86_64_linux:  "36d41dcc66b975324ad8de49dc20ac481723ffb2bfb8427d40b5445ef86d006c"
+    sha256 arm64_sequoia: "b72bcfe23c0c3ed715104011d1ce64c3319d5622d865deed12ced1301235e390"
+    sha256 arm64_sonoma:  "00ac922a51a44760b8e173d65c4d4d242ecd64c184c792960d3ea096e7c7ca4d"
+    sha256 arm64_ventura: "1bbdc7c5e7503fd87da7a80c9837fae20e808d6972e9365474e5698d6e92593d"
+    sha256 sonoma:        "c6d5332c109e20858dbc303a9739e64775097bdd314ee8c2ac69cac4c203d3db"
+    sha256 ventura:       "61eda2e398e66a6da9e3a98b0c4355326ae177f9a5b4630de7baabb0111613a1"
+    sha256 arm64_linux:   "424258e9adb8efd15479cee247c49ad32997f32ce3d2186565c4fb9bf1cbe1a4"
+    sha256 x86_64_linux:  "a4cb82b9dd6eabc799878558de6e51026431d9eed3dbf273a9d44fad2369d8bc"
   end
 
   depends_on "docbook" => :build
@@ -26,7 +27,7 @@ class Gtk4 < Formula
   depends_on "gobject-introspection" => :build
   depends_on "meson" => :build
   depends_on "ninja" => :build
-  depends_on "pkg-config" => [:build, :test]
+  depends_on "pkgconf" => [:build, :test]
   depends_on "sassc" => :build
   depends_on "cairo"
   depends_on "fontconfig"
@@ -50,6 +51,7 @@ class Gtk4 < Formula
   end
 
   on_linux do
+    depends_on "wayland-protocols" => :build
     depends_on "libx11"
     depends_on "libxcursor"
     depends_on "libxdamage"
@@ -108,7 +110,7 @@ class Gtk4 < Formula
       }
     C
 
-    flags = shell_output("#{Formula["pkg-config"].opt_bin}/pkg-config --cflags --libs gtk4").strip.split
+    flags = shell_output("#{Formula["pkgconf"].opt_bin}/pkgconf --cflags --libs gtk4").strip.split
     system ENV.cc, "test.c", "-o", "test", *flags
     system "./test"
     # include a version check for the pkg-config files

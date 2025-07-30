@@ -1,8 +1,9 @@
 class Got < Formula
   desc "Version control system"
   homepage "https://gameoftrees.org/"
-  url "https://gameoftrees.org/releases/portable/got-portable-0.104.tar.gz"
-  sha256 "b32d787920bc497521395a06beb07d7f4f92b693795863224b6049d3d669c8c9"
+  url "https://gameoftrees.org/releases/portable/got-portable-0.116.tar.gz"
+  mirror "https://pkg.freebsd.org/ports-distfiles/got-portable-0.116.tar.gz"
+  sha256 "e8a64ad73b82c1b6df9df9da5a3e8da9be6051c3497379940806878d958e4dff"
   license "ISC"
 
   livecheck do
@@ -10,17 +11,20 @@ class Got < Formula
     regex(/href=.*?got-portable[._-]v?(\d+(?:\.\d+)+)\.t/i)
   end
 
+  no_autobump! because: "GitHub runners are not abile to access the homepage or livecheck URL"
+
   bottle do
-    sha256 arm64_sequoia: "7818e57f951bdd67cd26a4b21c7a22ba0edfa492a69263e456dfb5fe05660970"
-    sha256 arm64_sonoma:  "dc2ec80cb143e0909bb35b8bfbb3c8792b43dbb36bad841425843ce9270039fa"
-    sha256 arm64_ventura: "b39177c3e8ece5df54dd6d0bf43bcb2fc9af0bbf534b878d1585da4a3e4cb16d"
-    sha256 sonoma:        "8c7c0ace814d901b696cb03f491b5e3370fb73e8e07b4c8b8cbd5bc89566d9a8"
-    sha256 ventura:       "b076d16a85ec85fd5313faa58c0c78e10260bcd7bbdbafdf025b875b01792eb2"
-    sha256 x86_64_linux:  "6301ef138d880df53e9f559e37bf6b525dd51b8e88e0d5cbb599f2ca8ef05e41"
+    sha256 arm64_sequoia: "de57fc967046ef9aa8fcc1581fe067be0a6ec7b895440b0f667fd783fa0b00d0"
+    sha256 arm64_sonoma:  "9b069ff44e0c2074c2f5d76721be9e79372a44a00a224af6e5ee65cb35adb966"
+    sha256 arm64_ventura: "43be5204391ef038514cb4b9f9487f702682684c6a2a279a907f1117c03664a0"
+    sha256 sonoma:        "bdb0a4a82ab4ca5f0c8f460c3455faeedad98ce47881d48c0697521fd95d17fe"
+    sha256 ventura:       "d70ca44d45431f178f2c819f47c4a4e742b298fb4fa13edf08137c069b78ac3b"
+    sha256 arm64_linux:   "cae4c358d8561930c546d80735c9d66cfdba7e4ba10df83ff7f0c97f3ec2a53c"
+    sha256 x86_64_linux:  "8ba714da3bc588f0955fca0d6eb21b12b24ac92ebaacc12ac6da76b56e68fe68"
   end
 
   depends_on "bison" => :build
-  depends_on "pkg-config" => :build
+  depends_on "pkgconf" => :build
   depends_on "libevent"
   depends_on "libretls"
   depends_on "ncurses"

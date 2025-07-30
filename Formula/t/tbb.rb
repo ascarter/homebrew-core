@@ -1,21 +1,22 @@
 class Tbb < Formula
   desc "Rich and complete approach to parallelism in C++"
-  homepage "https://github.com/oneapi-src/oneTBB"
-  url "https://github.com/oneapi-src/oneTBB/archive/refs/tags/v2022.0.0.tar.gz"
-  sha256 "e8e89c9c345415b17b30a2db3095ba9d47647611662073f7fbf54ad48b7f3c2a"
+  homepage "https://uxlfoundation.github.io/oneTBB/"
+  url "https://github.com/uxlfoundation/oneTBB/archive/refs/tags/v2022.2.0.tar.gz"
+  sha256 "f0f78001c8c8edb4bddc3d4c5ee7428d56ae313254158ad1eec49eced57f6a5b"
   license "Apache-2.0"
 
   bottle do
-    sha256 cellar: :any,                 arm64_sequoia: "38fdf780cbe726dfd23dc3f44a8404e493dd15a25f789192eb07078c424315b8"
-    sha256 cellar: :any,                 arm64_sonoma:  "395ce725fdf9f2729a6dfc987bfbd6593252c3052e93ec739d8b2f28b257214b"
-    sha256 cellar: :any,                 arm64_ventura: "c2d23d00a088900e6d6ec91a75ec2f3b972740790ef4156ac28cbbf4d187f3a4"
-    sha256 cellar: :any,                 sonoma:        "a273e031b766bc13c5203afd089a92a97147bd6ffe9eccc8c4b11b58e69b4d8e"
-    sha256 cellar: :any,                 ventura:       "fed7b2e7350ce93f50338acaa44258efd637800f97eae90af0fad84533d848fa"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "92e0fbee4d1f60809fb238ccaf5bd89a9b97c08afc93378f083dace474521ef4"
+    sha256 cellar: :any,                 arm64_sequoia: "3b3c683a03e8a36fe8a7a1f81b5e6efa99ca1009f2a173e4b79434406fb03f82"
+    sha256 cellar: :any,                 arm64_sonoma:  "886ab9f80b9249e368b0fcb51df91455511ae704e827e93e8a2c754eea1fcbbd"
+    sha256 cellar: :any,                 arm64_ventura: "c4f1908b707ba164fa3b201ddf35f89bb68b47e596b7a46fae7703b5c375385a"
+    sha256 cellar: :any,                 sonoma:        "1e37bd0a4c1f15bd70b6dd3a5f6b5e8a9f0c125e3b3f2c4cac34add223c0012f"
+    sha256 cellar: :any,                 ventura:       "e7d62cedf1b21d60db21e3231618d0bbe3841b8595b9d0bd1080143a5f3ada9e"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "1a1b53293d7258979168c25c5fb44ad37605186dcc3f4429fd9860520ad73682"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "fdf49a4964c676f0d74e632b0c7e1ea4c2005db4e6fee0c0ddfa9441fcf9f107"
   end
 
   depends_on "cmake" => :build
-  depends_on "pkg-config" => :build
+  depends_on "pkgconf" => :build
   depends_on "python-setuptools" => :build
   depends_on "python@3.13" => [:build, :test]
   depends_on "swig" => :build
@@ -36,22 +37,21 @@ class Tbb < Formula
     tbb_site_packages = prefix/site_packages/"tbb"
     ENV.append "LDFLAGS", "-Wl,-rpath,#{rpath},-rpath,#{rpath(source: tbb_site_packages)}"
 
-    args = %w[
+    args = %W[
       -DTBB_TEST=OFF
       -DTBB4PY_BUILD=ON
+      -DPYTHON_EXECUTABLE=#{which(python3)}
     ]
 
     system "cmake", "-S", ".", "-B", "build/shared",
                     "-DBUILD_SHARED_LIBS=ON",
                     "-DCMAKE_INSTALL_RPATH=#{rpath}",
-                    "-DPYTHON_EXECUTABLE=#{which(python3)}",
                     *args, *std_cmake_args
     system "cmake", "--build", "build/shared"
     system "cmake", "--install", "build/shared"
 
     system "cmake", "-S", ".", "-B", "build/static",
                     "-DBUILD_SHARED_LIBS=OFF",
-                    "-DPYTHON_EXECUTABLE=#{which(python3)}",
                     *args, *std_cmake_args
     system "cmake", "--build", "build/static"
     lib.install buildpath.glob("build/static/*/libtbb*.a")
@@ -75,7 +75,7 @@ class Tbb < Formula
       }
     CPP
 
-    system ENV.cxx, "cores-types.cpp", "--std=c++14", "-DTBB_PREVIEW_TASK_ARENA_CONSTRAINTS_EXTENSION=1",
+    system ENV.cxx, "cores-types.cpp", "-std=c++14", "-DTBB_PREVIEW_TASK_ARENA_CONSTRAINTS_EXTENSION=1",
                                       "-L#{lib}", "-ltbb", "-o", "core-types"
     system "./core-types"
 
@@ -104,7 +104,7 @@ class Tbb < Formula
       }
     CPP
 
-    system ENV.cxx, "sum1-100.cpp", "--std=c++14", "-L#{lib}", "-ltbb", "-o", "sum1-100"
+    system ENV.cxx, "sum1-100.cpp", "-std=c++14", "-L#{lib}", "-ltbb", "-o", "sum1-100"
     assert_equal "5050", shell_output("./sum1-100").chomp
 
     system python3, "-c", "import tbb"

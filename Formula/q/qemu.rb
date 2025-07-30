@@ -1,8 +1,8 @@
 class Qemu < Formula
   desc "Generic machine emulator and virtualizer"
   homepage "https://www.qemu.org/"
-  url "https://download.qemu.org/qemu-9.1.1.tar.xz"
-  sha256 "7dc0f9da5491ff449500f3310063a36b619f236ee45706fd0846eb37d4bba889"
+  url "https://download.qemu.org/qemu-10.0.3.tar.xz"
+  sha256 "5c891267b1534a774465db8b1a0dfcb0c5e6d7ecb6f71345625adf4e0889945b"
   license "GPL-2.0-only"
   head "https://gitlab.com/qemu-project/qemu.git", branch: "master"
 
@@ -12,18 +12,20 @@ class Qemu < Formula
   end
 
   bottle do
-    sha256 arm64_sequoia: "4164411ddffba25e2640b896ee5c0c9d02dd17cd99b5488a992413f060dd6f26"
-    sha256 arm64_sonoma:  "0f3764292c3cf30b0f5b2c8636768feade7c733a8b61beea8109fa1ef7df86cd"
-    sha256 arm64_ventura: "ce0c8e9515e633976b053008d81d6bc00a2d414ce8b4db9f09a1334e292dd8e0"
-    sha256 sonoma:        "5a27f6e005e2628477cb4a3e6814d9af0f39acb7715c300a7d9e1e6b06fac255"
-    sha256 ventura:       "9a9dcb188db0e6706d5a200df9a76411f09fe4bf445da54512010d15de3527f1"
-    sha256 x86_64_linux:  "f123c277c416078a5373541fd1e1ead3fbf54e1dded03f32b27682da75821d3d"
+    sha256 arm64_sequoia: "96b93973c0525c02ec320fd8eb68e025df78e163a61a123cccc0e36fb6d930d0"
+    sha256 arm64_sonoma:  "9720c3451756690fc0c6badb11c91f1fdd2b56478f974b3c39ee71b54142769e"
+    sha256 arm64_ventura: "3b9b67ba44f4423fdd5ba8b2e3bd05456311d41f4ab75f0fa0fce8fa6e044076"
+    sha256 sonoma:        "7878e6ef873bf16d8e1562827078f241ca6d9d91cb3dbe0cf6bc2e6749622267"
+    sha256 ventura:       "751aed2fc380765f2f215609cc93c7cfbf36d3fdd7dabc3ce43190bc7036f01d"
+    sha256 arm64_linux:   "c4ecf3a83cd7dd84e9a3c3284cd964781c88f8c02bee9018504303e0a85bb17b"
+    sha256 x86_64_linux:  "23463ce5924fbe47ef4c237bb7279eae5f2d8d36f72e068b56945fdd2e4c6c50"
   end
 
   depends_on "libtool" => :build
   depends_on "meson" => :build
   depends_on "ninja" => :build
-  depends_on "pkg-config" => :build
+  depends_on "pkgconf" => :build
+  depends_on "python@3.13" => :build # keep aligned with meson
   depends_on "spice-protocol" => :build
 
   depends_on "capstone"
@@ -62,16 +64,20 @@ class Qemu < Formula
     depends_on "systemd"
   end
 
-  fails_with gcc: "5"
-
   def install
     ENV["LIBTOOL"] = "glibtool"
+
+    # Remove wheels unless explicitly permitted. Currently this:
+    # * removes `meson` so that brew `meson` is always used
+    # * keeps `pycotap` which is a pure-python "none-any" wheel (allowed in homebrew/core)
+    rm(Dir["python/wheels/*"] - Dir["python/wheels/pycotap-*-none-any.whl"])
 
     args = %W[
       --prefix=#{prefix}
       --cc=#{ENV.cc}
       --host-cc=#{ENV.cc}
       --disable-bsd-user
+      --disable-download
       --disable-guest-agent
       --enable-slirp
       --enable-capstone
@@ -104,13 +110,14 @@ class Qemu < Formula
 
   test do
     # 820KB floppy disk image file of FreeDOS 1.2, used to test QEMU
+    # NOTE: Keep outside test block so that `brew fetch` is able to handle slow download/retries
     resource "homebrew-test-image" do
       url "https://www.ibiblio.org/pub/micro/pc-stuff/freedos/files/distributions/1.2/official/FD12FLOPPY.zip"
       sha256 "81237c7b42dc0ffc8b32a2f5734e3480a3f9a470c50c14a9c4576a2561a35807"
     end
 
     archs = %w[
-      aarch64 alpha arm avr cris hppa i386 loongarch64 m68k microblaze microblazeel mips
+      aarch64 alpha arm avr hppa i386 loongarch64 m68k microblaze microblazeel mips
       mips64 mips64el mipsel or1k ppc ppc64 riscv32 riscv64 rx
       s390x sh4 sh4eb sparc sparc64 tricore x86_64 xtensa xtensaeb
     ]

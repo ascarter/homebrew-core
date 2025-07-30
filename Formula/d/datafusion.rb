@@ -1,18 +1,19 @@
 class Datafusion < Formula
   desc "Apache Arrow DataFusion and Ballista query engines"
   homepage "https://arrow.apache.org/datafusion"
-  url "https://github.com/apache/arrow-datafusion/archive/refs/tags/43.0.0.tar.gz"
-  sha256 "a873124503ab5182dd3c00db52ed7bae29d09f72900442aaeff7854bfe8600fd"
+  url "https://github.com/apache/datafusion/archive/refs/tags/49.0.0.tar.gz"
+  sha256 "1781d74320cbd7ac6fcf2f6bde5fa893b3f207c1d9564a37a6cb5b72453d040d"
   license "Apache-2.0"
-  head "https://github.com/apache/arrow-datafusion.git", branch: "master"
+  head "https://github.com/apache/datafusion.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "51818452ee82d9f0bf9f3a5d8c65de55a82f82080d6aacb6900059b8fb3b99b2"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "18499f56ec85f8cbb05467b2c363e3437b1131f5e35709c83cea7805804159d7"
-    sha256 cellar: :any_skip_relocation, arm64_ventura: "614dbc21c07b982fb51caf29a09b3994a81cc9618c722c82cb6ba16483a703fe"
-    sha256 cellar: :any_skip_relocation, sonoma:        "e61485922e624d4bba37e0b281f6ea7dfec83b127bf6a181bb3c10ea4939904b"
-    sha256 cellar: :any_skip_relocation, ventura:       "3dce564739a041b3afddc7ef6f1c17a8d4487a79eb77f8d12de142324a7d0412"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "a5f938d6ef13440075905b1d3a214667f75846a9e78a1ead4238f8f60e5a0a91"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "ac5488f0a0e25f7fe964c30f6fa568808ed2c3024964ae956fabacdd523bb4a0"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "f512d3d4c361f41d85f7df7d21dfbca83030456cd6ebd6e13dab5f2c7ee67f32"
+    sha256 cellar: :any_skip_relocation, arm64_ventura: "bb5cebe1928a699e4ac7ab7488b99e14e78e681de607711b6a041fac5cf7fa44"
+    sha256 cellar: :any_skip_relocation, sonoma:        "c65e63ddae1524d75e36979b7271403dda90f3c0e920fef3f75f67969fa84f41"
+    sha256 cellar: :any_skip_relocation, ventura:       "8019e4a19621ec94e9d49082f59a2a01b2d66110e6b06bed90f885d4f468c1e3"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "3362e86d1fe1b29fd6fd173481ccc488d1907a0107b95c824d1fea52561df843"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "4262e53110bb3cc4cefcd47436c14ba375938dc92bb44610d7b123c0e579db9c"
   end
 
   depends_on "rust" => :build
@@ -22,7 +23,9 @@ class Datafusion < Formula
   end
 
   test do
-    (testpath/"datafusion_test.sql").write("select 1+2 as n;")
+    (testpath/"datafusion_test.sql").write <<~SQL
+      select 1+2 as n;
+    SQL
     assert_equal "[{\"n\":3}]", shell_output("#{bin}/datafusion-cli -q --format json -f datafusion_test.sql").strip
   end
 end

@@ -1,18 +1,19 @@
 class Wangle < Formula
   desc "Modular, composable client/server abstractions framework"
   homepage "https://github.com/facebook/wangle"
-  url "https://github.com/facebook/wangle/archive/refs/tags/v2024.11.11.00.tar.gz"
-  sha256 "62b68cb8da30195fb970118167379ecdb39f94e4dd405596bb293c3bccbbe166"
+  url "https://github.com/facebook/wangle/archive/refs/tags/v2025.07.28.00.tar.gz"
+  sha256 "9e18b2edcb4051c3acfdf153c79440b9aa23e5cf1fd277811b35f227184a6139"
   license "Apache-2.0"
   head "https://github.com/facebook/wangle.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any,                 arm64_sequoia: "8a8b592373a690916c88c18c0b49e88d3f0582b5e944b951f6666b7798df3ebb"
-    sha256 cellar: :any,                 arm64_sonoma:  "59ff5b6de005159b1a4f82dc281353fef98848c202bdf715e200fbffc6f8bb08"
-    sha256 cellar: :any,                 arm64_ventura: "66a26bf3298f4138e09d89592dd3f78edfbaad3dfbb980cb10740c16e561df93"
-    sha256 cellar: :any,                 sonoma:        "379a9dbfb976ebd711ec88fc9529f3138192c28002af62d4222d96be58c82a37"
-    sha256 cellar: :any,                 ventura:       "02b838b00e41a9b34dcc7a7e64dbe465c7f4297fa14b98f6514d6f674f170c1d"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "902dfb7ce80cd75841d55f0463a7fd34a00e73bade605b340abb027a40ff0ca6"
+    sha256 cellar: :any,                 arm64_sequoia: "ef3dd8de561c2fdc95696069648e139c98bce3bf126e3f11f2eb187d1a34b525"
+    sha256 cellar: :any,                 arm64_sonoma:  "2e51464c403589a3d8dc0ee344eb44ff880ea8230d5f0b73033858d3b6f3693a"
+    sha256 cellar: :any,                 arm64_ventura: "167b20e76759c989c817e79aab935fd310ae325b00578eaf21c04a6d7d343af2"
+    sha256 cellar: :any,                 sonoma:        "663758efc501c9eef7c2f5af14a9e3535bc7cda3d821cd72643994bd13ab4cc1"
+    sha256 cellar: :any,                 ventura:       "20332f6618554883fd358580361db26032ffcded61dd8d82e3116cc94d5f5c1a"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "ccc1bcc1e1490edd57d5ef59fdc4d06af340c433c328e8c5db7d09a42b0e6c85"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "86b9f2e3a26b2be61dcecf5f58196362781e387582afe7f9434fdcf90fa08bbf"
   end
 
   depends_on "cmake" => [:build, :test]
@@ -27,8 +28,6 @@ class Wangle < Formula
   depends_on "openssl@3"
   depends_on "zstd"
   uses_from_macos "bzip2"
-
-  fails_with gcc: "5"
 
   def install
     args = ["-DBUILD_TESTS=OFF"]
@@ -72,16 +71,16 @@ class Wangle < Formula
     CMAKE
 
     ENV.delete "CPATH"
-    system "cmake", ".", "-DCMAKE_MODULE_PATH=#{testpath}/cmake", "-Wno-dev"
-    system "cmake", "--build", "."
+    system "cmake", "-S", ".", "-B", "build", "-DCMAKE_MODULE_PATH=#{testpath}/cmake", "-Wno-dev"
+    system "cmake", "--build", "build"
 
     port = free_port
-    fork { exec testpath/"EchoServer", "-port", port.to_s }
+    fork { exec testpath/"build/EchoServer", "-port", port.to_s }
     sleep 30
 
     require "pty"
     output = ""
-    PTY.spawn(testpath/"EchoClient", "-port", port.to_s) do |r, w, pid|
+    PTY.spawn(testpath/"build/EchoClient", "-port", port.to_s) do |r, w, pid|
       w.write "Hello from Homebrew!\nAnother test line.\n"
       sleep 60
       Process.kill "TERM", pid

@@ -1,17 +1,18 @@
 class Quantlib < Formula
   desc "Library for quantitative finance"
   homepage "https://www.quantlib.org/"
-  url "https://github.com/lballabio/QuantLib/releases/download/v1.36/QuantLib-1.36.tar.gz"
-  sha256 "a0eff3d420cc26c21ab8e55d3fd169448abe631a0fbc9f528a6ac444227824fa"
+  url "https://github.com/lballabio/QuantLib/releases/download/v1.39/QuantLib-1.39.tar.gz"
+  sha256 "0126dac9fab908ca3df411ec8eb888ea1932c1044b1036d6df2f8159451fb700"
   license "BSD-3-Clause"
 
   bottle do
-    sha256 cellar: :any,                 arm64_sequoia: "582ac61a2c62b15be5b6384f1bae16e25108c8ff826b6109139354669e5a31eb"
-    sha256 cellar: :any,                 arm64_sonoma:  "c449fb9bd249c3bc6dfe9bbfbb8a07a8223e875e74a666849b286e9887abbc93"
-    sha256 cellar: :any,                 arm64_ventura: "bd9a462fc529da886edc64e788862958826f3792738bd1ad9996513841b9e1cf"
-    sha256 cellar: :any,                 sonoma:        "826ca8c59eab8a54e9c03a68fa9b77ec8bf6f85b6abd10cd772392cbbb3ad739"
-    sha256 cellar: :any,                 ventura:       "0726cb0d7dad1a8418a7b1fda8d699868445adc670a058388b7df7cd433d134b"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "ac8effc67b3054d9b5c03c9c4426f7dcb350b4fdccc142ff67994e2d4ae9540c"
+    sha256 cellar: :any,                 arm64_sequoia: "d20a534cfeefb7cea299f6292240c2f9c438aca166fd0f45e1d5ceaa2c0afd44"
+    sha256 cellar: :any,                 arm64_sonoma:  "9466a42e1ad25b969fcf07a4ea0972087c5b4bf4ed29240cb8e880270b27317c"
+    sha256 cellar: :any,                 arm64_ventura: "f9b1575dcfbd307f0030c5b61ca5d9d26c9ae4caa9fcbaa0bb66f8dd3cb13d8a"
+    sha256 cellar: :any,                 sonoma:        "2ecba83bf974eb035eb4614e57a22569f1c86ec56663935bde2b59663610ef76"
+    sha256 cellar: :any,                 ventura:       "b700520b6e3d5e06369109767ba795e6dae937c5c43680a8c3f68687bbfe6b83"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "22f1eb26c69d559b72a750464ce7e3c3cedec7343341f8b31ef67b7347e4c4b5"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "dd80e282e117da82507ef4070ace0bd46ff5428d919313017c37dc6f7162f0a0"
   end
 
   head do

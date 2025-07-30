@@ -1,9 +1,8 @@
 class Zeek < Formula
   desc "Network security monitor"
-  homepage "https://www.zeek.org"
-  url "https://github.com/zeek/zeek.git",
-      tag:      "v7.0.3",
-      revision: "7a73f817929b72b8c7acf697bf52b7267606a207"
+  homepage "https://zeek.org/"
+  url "https://github.com/zeek/zeek/releases/download/v7.2.2/zeek-7.2.2.tar.gz"
+  sha256 "2b1df248f94199a1684e1c460d64cf1c5e49d7471c2b562f942ac5fbe9805893"
   license "BSD-3-Clause"
   head "https://github.com/zeek/zeek.git", branch: "master"
 
@@ -13,13 +12,13 @@ class Zeek < Formula
   end
 
   bottle do
-    rebuild 1
-    sha256 arm64_sequoia: "ce92ee784b8b302175a1f29e31fc292cf7fef775fa506ee78fadf3f45b759177"
-    sha256 arm64_sonoma:  "d5b8f011c59888ac864fe9b0c4be5a30d0d0b9817df178bb524e1062ddcd289c"
-    sha256 arm64_ventura: "21efb12b934dc15638b60052ef638c1ed1c1aaf9809bfab0c76177b4591076dd"
-    sha256 sonoma:        "99f4c4cbacb50db354127e5d9e46f17d7288b02d9ee6893060e49976a0353af5"
-    sha256 ventura:       "b4c634b6c6da782915437cbad88432169b83c5057275331101752de234be418e"
-    sha256 x86_64_linux:  "e96efe18a7ad36db69d738674573f55d177e61ef5883ac9d17851b32c7a2f83a"
+    sha256 arm64_sequoia: "8cefa76cf846d5988dce878225bff84fac29f2bccc4d37317b635a6019a9a76c"
+    sha256 arm64_sonoma:  "2b2576853fc45189373fb6acb6092975e3052cd06ae82828e676771307c7a369"
+    sha256 arm64_ventura: "89d2a18a83e55a9988fe7ebe2c232364b49e049da55c19a7e6af474288103118"
+    sha256 sonoma:        "85c646902644d17a78936d327e2cfa9325bf72a2f561be279324c0dfbe5497fb"
+    sha256 ventura:       "d9678401857ba7f761e96f69d0cbf927f7e4b2327971eafd87401fccda22b995"
+    sha256 arm64_linux:   "80a5d6d59d74dd824eb4b8921bbda82c8ecd3860fe17d3b9392fb574f8002270"
+    sha256 x86_64_linux:  "a876b202a65f3774518765fef945147798d0221b70c9affacae0655b4fbc425f"
   end
 
   depends_on "bison" => :build
@@ -37,8 +36,6 @@ class Zeek < Formula
   uses_from_macos "libxcrypt"
   uses_from_macos "zlib"
 
-  fails_with gcc: "5"
-
   def install
     # Remove SDK paths from zeek-config. This breaks usage with other SDKs.
     # https://github.com/Homebrew/homebrew-core/pull/74932
@@ -49,6 +46,29 @@ class Zeek < Formula
 
     # Avoid references to the Homebrew shims directory
     inreplace "auxil/spicy/hilti/toolchain/src/config.cc.in", "${CMAKE_CXX_COMPILER}", ENV.cxx
+
+    unless build.head?
+      # Benchmarks are not installed, but building them on Linux breaks in the
+      # bundled google-benchmark dependency. Exclude the benchmark targets and
+      # their library dependencies.
+      #
+      # This is fixed on Zeek's `master` branch and will be available with
+      # zeek-8.0. There there is a CMake variable `SPICY_ENABLE_TESTS` which
+      # defaults to `OFF`.
+      inreplace "auxil/spicy/hilti/runtime/CMakeLists.txt",
+        "add_executable(hilti-rt-fiber-benchmark src/benchmarks/fiber.cc)",
+        "add_executable(hilti-rt-fiber-benchmark EXCLUDE_FROM_ALL src/benchmarks/fiber.cc)"
+      inreplace "auxil/spicy/spicy/runtime/tests/benchmarks/CMakeLists.txt",
+        "add_executable(spicy-rt-parsing-benchmark parsing.cc ${_generated_sources})",
+        "add_executable(spicy-rt-parsing-benchmark EXCLUDE_FROM_ALL parsing.cc ${_generated_sources})"
+      inreplace "auxil/spicy/3rdparty/justrx/src/tests/CMakeLists.txt",
+        "add_executable(bench benchmark.cc)",
+        "add_executable(bench EXCLUDE_FROM_ALL benchmark.cc)"
+      (buildpath/"auxil/spicy/3rdparty/CMakeLists.txt").append_lines <<~CMAKE
+        set_target_properties(benchmark PROPERTIES EXCLUDE_FROM_ALL ON)
+        set_target_properties(benchmark_main PROPERTIES EXCLUDE_FROM_ALL ON)
+      CMAKE
+    end
 
     system "cmake", "-S", ".", "-B", "build",
                     "-DBROKER_DISABLE_TESTS=on",
@@ -71,10 +91,10 @@ class Zeek < Formula
     assert_match "version #{version}", shell_output("#{bin}/zeek --version")
     assert_match "ARP packet analyzer", shell_output("#{bin}/zeek --print-plugins")
     system bin/"zeek", "-C", "-r", test_fixtures("test.pcap")
-    assert_predicate testpath/"conn.log", :exist?
-    refute_predicate testpath/"conn.log", :empty?
-    assert_predicate testpath/"http.log", :exist?
-    refute_predicate testpath/"http.log", :empty?
+    assert_path_exists testpath/"conn.log"
+    refute_empty (testpath/"conn.log").read
+    assert_path_exists testpath/"http.log"
+    refute_empty (testpath/"http.log").read
     # For bottling MacOS SDK paths must not be part of the public include directories, see zeek/zeek#1468.
     refute_includes shell_output("#{bin}/zeek-config --include_dir").chomp, "MacOSX"
   end

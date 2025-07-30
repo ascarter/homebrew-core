@@ -1,19 +1,20 @@
 class Crun < Formula
   desc "Fast and lightweight fully featured OCI runtime and C library"
   homepage "https://github.com/containers/crun"
-  url "https://github.com/containers/crun/releases/download/1.18.2/crun-1.18.2.tar.zst"
-  sha256 "c0e90ff05908705bc17559c1f3faab7b5068a3d6e302f1f337a203a67dadd401"
+  url "https://github.com/containers/crun/releases/download/1.23/crun-1.23.tar.zst"
+  sha256 "e8d3744e8b7391efa438fbd45b5e2c8532f39df98e8e810ea90671d85f467f5b"
   license any_of: ["GPL-2.0-or-later", "LGPL-2.1-or-later"]
 
   bottle do
-    sha256 cellar: :any_skip_relocation, x86_64_linux: "7f37989c7a12a82d29063449d8d5a86db876c57c50bd17a63c3446c6ea00ccee"
+    sha256 cellar: :any_skip_relocation, arm64_linux:  "1e896db5b7fc73eb21ead83e7a2f62ce03104e14b3ab0b308d428e0bd7745bb2"
+    sha256 cellar: :any_skip_relocation, x86_64_linux: "53ebd3bb62b3d088af6cc48ac608c77d97e10671e2b63f246c33f953abdc856b"
   end
 
   depends_on "autoconf" => :build
   depends_on "automake" => :build
   depends_on "go-md2man" => :build
   depends_on "libtool" => :build
-  depends_on "pkg-config" => :build
+  depends_on "pkgconf" => :build
   depends_on "python@3.13" => :build
 
   depends_on "libcap"
@@ -30,6 +31,6 @@ class Crun < Formula
   end
 
   test do
-    assert_empty shell_output("#{bin}/crun --rootless=true list -q").strip
+    assert_empty shell_output("#{bin}/crun --root=#{testpath} list -q").strip
   end
 end

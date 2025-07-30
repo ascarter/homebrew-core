@@ -1,8 +1,8 @@
 class QtPerconaServer < Formula
   desc "Qt SQL Database Driver"
   homepage "https://www.qt.io/"
-  url "https://download.qt.io/official_releases/qt/6.7/6.7.2/submodules/qtbase-everywhere-src-6.7.2.tar.xz"
-  sha256 "c5f22a5e10fb162895ded7de0963328e7307611c688487b5d152c9ee64767599"
+  url "https://download.qt.io/official_releases/qt/6.9/6.9.1/submodules/qtbase-everywhere-src-6.9.1.tar.xz"
+  sha256 "40caedbf83cc9a1959610830563565889878bc95f115868bbf545d1914acf28e"
   license any_of: ["GPL-2.0-only", "GPL-3.0-only", "LGPL-3.0-only"]
 
   livecheck do
@@ -10,16 +10,15 @@ class QtPerconaServer < Formula
   end
 
   bottle do
-    rebuild 1
-    sha256 cellar: :any,                 arm64_sonoma:  "f9b42c6f4de923d6b7c452dfa6454d3ff30219fdc4c99a9a3f17539add805fc1"
-    sha256 cellar: :any,                 arm64_ventura: "cb4ec5ba83c47e9e5aa42db405fd3e6c9d3d6ddb7cc70822b1c354fa2b18a25e"
-    sha256 cellar: :any,                 sonoma:        "a86a2fa03ffa2b31216c6d1977eb083c93c5216557f3e48d233b30bdbe4ec4cd"
-    sha256 cellar: :any,                 ventura:       "407ed5bbddd3bdfe6f8b13b5902f8a49c3458d8fbe662e08979c8333928cd8d9"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "85701a4da17e54dde8b2cd09d26e7e73edf4e3c4cbdbc9a5a02935e208cbbfd4"
+    sha256 cellar: :any,                 arm64_sonoma:  "e4161a8e9ba54e9f6d5c53582edfd0e8c1279d7ebe5d886942b1ca62064cbb35"
+    sha256 cellar: :any,                 arm64_ventura: "59cc5b51418fa1b3eddf67c0ec97d62cea5bc32ef14a80acd9483cafb1d262a2"
+    sha256 cellar: :any,                 sonoma:        "06c0bf421d18585bcc62795ee42e2667f27063e34e9d53b192199b23d8580c3b"
+    sha256 cellar: :any,                 ventura:       "fce02bc99e7fef8c9ad2c7b0ce7ee2b6711562e4a08592ab0da443393dc0d56a"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "c1b2eb8f3ccf7bf02c14ce5d4ac85613967b4e3a609e01925c87c566e7f9f52d"
   end
 
   depends_on "cmake" => [:build, :test]
-  depends_on "pkg-config" => :build
+  depends_on "pkgconf" => :build
 
   depends_on "percona-server"
   depends_on "qt"
@@ -27,20 +26,17 @@ class QtPerconaServer < Formula
   conflicts_with "qt-mysql", "qt-mariadb",
     because: "qt-mysql, qt-mariadb, and qt-percona-server install the same binaries"
 
-  fails_with gcc: "5"
-
   def install
     args = %W[
       -DCMAKE_STAGING_PREFIX=#{prefix}
-
       -DFEATURE_sql_ibase=OFF
       -DFEATURE_sql_mysql=ON
       -DFEATURE_sql_oci=OFF
       -DFEATURE_sql_odbc=OFF
       -DFEATURE_sql_psql=OFF
       -DFEATURE_sql_sqlite=OFF
-
       -DMySQL_LIBRARY=#{Formula["percona-server"].opt_lib/shared_library("libperconaserverclient")}
+      -DQT_GENERATE_SBOM=OFF
     ]
     # Workaround for missing libraries failure in CI dependent tests when `percona-server`
     # is unlinked due to conflict handling but not re-linked before linkage test

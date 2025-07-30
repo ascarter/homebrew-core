@@ -1,12 +1,12 @@
 class Lammps < Formula
   desc "Molecular Dynamics Simulator"
   homepage "https://docs.lammps.org/"
-  url "https://github.com/lammps/lammps/archive/refs/tags/stable_29Aug2024_update1.tar.gz"
+  url "https://github.com/lammps/lammps/archive/refs/tags/stable_22Jul2025.tar.gz"
   # lammps releases are named after their release date. We transform it to
   # YYYY-MM-DD (year-month-day) so that we get a sane version numbering.
   # We only track stable releases as announced on the LAMMPS homepage.
-  version "20240829-update1"
-  sha256 "3aea41869aa2fb8120fc4814cab645686f969e2eb7c66aa5587e500597d482dc"
+  version "20250722"
+  sha256 "38d7ab508433f33a53e11f0502aa0253945ce45d5595baf69665961c0a76da26"
   license "GPL-2.0-only"
 
   # The `strategy` block below is used to massage upstream tags into the
@@ -26,17 +26,20 @@ class Lammps < Formula
     end
   end
 
+  no_autobump! because: :incompatible_version_format
+
   bottle do
-    sha256 cellar: :any,                 arm64_sequoia: "5648e80b5ead42c21c3ceae7c1a5017980ecde4fdaa30626a7649f5e76096ccb"
-    sha256 cellar: :any,                 arm64_sonoma:  "5f7a3497fcc46ce6c7fb3f6f19f2c46e56f9077a6a8c06ac9d324883079cbea4"
-    sha256 cellar: :any,                 arm64_ventura: "c3a87090d0391ca8d5ca85ac6718940df364b0bf3559789e9ca63173f243811c"
-    sha256 cellar: :any,                 sonoma:        "e1270a540fd2b607ae04d7a5f60fa590a1dbd2e320d69b6b25adca87257bd256"
-    sha256 cellar: :any,                 ventura:       "e6fbf42af750a5be28c2d3e2de55f37935dabbcc9c6c1a09529ef40cdfaa60fb"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "441b6ae8f42e2809ca13388dabee6969007a295a91ed32b8388f4cd517e9050c"
+    sha256 cellar: :any,                 arm64_sequoia: "5dcbe62c226d2b98ebede1269ac9a31c1c1a5846f58d678e37061846ba0cba67"
+    sha256 cellar: :any,                 arm64_sonoma:  "dd3a100bb7068a71b8dfaf28e492a3ce20c227f2f9e0644b94f6d4f899ed99cf"
+    sha256 cellar: :any,                 arm64_ventura: "9928dabf3feeecf5d8203d596d566d391f10c5a9b420e18360c88c3b0092fde4"
+    sha256 cellar: :any,                 sonoma:        "71e66176a276d78240fee653eb06df98e95624e1d7abdedb1f303b81d822ab51"
+    sha256 cellar: :any,                 ventura:       "ff8e8db48554205827c9a973b98eec0081968ce2ffb6624719f509633aa5a86b"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "491186c7e5217a82b045d031bca445dfdb0db940e75fd4285890565f249c91c3"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "0721f7b5637369e7fc3677f0f0e4dd66ef06c8bc1c81a1b938c796cf2ddf527d"
   end
 
   depends_on "cmake" => :build
-  depends_on "pkg-config" => :build
+  depends_on "pkgconf" => :build
 
   depends_on "fftw"
   depends_on "gcc" # for gfortran
@@ -45,8 +48,10 @@ class Lammps < Formula
   depends_on "kim-api"
   depends_on "libpng"
   depends_on "open-mpi"
+  depends_on "voro++"
 
   uses_from_macos "curl"
+  uses_from_macos "python"
 
   on_macos do
     depends_on "libomp"
@@ -60,6 +65,7 @@ class Lammps < Formula
         "-C", "cmake/presets/nolib.cmake",
         "-DPKG_INTEL=no",
         "-DPKG_KIM=yes",
+        "-DPKG_VORONOI=yes",
         "-DLAMMPS_MACHINE=#{variant}",
         "-DBUILD_MPI=#{(variant == "mpi") ? "yes" : "no"}",
         "-DBUILD_OMP=#{(variant == "serial") ? "no" : "yes"}",
@@ -81,5 +87,9 @@ class Lammps < Formula
 
   test do
     system bin/"lmp_serial", "-in", pkgshare/"bench/in.lj"
+    output = shell_output("#{bin}/lmp_serial -h")
+    %w[KSPACE POEMS VORONOI].each do |pkg|
+      assert_match pkg, output
+    end
   end
 end

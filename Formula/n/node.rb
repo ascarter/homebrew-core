@@ -1,10 +1,9 @@
 class Node < Formula
   desc "Platform built on V8 to build network applications"
   homepage "https://nodejs.org/"
-  url "https://nodejs.org/dist/v23.1.0/node-v23.1.0.tar.xz"
-  sha256 "57cbfd3dd51f9300ea2b8e60a8ed215b1eaa71fbde4c3903a7d31a443a4a4423"
+  url "https://nodejs.org/dist/v24.4.1/node-v24.4.1.tar.xz"
+  sha256 "adb79ca0987486ed66136213da19ff17ef6724dcb340c320e010c9442101652f"
   license "MIT"
-  revision 1
   head "https://github.com/nodejs/node.git", branch: "main"
 
   livecheck do
@@ -13,55 +12,66 @@ class Node < Formula
   end
 
   bottle do
-    sha256 arm64_sequoia: "23880f5ec9a76db3849a3f37b65536f94c67244f91096aef2e0a7c20c5a53f9c"
-    sha256 arm64_sonoma:  "4933b550c70a22bdf1f3f22eb344db6da5c6881b0a0df8efd87135032700f347"
-    sha256 arm64_ventura: "ea816bfb85d12377f6e140eb307ef093c4b64bc0d3f2db63304838ddfbeb727a"
-    sha256 sonoma:        "6a3605890e590286f117dc94779ea1df756546c92c9f3766eecfe5b95716f05f"
-    sha256 ventura:       "45a8ebd5667cc203abbc45f4cc8e7b651aff64612cc316371cdc36361ed1f359"
-    sha256 x86_64_linux:  "e44cf954f3834ae57ade5d162c9bae349da4be5364a857b4a7d7a4cae3113df4"
+    rebuild 2
+    sha256 arm64_sequoia: "e3b31f9b31a2b7afa8c9e8f1c8fa4b0136cf9e60b0a4385015486706f8a9286b"
+    sha256 arm64_sonoma:  "9455851df579660bd8f6791105412cfdc4118bbb660fe3513cf6d018ee954e16"
+    sha256 arm64_ventura: "ff09188d924e5419232644b943c2fd9e74748ad2ee39702d64bc356fc7cc97a3"
+    sha256 sonoma:        "d315020d1a5dae78188e19c0c17261c14549e4b61b851fddc34d9a615a0346dc"
+    sha256 ventura:       "0aa07c3b2db7ae979215a0b6ed552bcabf666971240f3d599d9df0755bc38060"
+    sha256 arm64_linux:   "f563cfc7b948a7b6f49f73a469a475bc244e221c01d01e8518d950b2fdd54952"
+    sha256 x86_64_linux:  "066d8195bd40a2cd20f9f1a45b8777e6be0cbdf09a282fd360c53170ddcb2b3c"
   end
 
-  depends_on "pkg-config" => :build
+  depends_on "pkgconf" => :build
   depends_on "python@3.13" => :build
   depends_on "brotli"
   depends_on "c-ares"
-  depends_on "icu4c@76"
+  depends_on "icu4c@77"
   depends_on "libnghttp2"
+  depends_on "libnghttp3"
+  depends_on "libngtcp2"
   depends_on "libuv"
   depends_on "openssl@3"
+  depends_on "simdjson"
+  depends_on "sqlite" # Fails with macOS sqlite.
+  depends_on "zstd"
 
   uses_from_macos "python", since: :catalina
   uses_from_macos "zlib"
 
   on_macos do
-    depends_on "llvm" => [:build, :test] if DevelopmentTools.clang_build_version <= 1100
+    depends_on "llvm" => :build if DevelopmentTools.clang_build_version <= 1699
   end
 
+  on_linux do
+    # Avoid newer GCC which creates binary with higher GLIBCXX requiring runtime dependency
+    depends_on "gcc@12" => :build if DevelopmentTools.gcc_version("/usr/bin/gcc") < 12
+  end
+
+  link_overwrite "bin/npm", "bin/npx"
+
+  # https://github.com/swiftlang/llvm-project/commit/078651b6de4b767b91e3e6a51e5df11a06d7bc4f
   fails_with :clang do
-    build 1100
-    cause <<~EOS
-      error: calling a private constructor of class 'v8::internal::(anonymous namespace)::RegExpParserImpl<uint8_t>'
-    EOS
+    build 1699
+    cause "needs SFINAE-friendly std::pointer_traits"
   end
 
-  fails_with gcc: "5"
+  # https://github.com/nodejs/node/blob/main/BUILDING.md#supported-toolchains
+  # https://github.com/ada-url/ada?tab=readme-ov-file#requirements
+  fails_with :gcc do
+    version "11"
+    cause "needs GCC 12 or newer"
+  end
 
   # We track major/minor from upstream Node releases.
   # We will accept *important* npm patch releases when necessary.
   resource "npm" do
-    url "https://registry.npmjs.org/npm/-/npm-10.9.0.tgz"
-    sha256 "c12def16fe3efdc80b1e652d60903d807ac4b78b9e7c3e76f633f4b13a32897c"
-  end
-
-  # Apply fix for ICU 76+ from open PR.
-  # PR ref: https://github.com/nodejs/node/pull/55563
-  patch do
-    url "https://github.com/nodejs/node/commit/54299ac3a3d4e4520b8604dce43c2584092ccde2.patch?full_index=1"
-    sha256 "1d047dd275ca615551a6c40c4f766f2d1c9913a3d7aacc5e94039e0fa55aa537"
+    url "https://registry.npmjs.org/npm/-/npm-11.4.2.tgz"
+    sha256 "8b469a56d85a61abd846e78690623ce956b4d49ae56f15ac76dea0dce3bd4b2b"
   end
 
   def install
-    ENV.llvm_clang if OS.mac? && (DevelopmentTools.clang_build_version <= 1100)
+    ENV.llvm_clang if OS.mac? && DevelopmentTools.clang_build_version <= 1699
 
     # The new linker crashed during LTO due to high memory usage.
     ENV.append "LDFLAGS", "-Wl,-ld_classic" if DevelopmentTools.clang_build_version >= 1500
@@ -75,31 +85,73 @@ class Node < Formula
       --prefix=#{prefix}
       --without-npm
       --with-intl=system-icu
-      --shared-libuv
-      --shared-nghttp2
-      --shared-openssl
-      --shared-zlib
       --shared-brotli
       --shared-cares
-      --shared-libuv-includes=#{Formula["libuv"].include}
-      --shared-libuv-libpath=#{Formula["libuv"].lib}
-      --shared-nghttp2-includes=#{Formula["libnghttp2"].include}
-      --shared-nghttp2-libpath=#{Formula["libnghttp2"].lib}
-      --shared-openssl-includes=#{Formula["openssl@3"].include}
-      --shared-openssl-libpath=#{Formula["openssl@3"].lib}
+      --shared-libuv
+      --shared-nghttp2
+      --shared-nghttp3
+      --shared-ngtcp2
+      --shared-openssl
+      --shared-simdjson
+      --shared-sqlite
+      --shared-zlib
+      --shared-zstd
       --shared-brotli-includes=#{Formula["brotli"].include}
       --shared-brotli-libpath=#{Formula["brotli"].lib}
       --shared-cares-includes=#{Formula["c-ares"].include}
       --shared-cares-libpath=#{Formula["c-ares"].lib}
+      --shared-libuv-includes=#{Formula["libuv"].include}
+      --shared-libuv-libpath=#{Formula["libuv"].lib}
+      --shared-nghttp2-includes=#{Formula["libnghttp2"].include}
+      --shared-nghttp2-libpath=#{Formula["libnghttp2"].lib}
+      --shared-nghttp3-includes=#{Formula["libnghttp3"].include}
+      --shared-nghttp3-libpath=#{Formula["libnghttp3"].lib}
+      --shared-ngtcp2-includes=#{Formula["libngtcp2"].include}
+      --shared-ngtcp2-libpath=#{Formula["libngtcp2"].lib}
+      --shared-openssl-includes=#{Formula["openssl@3"].include}
+      --shared-openssl-libpath=#{Formula["openssl@3"].lib}
+      --shared-simdjson-includes=#{Formula["simdjson"].include}
+      --shared-simdjson-libpath=#{Formula["simdjson"].lib}
+      --shared-sqlite-includes=#{Formula["sqlite"].include}
+      --shared-sqlite-libpath=#{Formula["sqlite"].lib}
+      --shared-zstd-includes=#{Formula["zstd"].include}
+      --shared-zstd-libpath=#{Formula["zstd"].lib}
       --openssl-use-def-ca-store
     ]
     args << "--tag=head" if build.head?
 
+    # TODO: Try to devendor these libraries.
+    # - `--shared-ada` needs the `ada-url` formula, but requires C++20
+    # - `--shared-simdutf` seems to result in build failures.
+    # - `--shared-http-parser` and `--shared-uvwasi` are not available as dependencies in Homebrew.
+    ignored_shared_flags = %w[
+      ada
+      http-parser
+      simdutf
+      uvwasi
+    ].map { |library| "--shared-#{library}" }
+
+    configure_help = Utils.safe_popen_read("./configure", "--help")
+    shared_flag_regex = /\[(--shared-[^ \]]+)\]/
+    configure_help.scan(shared_flag_regex) do |matches|
+      matches.each do |flag|
+        next if args.include?(flag) || ignored_shared_flags.include?(flag)
+
+        message = "Unused `--shared-*` flag: #{flag}"
+        if build.head?
+          opoo message
+        else
+          odie message
+        end
+      end
+    end
+
     # Enabling LTO errors on Linux with:
     # terminate called after throwing an instance of 'std::out_of_range'
-    # Pre-Catalina macOS also can't build with LTO
+    # macOS also can't build with LTO when using LLVM Clang
     # LTO is unpleasant if you have to build from source.
-    args << "--enable-lto" if OS.mac? && MacOS.version >= :catalina && build.bottle?
+    # FIXME: re-enable me, currently crashes sequoia runner after 6 hours
+    # args << "--enable-lto" if OS.mac? && DevelopmentTools.clang_build_version > 1699 && build.bottle?
 
     system "./configure", *args
     system "make", "install"
@@ -118,8 +170,13 @@ class Node < Formula
     # in `cached_download` npm resource, which breaks `npm -g outdated npm`.
     # This copies back over the vanilla `package.json` to fix this issue.
     cp bootstrap/"package.json", libexec/"lib/node_modules/npm"
+
     # These symlinks are never used & they've caused issues in the past.
     rm_r libexec/"share" if (libexec/"share").exist?
+
+    # Create temporary npm and npx symlinks until post_install is done.
+    ln_s libexec/"lib/node_modules/npm/bin/npm-cli.js", bin/"npm"
+    ln_s libexec/"lib/node_modules/npm/bin/npx-cli.js", bin/"npx"
 
     bash_completion.install bootstrap/"lib/utils/completion.sh" => "npm"
   end
@@ -127,7 +184,7 @@ class Node < Formula
   def post_install
     node_modules = HOMEBREW_PREFIX/"lib/node_modules"
     node_modules.mkpath
-    # Kill npm but preserve all other modules across node updates/upgrades.
+    # Remove npm but preserve all other modules across node updates/upgrades.
     rm_r node_modules/"npm" if (node_modules/"npm").exist?
 
     cp_r libexec/"lib/node_modules/npm", node_modules
@@ -172,12 +229,12 @@ class Node < Formula
     ENV.prepend_path "PATH", opt_bin
     ENV.delete "NVM_NODEJS_ORG_MIRROR"
     assert_equal which("node"), opt_bin/"node"
-    assert_predicate HOMEBREW_PREFIX/"bin/npm", :exist?, "npm must exist"
+    assert_path_exists HOMEBREW_PREFIX/"bin/npm", "npm must exist"
     assert_predicate HOMEBREW_PREFIX/"bin/npm", :executable?, "npm must be executable"
     npm_args = ["-ddd", "--cache=#{HOMEBREW_CACHE}/npm_cache", "--build-from-source"]
     system HOMEBREW_PREFIX/"bin/npm", *npm_args, "install", "npm@latest"
     system HOMEBREW_PREFIX/"bin/npm", *npm_args, "install", "nan"
-    assert_predicate HOMEBREW_PREFIX/"bin/npx", :exist?, "npx must exist"
+    assert_path_exists HOMEBREW_PREFIX/"bin/npx", "npx must exist"
     assert_predicate HOMEBREW_PREFIX/"bin/npx", :executable?, "npx must be executable"
     assert_match "< hello >", shell_output("#{HOMEBREW_PREFIX}/bin/npx --yes cowsay hello")
   end

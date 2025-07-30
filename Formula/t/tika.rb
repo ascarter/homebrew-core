@@ -1,21 +1,21 @@
 class Tika < Formula
   desc "Content analysis toolkit"
   homepage "https://tika.apache.org/"
-  url "https://www.apache.org/dyn/closer.lua?path=tika/3.0.0/tika-app-3.0.0.jar"
-  mirror "https://archive.apache.org/dist/tika/3.0.0/tika-app-3.0.0.jar"
-  sha256 "f2c156533fac004d3d30d322555bb1f2581a104558a913bfc74d8c48dcf4541c"
+  url "https://www.apache.org/dyn/closer.lua?path=tika/3.2.1/tika-app-3.2.1.jar"
+  mirror "https://archive.apache.org/dist/tika/3.2.1/tika-app-3.2.1.jar"
+  sha256 "268512b774a7a30e26ac1d6e3e5f7982cf6203a9822d4563be37b1922365d108"
   license "Apache-2.0"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, all: "44d1913c695f5523d72c1336e0182b1fe0f5f38362d49c8b783fe1d10d266037"
+    sha256 cellar: :any_skip_relocation, all: "9f9d786884111b091cf81347b58dbc73054d9e369fc41bacff434a41933f220b"
   end
 
   depends_on "openjdk"
 
   resource "server" do
-    url "https://www.apache.org/dyn/closer.lua?path=tika/3.0.0/tika-server-standard-3.0.0.jar"
-    mirror "https://archive.apache.org/dist/tika/3.0.0/tika-server-standard-3.0.0.jar"
-    sha256 "53851c4f326c0bdd7e1a9ba77bb35193d431d9dc1898e263e0b7bb337f03e2c1"
+    url "https://www.apache.org/dyn/closer.lua?path=tika/3.2.1/tika-server-standard-3.2.1.jar"
+    mirror "https://archive.apache.org/dist/tika/3.2.1/tika-server-standard-3.2.1.jar"
+    sha256 "383a8a99ec886ea95e4143bfe200208afe1884db14b4c1e470950edec82d2c5d"
   end
 
   def install
@@ -24,6 +24,11 @@ class Tika < Formula
 
     libexec.install resource("server")
     bin.write_jar_script libexec/"tika-server-standard-#{version}.jar", "tika-rest-server"
+  end
+
+  service do
+    run [opt_bin/"tika-rest-server"]
+    working_dir HOMEBREW_PREFIX
   end
 
   test do

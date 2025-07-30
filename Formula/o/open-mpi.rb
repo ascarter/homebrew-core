@@ -1,8 +1,8 @@
 class OpenMpi < Formula
   desc "High performance message passing library"
   homepage "https://www.open-mpi.org/"
-  url "https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.5.tar.bz2"
-  sha256 "6588d57c0a4bd299a24103f4e196051b29e8b55fbda49e11d5b3d32030a32776"
+  url "https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.8.tar.bz2"
+  sha256 "53131e1a57e7270f645707f8b0b65ba56048f5b5ac3f68faabed3eb0d710e449"
   license "BSD-3-Clause"
 
   livecheck do
@@ -11,12 +11,13 @@ class OpenMpi < Formula
   end
 
   bottle do
-    sha256 arm64_sequoia: "e0235a4d1d504248e8d736e9ad92b785789b06c26d5f6634168ba0bf31fd9bce"
-    sha256 arm64_sonoma:  "522592a0f5a23e7b719808ec3f61abcbb0c6f046356ab23c24de4ff948c616f2"
-    sha256 arm64_ventura: "42ef2bda5d4586176bdd9046d2cfb235b4cd8bf3fdab09c2f65d84af52977cfd"
-    sha256 sonoma:        "d38cae4c45c360f7d5e0b536ae0f792d3b7363c895acc2c60519b64685fed2f2"
-    sha256 ventura:       "624f0f7c7be4be5ad2d89b583d2b0294c70fedd89ed33552f5a7fe1061262638"
-    sha256 x86_64_linux:  "08d155c685dfe497ceecf98d4d703e19af6643bca8ce1981ddc38ae6dbb6a752"
+    sha256 arm64_sequoia: "ffda541a4f3b0f37e853066cdde31ab459834d0ded4f0e03ab4a74a8dafd6485"
+    sha256 arm64_sonoma:  "e54a983c2ec3d1874e77a31415796679f8d98d3f3eb2cd41b1ae463578ec53dd"
+    sha256 arm64_ventura: "16bc25d567ddbac27e2f16a99ce21ef2e8d54d63faad081e53641bb4db3c112f"
+    sha256 sonoma:        "acbcc6242c6e83f4b6b33a9344b3f679baae17513fb11edf84ab0871ae167583"
+    sha256 ventura:       "416dc2ed96d4d4a7316af6594fdda738f382267e3df4763fad3dd8f0494e9b09"
+    sha256 arm64_linux:   "e6c70ba970934f26f5edb035307b7b038297d4e730e8aa7b22fc10c7ff1fc56b"
+    sha256 x86_64_linux:  "deafa0230ee6bef316836fe9b2a3e73a2298f0c15c10b3356ff45c5390eb1af9"
   end
 
   head do
@@ -35,11 +36,8 @@ class OpenMpi < Formula
   conflicts_with "mpich", because: "both install MPI compiler wrappers"
 
   def install
-    # Backport https://github.com/open-mpi/ompi/commit/2d3ad2b2a777ffe70511426808a5c5ca5693c443
-    # TODO: Remove on the next release (inreplace will fail)
-    inreplace "configure", "$LDFLAGS_xcode_save", "$LDFLAGS_save_xcode" if build.stable?
-
     ENV.runtime_cpu_detection
+
     # Otherwise libmpi_usempi_ignore_tkr gets built as a static library
     ENV["MACOSX_DEPLOYMENT_TARGET"] = MacOS.version if OS.mac?
 
@@ -85,10 +83,20 @@ class OpenMpi < Formula
 
     # Avoid references to cellar paths.
     inreplace (lib/"pkgconfig").glob("*.pc"), prefix, opt_prefix, audit_result: false
+
+    # Avoid conflict with `putty` by renaming pterm to prte-term which matches
+    # upstream change[^1]. In future release, we may want to split out `prrte`
+    # to a separate formula and pass `--without-legacy-names`[^2].
+    #
+    # [^1]: https://github.com/openpmix/prrte/issues/1836#issuecomment-2564882033
+    # [^2]: https://github.com/openpmix/prrte/blob/master/config/prte_configure_options.m4#L390-L393
+    odie "Update configure for PRRTE or split to separate formula as prte-term exists" if (bin/"prte-term").exist?
+    bin.install bin/"pterm" => "prte-term"
+    man1.install man1/"pterm.1" => "prte-term.1"
   end
 
   test do
-    (testpath/"hello.c").write <<~C
+    (testpath/"hello.c").write <<~'C'
       #include <mpi.h>
       #include <stdio.h>
 
@@ -100,7 +108,7 @@ class OpenMpi < Formula
         MPI_Comm_size(MPI_COMM_WORLD, &size);
         MPI_Comm_rank(MPI_COMM_WORLD, &rank);
         MPI_Get_processor_name(name, &nameLen);
-        printf("[%d/%d] Hello, world! My name is %s.\\n", rank, size, name);
+        printf("[%d/%d] Hello, world! My name is %s.\n", rank, size, name);
         MPI_Finalize();
         return 0;
       }

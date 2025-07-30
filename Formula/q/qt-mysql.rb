@@ -1,8 +1,8 @@
 class QtMysql < Formula
   desc "Qt SQL Database Driver"
   homepage "https://www.qt.io/"
-  url "https://download.qt.io/official_releases/qt/6.7/6.7.2/submodules/qtbase-everywhere-src-6.7.2.tar.xz"
-  sha256 "c5f22a5e10fb162895ded7de0963328e7307611c688487b5d152c9ee64767599"
+  url "https://download.qt.io/official_releases/qt/6.9/6.9.1/submodules/qtbase-everywhere-src-6.9.1.tar.xz"
+  sha256 "40caedbf83cc9a1959610830563565889878bc95f115868bbf545d1914acf28e"
   license any_of: ["GPL-2.0-only", "GPL-3.0-only", "LGPL-3.0-only"]
 
   livecheck do
@@ -10,11 +10,11 @@ class QtMysql < Formula
   end
 
   bottle do
-    sha256 cellar: :any,                 arm64_sonoma:  "440dc27791dfa15b9776140512556842fbc59651d31f4e8cebc707de8dec2e22"
-    sha256 cellar: :any,                 arm64_ventura: "cefd7d38e5830538e6f4334db6d2caeeb43342b2c90863fe9583e17c4f074b87"
-    sha256 cellar: :any,                 sonoma:        "546033f6fc6d05cdc0b94d87a5000fd1c8f59d438979e11e5534ad15d3137af6"
-    sha256 cellar: :any,                 ventura:       "c57c2c3d365c8745843c1dac0cd814a52e0042a9a37efa43aee5353026017311"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "1ac8068580a16d1ad03ff7d9aad88fc796cd4409ebf83e4291de3629d8609055"
+    sha256 cellar: :any,                 arm64_sonoma:  "c0bda6c736ed9a707386fff45a7bb3eab946fc6ed2e672669c56a2ea42102e95"
+    sha256 cellar: :any,                 arm64_ventura: "8fe6f24a023ce1f28f999c6dbb082b44c1f45fa01b34ddc1f8a022c48d956324"
+    sha256 cellar: :any,                 sonoma:        "05803e6d0d6528af94c92388066e9ef85fcf406a1e496a1210d0c7a6bfe873f0"
+    sha256 cellar: :any,                 ventura:       "393cb803339073dfa80ca861ac58422ebf078292d5ef77b7ccec488f75d61207"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "c53bb46672d11370e241b5016f95699e9cf536b79dbb96ae44b28ae9b57c41ec"
   end
 
   depends_on "cmake" => [:build, :test]
@@ -25,25 +25,21 @@ class QtMysql < Formula
   conflicts_with "qt-mariadb", "qt-percona-server",
     because: "qt-mysql, qt-mariadb, and qt-percona-server install the same binaries"
 
-  fails_with gcc: "5"
-
   def install
-    args = std_cmake_args + %W[
+    args = %W[
       -DCMAKE_STAGING_PREFIX=#{prefix}
-
       -DFEATURE_sql_ibase=OFF
       -DFEATURE_sql_mysql=ON
       -DFEATURE_sql_oci=OFF
       -DFEATURE_sql_odbc=OFF
       -DFEATURE_sql_psql=OFF
       -DFEATURE_sql_sqlite=OFF
+      -DQT_GENERATE_SBOM=OFF
     ]
 
-    cd "src/plugins/sqldrivers" do
-      system "cmake", ".", *args
-      system "cmake", "--build", "."
-      system "cmake", "--install", "."
-    end
+    system "cmake", "-S", "src/plugins/sqldrivers", "-B", "build", *args, *std_cmake_args
+    system "cmake", "--build", "build"
+    system "cmake", "--install", "build"
   end
 
   test do

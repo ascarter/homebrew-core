@@ -1,21 +1,22 @@
 class Qrtool < Formula
   desc "Utility for encoding or decoding QR code"
-  homepage "https://gitlab.com/sorairolake/qrtool"
-  url "https://gitlab.com/sorairolake/qrtool/-/archive/v0.11.6/qrtool-v0.11.6.tar.bz2"
-  sha256 "37b4dee60af2cf6211ce7439b64d38d7196462415cf998b70f30f16c3fdb7fb7"
+  homepage "https://sorairolake.github.io/qrtool/book/index.html"
+  url "https://github.com/sorairolake/qrtool/archive/refs/tags/v0.12.1.tar.gz"
+  sha256 "05f5c0abf7d312ed72a827426543969ca723d42068cd77e36e480cd670931893"
   license all_of: [
     "CC-BY-4.0",
     any_of: ["Apache-2.0", "MIT"],
   ]
-  head "https://gitlab.com/sorairolake/qrtool.git", branch: "develop"
+  head "https://github.com/sorairolake/qrtool.git", branch: "develop"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "52e6870560b41a8b3f0f0c3e02097798599005db8d579d0cbec020221deec1da"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "ad03e4c7fac90b5fa20fe7cbb7604732e2b0835c2b70ea98e5e9ad471893d869"
-    sha256 cellar: :any_skip_relocation, arm64_ventura: "e6884bc646daa28647b11baf9ba80d10d6d000e76ff454e33fe13dfba909e367"
-    sha256 cellar: :any_skip_relocation, sonoma:        "8c338b94172639b4697729961ac223e2733499aa60a2055aaeae172131b3c403"
-    sha256 cellar: :any_skip_relocation, ventura:       "4c88772f05cc8dac9aeea084bc02024e0f45f6f3617ecb913e1e73ed65d317b0"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "13215d2360180c17ea0a606f91f31e9b5d0be3750674e52f2ea1f7be83bc6c8d"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "25d10f224e95a98626a479a2c84b5e59d50bbd2e6dad787486194d1d5c814fb0"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "6bbd08bee21ec0c02b56086fa4fa927b799937d8dabf814647ec99119eebe03c"
+    sha256 cellar: :any_skip_relocation, arm64_ventura: "a7ed1ea670fcd3bbbf7c854c79f13619d66420e36d29b2d9c0488909d53eab60"
+    sha256 cellar: :any_skip_relocation, sonoma:        "ec1283424b8d254662bba097d31c9d1b73afb7f004bb00ba7be365f1cfa50033"
+    sha256 cellar: :any_skip_relocation, ventura:       "3bee8f7e1d5bee0b8699aaf084395f0f410743fc8e1b91abe28f4809512c0e22"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "67bacd460faae54d71afcd4a1544eee9ac1715d4283730bc9bb6aabcbdc06884"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "b5136be0cb03a9e0e2ff6b15cafa558f85ee23fc9d2d5066186bdc332560419e"
   end
 
   depends_on "asciidoctor" => :build
@@ -24,13 +25,15 @@ class Qrtool < Formula
   def install
     system "cargo", "install", *std_cargo_args
 
+    generate_completions_from_executable(bin/"qrtool", "completion", shells: [:bash, :zsh, :fish, :pwsh])
+
     outdir = Dir["target/release/build/qrtool-*/out"].first
     man1.install Dir["#{outdir}/*.1"]
   end
 
   test do
     (testpath/"output.png").write shell_output("#{bin}/qrtool encode 'QR code'")
-    assert_predicate testpath/"output.png", :exist?
+    assert_path_exists testpath/"output.png"
     assert_equal "QR code", shell_output("#{bin}/qrtool decode output.png")
   end
 end

@@ -1,8 +1,8 @@
 class Zpaqfranz < Formula
   desc "Deduplicating command-line archiver and backup tool"
   homepage "https://github.com/fcorbelli/zpaqfranz"
-  url "https://github.com/fcorbelli/zpaqfranz/archive/refs/tags/60.8.tar.gz"
-  sha256 "c512814e2861cbd44464afb8a7b73c174eff809e93caf6e255a9d9baca3a3483"
+  url "https://github.com/fcorbelli/zpaqfranz/archive/refs/tags/62.5.tar.gz"
+  sha256 "dbe8f7fcdf2453d6a6975c637489e6a38333df098ee40e64039a1145de7884da"
   license all_of: [:public_domain, "MIT", "Zlib", "Unlicense", "BSD-2-Clause", "Apache-2.0"]
   head "https://github.com/fcorbelli/zpaqfranz.git", branch: "main"
 
@@ -14,12 +14,13 @@ class Zpaqfranz < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "d7ddc19b3fc04552020ca8fc56598ffc6441493281a03a374618cf3a99fbe65e"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "c2458b06e0fa5434184316218d7c93b1593c513b52123416d2560746a6353650"
-    sha256 cellar: :any_skip_relocation, arm64_ventura: "875c321df5e592d8dab7d72f72cabd2b0738282e2049cad77d677dde722b08c8"
-    sha256 cellar: :any_skip_relocation, sonoma:        "a79b07cd20ed40806e6f2bb653398ff9b1d1c12039ad54e0e05801c6c720dc47"
-    sha256 cellar: :any_skip_relocation, ventura:       "9ae299266bf68680341ea0954dbb29bea0d1f7697531b49e4ef97b3078ac1075"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "230433d69852a6f84308e646a8e068b64cddec4dbde599b2a398053f730cee74"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "3ee2036ad2973e8d1d2422640a16c4b2aa9183e04534cb2e5ab5d5730b08db7f"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "754969629868825f41b39924b89f609bcdfea9a01fda67f958faae4f66d8c252"
+    sha256 cellar: :any_skip_relocation, arm64_ventura: "8261a3e95ee13f2eab87e11fce11ebc5962d6c95ffa70446c9d81ee2d5dc120c"
+    sha256 cellar: :any_skip_relocation, sonoma:        "cad7abaf8ada2ea44129bb11b397ce6e5c1935f97a0e6172e237cfd401705d2c"
+    sha256 cellar: :any_skip_relocation, ventura:       "534eb15a8694e44b2fdaf0f124e139c5984b7c9628d66c8661a1f8855363f18c"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "a559080d6c4ce1617b9422ffe26472356f4070cb3eb5d2db9a627d4607e06fa3"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "ad2e841816293f8f9732a6b9007e5aaba157952e41c3e1cf3099c2770bc9e38e"
   end
 
   def install

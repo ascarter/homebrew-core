@@ -1,8 +1,8 @@
 class Exercism < Formula
   desc "Command-line tool to interact with exercism.io"
   homepage "https://exercism.io/cli/"
-  url "https://github.com/exercism/cli/archive/refs/tags/v3.5.2.tar.gz"
-  sha256 "0d259c5b6d9215fb7262172666393cd4345f221484f202a7821d940b8636dc90"
+  url "https://github.com/exercism/cli/archive/refs/tags/v3.5.7.tar.gz"
+  sha256 "dc8f06d9390a8ff11b24b251644287453e73f0f71eb4277f8fb53dca1825140a"
   license "MIT"
   head "https://github.com/exercism/cli.git", branch: "main"
 
@@ -12,12 +12,12 @@ class Exercism < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "255b246439bc27ee2f35ebb1024567dadc81514b2049b515ddd465daf8039bf0"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "255b246439bc27ee2f35ebb1024567dadc81514b2049b515ddd465daf8039bf0"
-    sha256 cellar: :any_skip_relocation, arm64_ventura: "255b246439bc27ee2f35ebb1024567dadc81514b2049b515ddd465daf8039bf0"
-    sha256 cellar: :any_skip_relocation, sonoma:        "49f73f5baf24b05e63b20c4ecba444c866baacac380d08c0c43e86841e03607a"
-    sha256 cellar: :any_skip_relocation, ventura:       "49f73f5baf24b05e63b20c4ecba444c866baacac380d08c0c43e86841e03607a"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "132f5b5dca3c740b28c7edc67b10ba5ee7faa5c4cb222ae9049f80d27caab363"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "aa0e2a9c3b15de521c76b939cc2ba4ccbdcb2491c195e22402dcc30d9f9f7e0d"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "aa0e2a9c3b15de521c76b939cc2ba4ccbdcb2491c195e22402dcc30d9f9f7e0d"
+    sha256 cellar: :any_skip_relocation, arm64_ventura: "aa0e2a9c3b15de521c76b939cc2ba4ccbdcb2491c195e22402dcc30d9f9f7e0d"
+    sha256 cellar: :any_skip_relocation, sonoma:        "e400ddac87b4d522c9555095857f9e76a083279b10034a818a56f6860a5db8b7"
+    sha256 cellar: :any_skip_relocation, ventura:       "e400ddac87b4d522c9555095857f9e76a083279b10034a818a56f6860a5db8b7"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "19a2bace200bf5ac57ae49ef36e7316a24e2a502944f5704f64bd500486b55c2"
   end
 
   depends_on "go" => :build
@@ -25,7 +25,7 @@ class Exercism < Formula
   def install
     system "go", "build", *std_go_args(ldflags: "-s -w"), "exercism/main.go"
 
-    bash_completion.install "shell/exercism_completion.bash"
+    bash_completion.install "shell/exercism_completion.bash" => "exercism"
     zsh_completion.install "shell/exercism_completion.zsh" => "_exercism"
     fish_completion.install "shell/exercism.fish"
   end

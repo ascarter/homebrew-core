@@ -1,18 +1,18 @@
 class LivekitCli < Formula
   desc "Command-line interface to LiveKit"
   homepage "https://livekit.io"
-  url "https://github.com/livekit/livekit-cli/archive/refs/tags/v2.2.1.tar.gz"
-  sha256 "b78bee20d70d190a43a65a1840e268aa2ac3661011cacb0717b235652b322e65"
+  url "https://github.com/livekit/livekit-cli/archive/refs/tags/v2.4.14.tar.gz"
+  sha256 "5fec3785996d3de0450290329d6e0ef52bc7611888c6b3ef1e0023f73c15f6c8"
   license "Apache-2.0"
   head "https://github.com/livekit/livekit-cli.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "4ef43d828cfc44303ce80d6075fa13a8170a13d31b9efbd8eb81e5553222eb53"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "4ef43d828cfc44303ce80d6075fa13a8170a13d31b9efbd8eb81e5553222eb53"
-    sha256 cellar: :any_skip_relocation, arm64_ventura: "4ef43d828cfc44303ce80d6075fa13a8170a13d31b9efbd8eb81e5553222eb53"
-    sha256 cellar: :any_skip_relocation, sonoma:        "dcceac9d9ccec2f0b82895bf25ac4f96be2b311209594694d2d16a2e806afecd"
-    sha256 cellar: :any_skip_relocation, ventura:       "dcceac9d9ccec2f0b82895bf25ac4f96be2b311209594694d2d16a2e806afecd"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "c4d030d2a870a1b6d77674b23bec5b2d94f92813c9dbce6d8fd7f824d01e9da2"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "16485fa9a443a042ea61b8a2bb9d9be8d0c881db07a3a2868acfe46d615220aa"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "9e454b2002d9c2b25612dbb92ba345fdc547e45ce591e39815512f8c4dfb5895"
+    sha256 cellar: :any_skip_relocation, arm64_ventura: "717493ef72bbba5cbbdef575d81ad638c557c556ff98505771b2277e203b77b1"
+    sha256 cellar: :any_skip_relocation, sonoma:        "51a92407686369a81f04821e916b206817ab4bb1548cada24e43de5de6b5bd61"
+    sha256 cellar: :any_skip_relocation, ventura:       "23b61080268b7cdb488e24083037dc4fcee9021bf7572653c4e797eec0c0c2d8"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "f565fed2211c0826247c6bb0d03faa69f4094807834f864c0e51ac9d88a0803a"
   end
 
   depends_on "go" => :build
@@ -22,11 +22,15 @@ class LivekitCli < Formula
     system "go", "build", *std_go_args(ldflags:, output: bin/"lk"), "./cmd/lk"
 
     bin.install_symlink "lk" => "livekit-cli"
+
+    bash_completion.install "autocomplete/bash_autocomplete" => "lk"
+    fish_completion.install "autocomplete/fish_autocomplete" => "lk.fish"
+    zsh_completion.install "autocomplete/zsh_autocomplete" => "_lk"
   end
 
   test do
     output = shell_output("#{bin}/lk token create --list --api-key key --api-secret secret")
-    assert output.start_with?("valid for (mins):  5")
+    assert_match "valid for (mins):  5", output
     assert_match "lk version #{version}", shell_output("#{bin}/lk --version")
   end
 end

@@ -1,12 +1,12 @@
 class Zx < Formula
   desc "Tool for writing better scripts"
-  homepage "https://github.com/google/zx"
-  url "https://registry.npmjs.org/zx/-/zx-8.2.1.tgz"
-  sha256 "393f265347b4a49abf7a553693f33580b3912475c42681058a1719401d06c98a"
+  homepage "https://google.github.io/zx/"
+  url "https://registry.npmjs.org/zx/-/zx-8.7.2.tgz"
+  sha256 "bec25dd9b4fc4d41a2fa128bf8a7a4fd4de93342b57fe6a37bc27b5516cc598b"
   license "Apache-2.0"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, all: "12cda215472ec86f053dd4e4013e0da23d1f84c115fa772c1c6ea407fe95e230"
+    sha256 cellar: :any_skip_relocation, all: "330ab2cd845a48f1662a80a114b032f586aae6ed6529e81b8a2d970482d70350"
   end
 
   depends_on "node"
@@ -14,24 +14,20 @@ class Zx < Formula
   def install
     system "npm", "install", *std_npm_args
     bin.install_symlink Dir["#{libexec}/bin/*"]
-
-    # Make the bottles uniform
-    inreplace_file = libexec/"lib/node_modules/zx/node_modules/@types/node/process.d.ts"
-    inreplace inreplace_file, "/usr/local/bin", "#{HOMEBREW_PREFIX}/bin"
   end
 
   test do
-    (testpath/"test.mjs").write <<~EOS
+    (testpath/"test.mjs").write <<~JAVASCRIPT
       #!/usr/bin/env zx
 
       let name = YAML.parse('foo: bar').foo
       console.log(`name is ${name}`)
       await $`touch ${name}`
-    EOS
+    JAVASCRIPT
 
     output = shell_output("#{bin}/zx #{testpath}/test.mjs")
     assert_match "name is bar", output
-    assert_predicate testpath/"bar", :exist?
+    assert_path_exists testpath/"bar"
 
     assert_match version.to_s, shell_output("#{bin}/zx --version")
   end

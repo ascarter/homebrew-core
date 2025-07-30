@@ -1,17 +1,18 @@
 class Devcontainer < Formula
   desc "Reference implementation for the Development Containers specification"
   homepage "https://containers.dev"
-  url "https://registry.npmjs.org/@devcontainers/cli/-/cli-0.72.0.tgz"
-  sha256 "dce95550333869e03660f98d4963f898f204af9a961f324ff2b6be048a4704db"
+  url "https://registry.npmjs.org/@devcontainers/cli/-/cli-0.80.0.tgz"
+  sha256 "7264d2dd2772479cc57d8acc5ba79f40383e5c4e062d1b67002c067c39f39135"
   license "MIT"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "2b23eec0465a7e0cb536cc57c61b0e2f2d0701cf5eb0aa2a0f298b6ae7673e4d"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "2b23eec0465a7e0cb536cc57c61b0e2f2d0701cf5eb0aa2a0f298b6ae7673e4d"
-    sha256 cellar: :any_skip_relocation, arm64_ventura: "2b23eec0465a7e0cb536cc57c61b0e2f2d0701cf5eb0aa2a0f298b6ae7673e4d"
-    sha256 cellar: :any_skip_relocation, sonoma:        "fd463e73fb6bb6ba250b87e5e418642d6d68ff6b81c779b6a087d4ba3ea8db6d"
-    sha256 cellar: :any_skip_relocation, ventura:       "fd463e73fb6bb6ba250b87e5e418642d6d68ff6b81c779b6a087d4ba3ea8db6d"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "2b23eec0465a7e0cb536cc57c61b0e2f2d0701cf5eb0aa2a0f298b6ae7673e4d"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "0ee0ed149321d9d826740c53336ad65cd16ae09ba29ae75d85eda291aada3ff8"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "0ee0ed149321d9d826740c53336ad65cd16ae09ba29ae75d85eda291aada3ff8"
+    sha256 cellar: :any_skip_relocation, arm64_ventura: "0ee0ed149321d9d826740c53336ad65cd16ae09ba29ae75d85eda291aada3ff8"
+    sha256 cellar: :any_skip_relocation, sonoma:        "bc40fc5e95556c027dace145e363da33f846c4765dc5d9ad87701a087bda5c22"
+    sha256 cellar: :any_skip_relocation, ventura:       "bc40fc5e95556c027dace145e363da33f846c4765dc5d9ad87701a087bda5c22"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "0ee0ed149321d9d826740c53336ad65cd16ae09ba29ae75d85eda291aada3ff8"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "0ee0ed149321d9d826740c53336ad65cd16ae09ba29ae75d85eda291aada3ff8"
   end
 
   depends_on "node"
@@ -22,7 +23,7 @@ class Devcontainer < Formula
   end
 
   test do
-    ENV["DOCKER_HOST"] = "/dev/null"
+    ENV["DOCKER_HOST"] = File::NULL
     # Modified .devcontainer/devcontainer.json from CLI example:
     # https://github.com/devcontainers/cli#try-out-the-cli
     (testpath/".devcontainer.json").write <<~JSON

@@ -1,8 +1,8 @@
 class Dwarfutils < Formula
   desc "Dump and produce DWARF debug information in ELF objects"
   homepage "https://www.prevanders.net/dwarf.html"
-  url "https://www.prevanders.net/libdwarf-0.11.0.tar.xz"
-  sha256 "846071fb220ac1952f9f15ebbac6c7831ef50d0369b772c07a8a8139a42e07d2"
+  url "https://www.prevanders.net/libdwarf-2.1.0.tar.xz"
+  sha256 "461bd29cbb9a41c26a25b0e527c3736c772bb7a89f6260d1edb39ab105226e06"
   license all_of: ["BSD-2-Clause", "LGPL-2.1-or-later", "GPL-2.0-or-later"]
   version_scheme 1
 
@@ -12,13 +12,13 @@ class Dwarfutils < Formula
   end
 
   bottle do
-    rebuild 1
-    sha256 arm64_sequoia: "006a219229a3010e9ada7ffbe0aaaff557b7b0ed50e74ad59535545170da23d6"
-    sha256 arm64_sonoma:  "5a59b9a8502c5a66cd7106e7af4f64e20ea8e1bfacab1746a45e0db1c8a28fcb"
-    sha256 arm64_ventura: "5cfc8adbd5391bb3f2198b09389caabeab41e73633354bf62442d7965095d793"
-    sha256 sonoma:        "f4fa659ba9f7cb092b47afe653bf0698e0e83077ea74d4143a7efad5df58bc84"
-    sha256 ventura:       "1b9718e58bc84826f8669b5f2ca8d395dec7936cfcac096cc28ac4ae7acb7e26"
-    sha256 x86_64_linux:  "feb60defc574c40271d8b4afae3963aafb239112b0004ece1f1bd1a733c95cbb"
+    sha256 arm64_sequoia: "143b1cf7befda30f5980aa7c6a81e92b627ce61db77af36bb2e3120a0b225380"
+    sha256 arm64_sonoma:  "1ca05e626afa92045007109d01e70bbc36bb75a08b2f5aab2ea2c7f9e06bd803"
+    sha256 arm64_ventura: "56c44d3750de55a820cf5542e7d9c1638eba2373c95d1b40544e7858cb873eb0"
+    sha256 sonoma:        "ee109538a120b0596720fc0b0dbb412d933c75b1e5cac98b49f11f51d44b157a"
+    sha256 ventura:       "6cdd6745c5db9769ce9b4e21348ec901b65525e245a2b602f77fa912eaf19cdc"
+    sha256 arm64_linux:   "0c33e5c78956abd5215d30bd0615351772608b651cb8391ae1505374e7bfba5f"
+    sha256 x86_64_linux:  "f092926133247cd6008dcab1884c90ac194d1719f945fe9d2202aab25af8d42d"
   end
 
   head do
@@ -29,7 +29,7 @@ class Dwarfutils < Formula
     depends_on "libtool" => :build
   end
 
-  depends_on "pkg-config" => :build
+  depends_on "pkgconf" => :build
 
   uses_from_macos "zlib"
 
@@ -65,7 +65,7 @@ class Dwarfutils < Formula
         return 0;
       }
     C
-    system ENV.cc, "-I#{include}/libdwarf-0", "test.c", "-L#{lib}", "-ldwarf", "-o", "test"
+    system ENV.cc, "-I#{include}/libdwarf-#{version.major}", "test.c", "-L#{lib}", "-ldwarf", "-o", "test"
     system "./test"
   end
 end

@@ -1,20 +1,10 @@
 class Root < Formula
-  desc "Object oriented framework for large scale data analysis"
+  desc "Analyzing petabytes of data, scientifically"
   homepage "https://root.cern"
+  url "https://root.cern/download/root_v6.36.02.source.tar.gz"
+  sha256 "510d677b33ac7ca48aa0d712bdb88d835a1ff6a374ef86f1a1e168fa279eb470"
   license "LGPL-2.1-or-later"
-  revision 1
   head "https://github.com/root-project/root.git", branch: "master"
-
-  stable do
-    url "https://root.cern/download/root_v6.32.06.source.tar.gz"
-    sha256 "3fc032d93fe848dea5adb1b47d8f0a86279523293fee0aa2b3cd52a1ffab7247"
-
-    # Backport fix for RPATH on macOS
-    patch do
-      url "https://github.com/root-project/root/commit/0569d5d7bfb30d96e06c4192658aed4b78e4da64.patch?full_index=1"
-      sha256 "24553b16f66459fe947d192854f5fa6832c9414cc711d7705cb8e8fa67d2d935"
-    end
-  end
 
   livecheck do
     url "https://root.cern/install/all_releases/"
@@ -25,27 +15,32 @@ class Root < Formula
   end
 
   bottle do
-    sha256 arm64_sequoia: "926049db01a7ba8784d2ccb58368a409774f1803f3fdecfed00d845dc872876e"
-    sha256 arm64_sonoma:  "e9d3d3ec4704e77d3a0b4919c00908d24e2e18499baacf2fe3c59b4d8fbfb92e"
-    sha256 arm64_ventura: "183f8e23efa428d1ab963447749230cf2b473a2d3483ffb2709773e8c66b466f"
-    sha256 sonoma:        "7a1c2f98c12ed6c44ffbd51b036cedc148ffeb4285b3fc3af8a4ad6586d0601b"
-    sha256 ventura:       "a2c498026129e235b03c73b3014d70f36f9c06ab05f0cbfbdbf135c9dce283e9"
-    sha256 x86_64_linux:  "2b583335b3a904ccb20baf36e41887fb950acf0674f820e10b5fe6b025cfb39f"
+    sha256 arm64_sequoia: "e7cdd51a5aa9be774b23ec10730aae7760a88c1e84bfbb2aba5915b7b28cd130"
+    sha256 arm64_sonoma:  "0d58189ea1b217b9307db3727dafa0cc06948c266a9a42f1f95f99e5e65132ed"
+    sha256 arm64_ventura: "abd3a4bdc5b94c36a1cfe6094eb82a79757e0726dd4b5410014afb0ba13d9add"
+    sha256 sonoma:        "e5c8ee145702fd7e89f85c18826d0507c37e3fe4a35d2f3ed25943ff538b39b1"
+    sha256 ventura:       "5095d79b0295fdbe7addd6157fee8b2deec26a162057aa32ebcceca8485e8749"
+    sha256 arm64_linux:   "5d9f8f1a53539ab8c960b8e6a80cd32bc93974e4085ac634bcdf6323f2f9786f"
+    sha256 x86_64_linux:  "ffb760a55d95371d081327d9187b1f790d7cd41019f9fa6c9aec5b20d0e238dc"
   end
 
   depends_on "cmake" => :build
   depends_on "ninja" => :build
-  depends_on "pkg-config" => :build
+  depends_on "pkgconf" => :build
   depends_on "cfitsio"
   depends_on "davix"
   depends_on "fftw"
   depends_on "freetype"
   depends_on "ftgl"
   depends_on "gcc" # for gfortran
+  depends_on "giflib"
   depends_on "gl2ps"
   depends_on "glew"
   depends_on "graphviz"
   depends_on "gsl"
+  depends_on "jpeg-turbo"
+  depends_on "libpng"
+  depends_on "libtiff"
   depends_on "lz4"
   depends_on "mariadb-connector-c"
   depends_on "nlohmann-json"
@@ -67,11 +62,11 @@ class Root < Formula
   uses_from_macos "ncurses"
   uses_from_macos "zlib"
 
+  on_ventura :or_older do
+    depends_on :xcode
+  end
+
   on_linux do
-    depends_on "giflib"
-    depends_on "jpeg-turbo"
-    depends_on "libpng"
-    depends_on "libtiff"
     depends_on "libx11"
     depends_on "libxext"
     depends_on "libxft"
@@ -87,10 +82,15 @@ class Root < Formula
   end
 
   def install
+    # Workaround for CMake 4 due to VDT, https://github.com/dpiparo/vdt/blob/master/CMakeLists.txt
+    ENV["CMAKE_POLICY_VERSION_MINIMUM"] = "3.5"
+
     # Skip modification of CLING_OSX_SYSROOT to the unversioned SDK path
     # Related: https://github.com/Homebrew/homebrew-core/issues/135714
     # Related: https://github.com/root-project/cling/issues/457
-    inreplace "interpreter/cling/lib/Interpreter/CMakeLists.txt", '"MacOSX[.0-9]+\.sdk"', '"SKIP"'
+    if OS.mac? && MacOS.version > :ventura
+      inreplace "interpreter/cling/lib/Interpreter/CMakeLists.txt", '"MacOSX[.0-9]+\.sdk"', '"SKIP"'
+    end
 
     inreplace "cmake/modules/SearchInstalledSoftware.cmake" do |s|
       # Enforce secure downloads of vendored dependencies. These are
@@ -162,14 +162,8 @@ class Root < Formula
       -GNinja
     ]
 
-    compiledata = if build.head?
-      "cmake/unix/compiledata.sh"
-    else
-      args << "-Dbuiltin_afterimage=ON"
-      "build/unix/compiledata.sh"
-    end
     # Workaround the shim directory being embedded into the output
-    inreplace compiledata, "`type -path $CXX`", ENV.cxx
+    inreplace "cmake/unix/compiledata.sh", "`type -path $CXX`", ENV.cxx
 
     # Homebrew now sets CMAKE_INSTALL_LIBDIR to /lib, which is incorrect
     # for ROOT with gnuinstall, so we set it back here.
@@ -201,12 +195,12 @@ class Root < Formula
   end
 
   test do
-    (testpath/"test.C").write <<~C
+    (testpath/"test.C").write <<~CPP
       #include <iostream>
       void test() {
         std::cout << "Hello, world!" << std::endl;
       }
-    C
+    CPP
 
     # Test ROOT command line mode
     system bin/"root", "-b", "-l", "-q", "-e", "gSystem->LoadAllLibraries(); 0"

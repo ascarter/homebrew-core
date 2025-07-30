@@ -2,7 +2,7 @@ class Ledger < Formula
   desc "Command-line, double-entry accounting tool"
   homepage "https://ledger-cli.org/"
   license "BSD-3-Clause"
-  revision 6
+  revision 9
   head "https://github.com/ledger/ledger.git", branch: "master"
 
   stable do
@@ -40,6 +40,17 @@ class Ledger < Formula
       url "https://github.com/ledger/ledger/commit/5320c9f719a309ddacdbe77181cabeb351949013.patch?full_index=1"
       sha256 "9794113b28eabdcfc8b900eafc8dc2c0698409c0b3d856083ed5e38818289ba1"
     end
+
+    # CMakeLists.txt update for use of `CMAKE_CXX_STANDARD`
+    # It is set to 17 but we have to use 14 for compatibility issue with other sources
+    patch do
+      url "https://github.com/ledger/ledger/commit/8e64a1cf7009bbe7b89dc8bcb7abd00e39815b0b.patch?full_index=1"
+      sha256 "116cc2c4d716df516c2ad89241bc9fed6943013aacdfcd03757745202416bc72"
+    end
+    patch do
+      url "https://github.com/ledger/ledger/commit/19b0553dfbcd65c3c601b89e7020bff8013cb461.patch?full_index=1"
+      sha256 "9f70e40ca3eec216959a02e7f4ea626d265957443c2ec5d5219977ed2e525332"
+    end
   end
 
   livecheck do
@@ -47,14 +58,16 @@ class Ledger < Formula
     regex(/^v?(\d+(?:\.\d+)+)$/i)
   end
 
+  no_autobump! because: :requires_manual_review
+
   bottle do
-    rebuild 2
-    sha256 cellar: :any,                 arm64_sequoia: "a23d59fe87c4eb5e668c0636de0286b1a9ff8f5d1e823e066b5c74315a63a68b"
-    sha256 cellar: :any,                 arm64_sonoma:  "218ed68a0e22d7bd204f95da731524bc8aa2655ef6120abd408939bf5d994709"
-    sha256 cellar: :any,                 arm64_ventura: "4ddcb1fccd738eb25f3f34d7d385a6f01f6d33bf6171ad4c04cb273b165bc385"
-    sha256 cellar: :any,                 sonoma:        "c9c7cdde58c09a55707cc4275ae657324aa207dc8eeed4b41edc41cc02f3907b"
-    sha256 cellar: :any,                 ventura:       "2339d91e5735e72342ccb4e0890ad19e24e5018e4e5050a09e57a3d3639b98e3"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "1ffcf606599116dd135bb202d28aada69e978b017ef2f22735b9b68549919509"
+    sha256 cellar: :any,                 arm64_sequoia: "54988694adbadceb13c13156af0bed21ad9f15b3fa120ccb22894514cf9a5506"
+    sha256 cellar: :any,                 arm64_sonoma:  "77d3511a4314bfa674ed8228d630c38cbee2d0232d241d07fbba7fdbd4c7cd84"
+    sha256 cellar: :any,                 arm64_ventura: "68fa609eba85586c556d62db46585bf5c5447babffbc597e931cc8d788d4992a"
+    sha256 cellar: :any,                 sonoma:        "7eb65f0472a64ac1f08c97fee3af4024cd403107802b63d2a1af457eda0de180"
+    sha256 cellar: :any,                 ventura:       "a209aef25a18b73852e27582ecbca1af836ac1b70d8734751a3fdc804451272f"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "cd91a4adea0704c7a588299d9a1dc42aa8dba18c58327f9f1d0aa745330d780a"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "ed37e34cd74761ab49724546a6a83a5f59eb316ab2d76f03ab3ba95728e0b726"
   end
 
   depends_on "cmake" => :build
@@ -62,6 +75,7 @@ class Ledger < Formula
   depends_on "boost"
   depends_on "gmp"
   depends_on "gpgme"
+  depends_on "gpgmepp"
   depends_on "mpfr"
   depends_on "python@3.13"
 
@@ -73,7 +87,13 @@ class Ledger < Formula
   end
 
   def install
-    ENV.cxx11
+    # Workaround until next release as commit doesn't apply
+    # https://github.com/ledger/ledger/commit/956d8ea37247b34a5300c9d55abc7c75324fff33
+    if build.stable?
+      inreplace "CMakeLists.txt", "cmake_minimum_required(VERSION 3.0)",
+                                  "cmake_minimum_required(VERSION 3.5)"
+    end
+
     ENV.prepend_path "PATH", Formula["python@3.13"].opt_libexec/"bin"
 
     args = %W[
@@ -87,6 +107,7 @@ class Ledger < Formula
       -DBoost_NO_BOOST_CMAKE=ON
       -DPython_FIND_VERSION_MAJOR=3
       -DUSE_GPGME=1
+      -DCMAKE_CXX_STANDARD=14
     ] + std_cmake_args
 
     system "./acprep", "opt", "make", *args
@@ -96,7 +117,7 @@ class Ledger < Formula
     (pkgshare/"examples").install Dir["test/input/*.dat"]
     pkgshare.install "contrib"
     elisp.install Dir["lisp/*.el", "lisp/*.elc"]
-    bash_completion.install pkgshare/"contrib/ledger-completion.bash"
+    bash_completion.install pkgshare/"contrib/ledger-completion.bash" => "ledger"
   end
 
   test do

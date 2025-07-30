@@ -3,18 +3,20 @@ class Mlx < Formula
 
   desc "Array framework for Apple silicon"
   homepage "https://github.com/ml-explore/mlx"
-  url "https://github.com/ml-explore/mlx/archive/refs/tags/v0.20.0.tar.gz"
-  sha256 "e76b4a39fc559146234f6b85e42110654ef20d53bee4e462fa14175f007d1a3d"
-  # Main license is MIT while `metal-cpp` resource is Apache-2.0
-  license all_of: ["MIT", "Apache-2.0"]
+  url "https://github.com/ml-explore/mlx/archive/refs/tags/v0.27.1.tar.gz"
+  sha256 "eec64e74c1566c06a9318d47ef3e20e2d54d74912bb737b9d0cc5546a1464372"
+  license all_of: [
+    "MIT", # main license
+    "Apache-2.0", # metal-cpp resource
+  ]
   head "https://github.com/ml-explore/mlx.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any, arm64_sequoia: "d281ad348f35e4f1166fbce1b7da8cb38a09c12d7b43f5eceb22add26701fcaa"
-    sha256 cellar: :any, arm64_sonoma:  "4461788feabd224fca3c7efeb9c2172c3eb313ff73fbd0371b52d725f878a189"
-    sha256 cellar: :any, arm64_ventura: "7c1ba8b8acca7c6d140aa4fc03c01ca0bd336cca7802216ba92ab4a27164f037"
-    sha256 cellar: :any, sonoma:        "e4c6e975c2143667746cca721cb11ddea2bd8a7e815be18fcf980452442b9eec"
-    sha256 cellar: :any, ventura:       "cc6e62ceb144f1d38ffbba7af6cafff2bab36e7a4c2aea1d9c1f43b007b41fa5"
+    sha256 cellar: :any, arm64_sequoia: "96f8f5724b880b1699dc8641be9399dfb0f9e2a3551e35c3b4135b43ef0bb94c"
+    sha256 cellar: :any, arm64_sonoma:  "a696a82bf158e9ca18c94d07436cff59d4ded6fd2073fb672ae21d972679d390"
+    sha256 cellar: :any, arm64_ventura: "7eb7bf4dcbef25aafa580e41e4650c0cf43ec7e9f5717c2168f1171c13a6983b"
+    sha256 cellar: :any, sonoma:        "0a8127eb3c26cba3e2ed6173ac4882b6cf4c0f42c6fb07085619652c924121fe"
+    sha256 cellar: :any, ventura:       "804338e839582779a4a32e4a72dc390d0e40167ff01743384cb719b64c4b94c4"
   end
 
   depends_on "cmake" => :build
@@ -35,16 +37,16 @@ class Mlx < Formula
     depends_on "openblas"
   end
 
-  # https://github.com/ml-explore/mlx/blob/v#{version}/CMakeLists.txt#L91C21-L91C97
+  # https://github.com/ml-explore/mlx/blob/v#{version}/CMakeLists.txt
   # Included in not_a_binary_url_prefix_allowlist.json
   resource "metal-cpp" do
     on_arm do
-      url "https://developer.apple.com/metal/cpp/files/metal-cpp_macOS15_iOS18-beta.zip"
-      sha256 "d0a7990f43c7ce666036b5649283c9965df2f19a4a41570af0617bbe93b4a6e5"
+      url "https://developer.apple.com/metal/cpp/files/metal-cpp_macOS15_iOS18.zip"
+      sha256 "0433df1e0ab13c2b0becbd78665071e3fa28381e9714a3fce28a497892b8a184"
     end
   end
 
-  # Update to GIT_TAG at https://github.com/ml-explore/mlx/blob/v#{version}/mlx/io/CMakeLists.txt#L21
+  # Update to GIT_TAG at https://github.com/ml-explore/mlx/blob/v#{version}/mlx/io/CMakeLists.txt
   resource "gguflib" do
     url "https://github.com/antirez/gguf-tools/archive/af7d88d808a7608a33723fba067036202910acb3.tar.gz"
     sha256 "1ee2dde74a3f9506af9ad61d7638a5e87b5e891b5e36a5dd3d5f412a8ce8dd03"
@@ -112,7 +114,7 @@ class Mlx < Formula
     (testpath/"test.py").write <<~PYTHON
       import mlx.core as mx
       x = mx.array(0.0)
-      assert mx.cos(x) == 1.0
+      assert mx.allclose(mx.cos(x), mx.array(1.0))
     PYTHON
     system python3, "test.py"
   end

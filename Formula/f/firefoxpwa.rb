@@ -1,24 +1,25 @@
 class Firefoxpwa < Formula
   desc "Tool to install, manage and use Progressive Web Apps in Mozilla Firefox"
   homepage "https://pwasforfirefox.filips.si/"
-  url "https://github.com/filips123/PWAsForFirefox/archive/refs/tags/v2.13.1.tar.gz"
-  sha256 "d0af7a8b97555ed46cc6eb8f971e520149c9a4b520f0c0364b67530d0cccd8a1"
+  url "https://github.com/filips123/PWAsForFirefox/archive/refs/tags/v2.15.0.tar.gz"
+  sha256 "772ef9461aaed98f90f772f8e01070272048f7607ac061b56f1af4ab5f8bbade"
   license "MPL-2.0"
   head "https://github.com/filips123/PWAsForFirefox.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "f2d4e37ab715d2ec6bc440835f51c1437e46096b5f6c1e98ef88924920acb610"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "4868985f8c2fb489703c354d906d09859e17ce40728ab4ce2b9ee11e0ea4f338"
-    sha256 cellar: :any_skip_relocation, arm64_ventura: "38b2d08a516d85c301d4a8d53c4282b29abd180d04cc63d9858db90f38ebd404"
-    sha256 cellar: :any_skip_relocation, sonoma:        "858c39c4fbd38e6adcd81ace8764dad99a969152ec3ba7b145efb312464d8d45"
-    sha256 cellar: :any_skip_relocation, ventura:       "06236fe788099dac0a60b93a23999243e29e63e6dc27104876dbf0b85627e5be"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "093e5a9dc084870bb9485a021d286d8d391277596aefc69d4a6f0a05c74f9bdb"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "44105b4fb962afff1e221239e0b6b3859e33aef3b9975f0a02bfaeb502614def"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "60879b5d614a0f7584811a71b2926e94b41bb7a1e79befa5ddbd60c83aca9f41"
+    sha256 cellar: :any_skip_relocation, arm64_ventura: "5ffecc9264d4c3e52b49f063e4d97c8ba4c9c1f94da6cc2140ed0ee29e264418"
+    sha256 cellar: :any_skip_relocation, sonoma:        "49bc7ac80b7c712a3879ec0bd51b11366c3432d3e860b4debde5fcc1bbf761a7"
+    sha256 cellar: :any_skip_relocation, ventura:       "916a89368de04e1b5eba2c00e1bc5fa8caa7a013912974096cc6e170996d246f"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "094c1f2c2c9ec197dfb12fd601d9dadfb5f72efe821f25bdfb933b8700da9443"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "4987e1dbb7ffa3a9c1b46724a8b082a24a0e2a7c18579e162d687bf30201f98e"
   end
 
+  depends_on "pkgconf" => :build
   depends_on "rust" => :build
 
   on_linux do
-    depends_on "pkg-config" => :build
     depends_on "bzip2" # not used on macOS
     depends_on "openssl@3"
   end

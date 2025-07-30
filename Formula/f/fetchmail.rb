@@ -1,8 +1,8 @@
 class Fetchmail < Formula
   desc "Client for fetching mail from POP, IMAP, ETRN or ODMR-capable servers"
   homepage "https://www.fetchmail.info/"
-  url "https://downloads.sourceforge.net/project/fetchmail/branch_6.5/fetchmail-6.5.0.tar.xz"
-  sha256 "42611aea4861a5311e5116843f01c203dceadf440bf2eb1b4a43a445f2977668"
+  url "https://downloads.sourceforge.net/project/fetchmail/branch_6.5/fetchmail-6.5.4.tar.xz"
+  sha256 "c859156e9bff841d4d984cb3fdcb8042b6b31789fc3387c2649baa95a88d698b"
   license all_of: [
     "LGPL-2.1-or-later",
     "ISC",
@@ -17,14 +17,16 @@ class Fetchmail < Formula
   end
 
   bottle do
-    sha256 cellar: :any, arm64_sequoia: "b76509619fe246396587c9803f98bfbef6462a7b9a06b5b0a32e234811d31656"
-    sha256 cellar: :any, arm64_sonoma:  "7c195c68726a64d224126e5430233cc6458ec80c1fb905c7e305bc18bec704aa"
-    sha256 cellar: :any, arm64_ventura: "bd350d81590e440f7bd507e35d2cf9447c571f54580d25a4fa06acfa33e38eb5"
-    sha256 cellar: :any, sonoma:        "abb7e44d3200d2a6f0f9b5fed7bef9f235fa366b736a9c1cb991f9abc63e166a"
-    sha256 cellar: :any, ventura:       "c02640540d7246853572eb0b478823e2cd8facb085bb0f9dabdb536921b2c1fa"
-    sha256               x86_64_linux:  "8480cfc2b3f6ea0090c6ece015bba18b356be0ea024c39c7956f3e8aa44a27a4"
+    sha256 cellar: :any, arm64_sequoia: "daf595c9ee9c4c8b64f534e7db0432f4e514a7087a8a62e287faac4cdd78f0e7"
+    sha256 cellar: :any, arm64_sonoma:  "e0d032448a5d853a87042083a7942556c42c13f71eb5ddf32fb6a4562f5444cd"
+    sha256 cellar: :any, arm64_ventura: "8986b9ee8c100f0d141144c57d0abe790023d31e5ff0ae5cbd39c19f2b868e41"
+    sha256 cellar: :any, sonoma:        "812b774ef6547548f915952f4522b8ca7b7f7be24b749e7fca410701ad973080"
+    sha256 cellar: :any, ventura:       "30ab543b6ef257a4324c98bee2f770edc2371c84752b86b8d93ba8ee72b5af0e"
+    sha256               arm64_linux:   "a2f7f8c5f56107b456c97e53ec2f1c5abe445cccef609f92e0583dde033412f5"
+    sha256               x86_64_linux:  "c0689bb6b80ddad96a9d209e8fc2aec58e48de412f00815a53d49bda0754141e"
   end
 
+  depends_on "pkgconf" => :build
   depends_on "openssl@3"
 
   def install

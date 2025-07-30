@@ -1,24 +1,25 @@
 class Gwyddion < Formula
   desc "Scanning Probe Microscopy visualization and analysis tool"
-  homepage "http://gwyddion.net/"
-  url "https://downloads.sourceforge.net/project/gwyddion/gwyddion/2.67/gwyddion-2.67.tar.xz"
-  sha256 "90aeaf4de00373696b0bef4a82ac45b6287ad9c7b7aca6249068d4d2a4fc8d61"
+  homepage "https://gwyddion.net/"
+  url "https://downloads.sourceforge.net/project/gwyddion/gwyddion/2.69/gwyddion-2.69.tar.xz"
+  sha256 "597eb6b51ee575a07f350cc0573bc74d005a3490d9832ad136a369e70d30efa6"
   license "GPL-2.0-or-later"
 
   livecheck do
-    url "http://gwyddion.net/download.php"
-    regex(/stable version Gwyddion v?(\d+(?:\.\d+)+):/i)
+    url "https://gwyddion.net/download.php"
+    regex(/stable\s+version\s+Gwyddion\s+v?(\d+(?:\.\d+)+)[:<\s]/im)
   end
 
   bottle do
-    sha256 arm64_sonoma:  "f3a7df065714d9c58d08ce3d3527fe746c16372ce5f0e040098743a9f45969f1"
-    sha256 arm64_ventura: "dd772a7ad26e9f44004dda1f022ee8ec726811405b9b2d88236271aaaae083d6"
-    sha256 sonoma:        "19960f4fc6681f9fee0fdd3b97ea90c90d764002d2dd8827923e99529e7f2dc4"
-    sha256 ventura:       "644304817377de3c31996e105a4281bddb17da1ec24e1752649772eed70e2265"
-    sha256 x86_64_linux:  "763473cb225de5e11dd37aa9af6669daab6deafb30c4cafdc6d27e8fa0a18f0c"
+    sha256 arm64_sonoma:  "d123e0af0f28d068466325379d28bfccc2490d4f951cec4ad09cd0c2cd7992d0"
+    sha256 arm64_ventura: "738c889de97a30e82afbb7a655b8c1e00f14a774e7931e74e0a33940f81f3932"
+    sha256 sonoma:        "42295b2db20740abd1ab4c497ad76c6a885054e47426b6795472dc65ca6f6eb6"
+    sha256 ventura:       "ce04ffc46b39091dc6fcc77c620b4c0dd08ee0981a80e9ad92de47b8ff2c7261"
+    sha256 arm64_linux:   "c79557b841749f565a46e5c591c025b7afe25ccbdbb90b141a5bc13965c130f5"
+    sha256 x86_64_linux:  "e44417231b441de439df506d5505169bce65f230516a368456959b4dcb984436"
   end
 
-  depends_on "pkg-config" => :build
+  depends_on "pkgconf" => [:build, :test]
   depends_on "cairo"
   depends_on "fftw"
   depends_on "gdk-pixbuf"
@@ -46,14 +47,17 @@ class Gwyddion < Formula
     depends_on "harfbuzz"
   end
 
+  # Fix Autoconf ≥2.72 compatibility by explicitly declaring gettext version.
+  patch :DATA
+
   def install
     system "autoreconf", "--force", "--install", "--verbose" if OS.mac?
-    system "./configure", *std_configure_args,
+    system "./configure", "--disable-desktop-file-update",
+                          "--disable-pygwy",
                           "--disable-silent-rules",
-                          "--disable-desktop-file-update",
                           "--with-html-dir=#{doc}",
                           "--without-gtksourceview",
-                          "--disable-pygwy"
+                          *std_configure_args
     system "make", "install"
   end
 
@@ -67,87 +71,23 @@ class Gwyddion < Formula
         return 0;
       }
     C
-    atk = Formula["atk"]
-    cairo = Formula["cairo"]
-    fftw = Formula["fftw"]
-    fontconfig = Formula["fontconfig"]
-    freetype = Formula["freetype"]
-    gdk_pixbuf = Formula["gdk-pixbuf"]
-    gettext = Formula["gettext"]
-    glib = Formula["glib"]
-    gtkx = Formula["gtk+"]
-    gtkglext = Formula["gtkglext"]
-    harfbuzz = Formula["harfbuzz"]
-    libpng = Formula["libpng"]
-    pango = Formula["pango"]
-    pixman = Formula["pixman"]
-    flags = %W[
-      -I#{atk.opt_include}/atk-1.0
-      -I#{cairo.opt_include}/cairo
-      -I#{fftw.opt_include}
-      -I#{fontconfig.opt_include}
-      -I#{freetype.opt_include}/freetype2
-      -I#{gdk_pixbuf.opt_include}/gdk-pixbuf-2.0
-      -I#{gettext.opt_include}
-      -I#{glib.opt_include}/glib-2.0
-      -I#{glib.opt_lib}/glib-2.0/include
-      -I#{gtkglext.opt_include}/gtkglext-1.0
-      -I#{gtkglext.opt_lib}/gtkglext-1.0/include
-      -I#{gtkx.opt_include}/gtk-2.0
-      -I#{gtkx.opt_lib}/gtk-2.0/include
-      -I#{harfbuzz.opt_include}/harfbuzz
-      -I#{include}/gwyddion
-      -I#{libpng.opt_include}/libpng16
-      -I#{lib}/gwyddion/include
-      -I#{pango.opt_include}/pango-1.0
-      -I#{pixman.opt_include}/pixman-1
-      -D_REENTRANT
-      -L#{atk.opt_lib}
-      -L#{cairo.opt_lib}
-      -L#{fftw.opt_lib}
-      -L#{fontconfig.opt_lib}
-      -L#{freetype.opt_lib}
-      -L#{gdk_pixbuf.opt_lib}
-      -L#{gettext.opt_lib}
-      -L#{glib.opt_lib}
-      -L#{gtkglext.opt_lib}
-      -L#{gtkx.opt_lib}
-      -L#{lib}
-      -L#{pango.opt_lib}
-      -latk-1.0
-      -lcairo
-      -lfftw3
-      -lfontconfig
-      -lfreetype
-      -lgdk_pixbuf-2.0
-      -lgio-2.0
-      -lglib-2.0
-      -lgmodule-2.0
-      -lgobject-2.0
-      -lgwyapp2
-      -lgwyddion2
-      -lgwydgets2
-      -lgwydraw2
-      -lgwymodule2
-      -lgwyprocess2
-      -lpango-1.0
-      -lpangocairo-1.0
-      -lpangoft2-1.0
-    ]
 
-    if OS.mac?
-      flags += %w[
-        -lintl
-        -lgdk-quartz-2.0
-        -lgdkglext-quartz-1.0
-        -lgtk-quartz-2.0
-        -lgtkglext-quartz-1.0
-        -framework AppKit
-        -framework OpenGL
-      ]
-    end
-
+    flags = shell_output("pkgconf --cflags --libs gwyddion").chomp.split
     system ENV.cc, "test.c", "-o", "test", *flags
     system "./test"
   end
 end
+
+__END__
+diff --git a/configure.ac b/configure.ac
+index b1f75d4..8a0895c 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -883,6 +883,7 @@ AC_CHECK_FUNCS([sincos log2 exp2 lgamma tgamma j0 j1 y0 y1 log1p expm1 memrchr m
+ #############################################################################
+ # I18n
+ GETTEXT_PACKAGE=$PACKAGE_TARNAME
++AM_GNU_GETTEXT_VERSION([0.19])
+ AM_GNU_GETTEXT([external])
+ AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE",[Gettext package name])
+ AC_SUBST(GETTEXT_PACKAGE)

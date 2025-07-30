@@ -1,8 +1,8 @@
 class Kdoctools < Formula
   desc "Create documentation from DocBook"
   homepage "https://api.kde.org/frameworks/kdoctools/html/index.html"
-  url "https://download.kde.org/stable/frameworks/6.8/kdoctools-6.8.0.tar.xz"
-  sha256 "606863e86d6aa916abb3e3760b73fe9db1832c1e41727349d02cdc8c3ab96ba7"
+  url "https://download.kde.org/stable/frameworks/6.16/kdoctools-6.16.0.tar.xz"
+  sha256 "5c0c531a7978650f593a63a2aba1a641d590537e74c644aa361c63584b115aa2"
   license all_of: [
     "BSD-3-Clause",
     "GPL-2.0-or-later",
@@ -17,11 +17,11 @@ class Kdoctools < Formula
   end
 
   bottle do
-    sha256 cellar: :any,                 arm64_sonoma:  "14aefab00f324c85adc3a92b40f81a90c0d8df8edc1a5b6dabb55f92d483f768"
-    sha256 cellar: :any,                 arm64_ventura: "c8db5efde998070d1e7e87b9bd11d2a2b521a4c8836bfe544d5b066f711e0422"
-    sha256 cellar: :any,                 sonoma:        "d9fe6398f01265c143d253f4f32e2d9fd1edbef9c78018e689f9f2c9542db030"
-    sha256 cellar: :any,                 ventura:       "3543da15ff0166b5809d4685003c3aed114ad76749752310f5b7e5a3ba26e228"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "19f098d860ca99dd99962b1f0b5f558a69a8f4f0feb14706320df3e85b5af6a6"
+    sha256 cellar: :any,                 arm64_sonoma:  "8d7efaff525811b62abb0316288a73e618cbfd7f6c96e4bef48bd1f79a8e604a"
+    sha256 cellar: :any,                 arm64_ventura: "dfba835e98c136797a3c1fd45841a1190b6d9785408e29ccf6ebd96b738d6a14"
+    sha256 cellar: :any,                 sonoma:        "9a93e956736b717755b8bebd21953c5a1481d623561cde97b7e185c7d0d38a4d"
+    sha256 cellar: :any,                 ventura:       "0d2047c8416cf079f0475618d5833f72796d8d671dc46b1c9f0360dbe4fe4513"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "e0e4cd4f78b5eb2b728eb9d4f6e6a6385cf6a973ddb1cae5659fa0ba99b0495c"
   end
 
   depends_on "cmake" => [:build, :test]
@@ -37,12 +37,10 @@ class Kdoctools < Formula
   uses_from_macos "libxslt"
   uses_from_macos "perl"
 
-  fails_with gcc: "5"
-
   resource "URI::Escape" do
     on_linux do
-      url "https://cpan.metacpan.org/authors/id/O/OA/OALDERS/URI-5.27.tar.gz"
-      sha256 "11962d8a8a8496906e5d34774affc235a1c95c112d390c0b4171f3e91e9e2a97"
+      url "https://cpan.metacpan.org/authors/id/O/OA/OALDERS/URI-5.32.tar.gz"
+      sha256 "9632067d34e14e0dae2da94631c4f25a387fcc48d06fa29330e8b3c04c4e913d"
     end
   end
 

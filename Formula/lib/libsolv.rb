@@ -1,8 +1,8 @@
 class Libsolv < Formula
   desc "Library for solving packages and reading repositories"
   homepage "https://github.com/openSUSE/libsolv"
-  url "https://github.com/openSUSE/libsolv/archive/refs/tags/0.7.30.tar.gz"
-  sha256 "ce4aa2f0e3c5c9ab99dced6a1810af3f670f1b98892394edc68ccabe7b272133"
+  url "https://github.com/openSUSE/libsolv/archive/refs/tags/0.7.34.tar.gz"
+  sha256 "fd9c8a75d3ca09d9ff7b0d160902fac789b3ce6f9fb5b46a7647895f9d3eaf05"
   license "BSD-3-Clause"
 
   livecheck do
@@ -11,14 +11,13 @@ class Libsolv < Formula
   end
 
   bottle do
-    sha256 cellar: :any,                 arm64_sequoia:  "e3a12d98ef2e158258a036af17e4c1b06ee7b3516a521e609c803a62622bf5b4"
-    sha256 cellar: :any,                 arm64_sonoma:   "67fdecdc409d7985f97f9d0ec835e838b8a2a22c693e6650da379c623378c03a"
-    sha256 cellar: :any,                 arm64_ventura:  "e5550b95ded578e6456629bec5050a9a2ff730f3833b55b5f57ddc08f5858160"
-    sha256 cellar: :any,                 arm64_monterey: "605dba92ff28fb99043729da1792d2ed32acb5e6feb52ae2ab898115fe03a095"
-    sha256 cellar: :any,                 sonoma:         "e293ec024d26136dbaafc8b7b560db4a9679abb2285eb9bc3f4066eb9def9164"
-    sha256 cellar: :any,                 ventura:        "5a3c2423ec901cd464962e494cf801aed80abfe0e7d0195bbadc0772210ea84e"
-    sha256 cellar: :any,                 monterey:       "b00ed6d6773f1c0aeedd92943baa137423fe9e21aaa1ca771d81fa1e56ebe25d"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:   "b81f94d7990b8a3adb421f744319b2d947725f7e861fac7fefe3da3d74744c9c"
+    sha256 cellar: :any,                 arm64_sequoia: "705aee3e699df7f17fca2f26ca5e9b2764c5d09850608589ce874b223115efde"
+    sha256 cellar: :any,                 arm64_sonoma:  "d05cd3b8bdfbe1fc9a492cc983e283270e1e7d0c76cfa320b8207da0543bc196"
+    sha256 cellar: :any,                 arm64_ventura: "95e6c45b9b3d7ce2dcd8d67adde1c2f7026540c4f40cd41b3ca53e6290314ff4"
+    sha256 cellar: :any,                 sonoma:        "76be0cf755aeb56c3d93905b113fb9a98abaf21b23d35ede2982de897a901634"
+    sha256 cellar: :any,                 ventura:       "6888356ca5dc9c9138de54ceb23f5e982faef135f847569a42340e07ad78d0d6"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "6d613a1b3680a9ec36c0a017c8a4e3b534399250d79bf1521c9bd7e38c168154"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "4e0b9a3c13a9645e7eac79fb19e3160d905ff1e4aa179ecf9f93bee927171893"
   end
 
   depends_on "cmake" => :build

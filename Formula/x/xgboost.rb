@@ -1,18 +1,23 @@
 class Xgboost < Formula
   desc "Scalable, Portable and Distributed Gradient Boosting Library"
   homepage "https://xgboost.ai/"
-  url "https://github.com/dmlc/xgboost.git",
-      tag:      "v2.1.2",
-      revision: "f1990391e0eb401bc1aa1309dd9f86085749c4a3"
+  url "https://github.com/dmlc/xgboost/releases/download/v3.0.3/xgboost-src-3.0.3.tar.gz"
+  sha256 "6598adf6a073a55cc87a31e6712fc6dab938a5317aeae7134a07067d51acdf3a"
   license "Apache-2.0"
 
+  livecheck do
+    url :stable
+    strategy :github_latest
+  end
+
   bottle do
-    sha256 cellar: :any,                 arm64_sequoia: "5c969ebbf56727606f05b267d02a1a01ed57ec811eb3b7bbe1ab2752a6a94854"
-    sha256 cellar: :any,                 arm64_sonoma:  "4ee24eb50a4f2d2a0135748be4f7de1b85ac657e5f6816ee5fbb448299647a3e"
-    sha256 cellar: :any,                 arm64_ventura: "a8bb2e604fd5d54825316c60d1d18653a99ccce326c94a55a47e1f0b3af4c393"
-    sha256 cellar: :any,                 sonoma:        "b23c0bd2480f5a6a93961ebd344799d19ebf68b2da51d1f6a5db37ac22a44f2a"
-    sha256 cellar: :any,                 ventura:       "2bf119825fdeed1068fb89919d5d0c34ba1b404d1a9fbab8405ab830541c3704"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "2d992b9261cafd1d2a087b9049e2230c75c1bcfeb7826fbd85a403ba834527ad"
+    sha256 cellar: :any,                 arm64_sequoia: "337aa2fadab54451aee5f59ac27d502bd58ef19a9fa0b73fe134b33f10e9e07e"
+    sha256 cellar: :any,                 arm64_sonoma:  "138aab3ddb94f9e497d4c1328098a20c96ab1644cc25b12f311c4532d73f34e1"
+    sha256 cellar: :any,                 arm64_ventura: "5fa5b55a3ac8141ab387b6bba7906da0ea91a5c90a624bb9ba9f7fa1bb958123"
+    sha256 cellar: :any,                 sonoma:        "e170435a944f005c0e55383cdbb852157f141ccc8c7862b156c8d38ea1322100"
+    sha256 cellar: :any,                 ventura:       "c98adb1fc7b63a6adeaac6314555d6209a8143830d666c7d12c98b50ac89e097"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "cbddde7b06a12827978db8f77238f7c83f4febf7ca2c3e5d275b3abc135860a2"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "ff00fedc4ca5f3c3139da4947d94899417a95b33c3545450529f9011f80d3b80"
   end
 
   depends_on "cmake" => :build
@@ -24,18 +29,12 @@ class Xgboost < Formula
 
   fails_with :clang do
     build 1100
-    cause <<-EOS
+    cause <<~EOS
       clang: error: unable to execute command: Segmentation fault: 11
       clang: error: clang frontend command failed due to signal (use -v to see invocation)
       make[2]: *** [src/CMakeFiles/objxgboost.dir/tree/updater_quantile_hist.cc.o] Error 254
     EOS
   end
-
-  # Starting in XGBoost 1.6.0, compiling with GCC 5.4.0 results in:
-  # src/linear/coordinate_common.h:414:35: internal compiler error: in tsubst_copy, at cp/pt.c:13039
-  # This compiler bug is fixed in more recent versions of GCC: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=80543
-  # Upstream issue filed at https://github.com/dmlc/xgboost/issues/7820
-  fails_with gcc: "5"
 
   def install
     ENV.llvm_clang if OS.mac? && (DevelopmentTools.clang_build_version <= 1100)

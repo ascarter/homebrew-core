@@ -1,8 +1,8 @@
 class Sui < Formula
   desc "Next-generation smart contract platform powered by the Move programming language"
   homepage "https://sui.io"
-  url "https://github.com/MystenLabs/sui/archive/refs/tags/testnet-v1.37.2.tar.gz"
-  sha256 "e85c97f3f6352e8e6f33d1c4464677a506a210b6272447e2dc1a65e586bf0e66"
+  url "https://github.com/MystenLabs/sui/archive/refs/tags/testnet-v1.52.2.tar.gz"
+  sha256 "4740d8cdf15b5dac7a4e5f3f6c20a823957526c6a63cf2b6c5cb4fdecd219f54"
   license "Apache-2.0"
 
   livecheck do
@@ -11,12 +11,13 @@ class Sui < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "7c56c4943cd8bc2ab0524f510c1a2bfe59ec91b0118f7a59524311dcada37b17"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "1d582209fb0b16c8fe60f25c9d39f0551417d7ae025d4fd07055cee3450a2f14"
-    sha256 cellar: :any_skip_relocation, arm64_ventura: "f1881034a829e51810b2d4a53795f8dec305046b531a0fe3e837c46abebc8b7e"
-    sha256 cellar: :any_skip_relocation, sonoma:        "f988baab99cb1debc61a7306288d32ede78907b6e2e5c777b5e5eb9348e7075d"
-    sha256 cellar: :any_skip_relocation, ventura:       "17e39bbf74f7ab98a25310a94f1ec45f4d59d6cc364e9197686e76ba8efdf81b"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "ec708d37e3bf11f5bcc1db57ae74d36eca91c9c70c8a9db663918b287d5e0e29"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "466f60e66e3652c9eb856674dd87afdbefdcf61aa12c509d2304ef8527e0509b"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "6828ec23fb9cf49d73caab9511879135b9320d4cd7202ed512fcff7034a56ec0"
+    sha256 cellar: :any_skip_relocation, arm64_ventura: "9c31757bd3a2f6de79e0aee2615be61476f2e8c2a75f1c557a9eb7941c29fb0e"
+    sha256 cellar: :any_skip_relocation, sonoma:        "ab32efb2738107b2b837c59f58b1c407c5242a045f13391ee8073aa476280737"
+    sha256 cellar: :any_skip_relocation, ventura:       "ed2842e5ee21042efd4c1f8b411a0d5ce3ec71e1f62d8206923946104db0156a"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "79b078d197a7f76c4ee6a6cb49212e0e1ceba72e6c034bde1b2b817baf3afd60"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "8982e08850f6bd537c7dd3c1839d5fb6de1740b367c3b144ebb1f8cdac0800d2"
   end
 
   depends_on "cmake" => :build
@@ -29,7 +30,7 @@ class Sui < Formula
 
   def install
     ENV["GIT_REVISION"] = "homebrew"
-    system "cargo", "install", *std_cargo_args(path: "crates/sui")
+    system "cargo", "install", "--features", "tracing", *std_cargo_args(path: "crates/sui")
   end
 
   test do

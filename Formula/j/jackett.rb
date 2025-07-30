@@ -1,33 +1,34 @@
 class Jackett < Formula
   desc "API Support for your favorite torrent trackers"
   homepage "https://github.com/Jackett/Jackett"
-  url "https://github.com/Jackett/Jackett/archive/refs/tags/v0.22.867.tar.gz"
-  sha256 "382e9cc11536866b991a80688f8159f44c7e57048d71f831960b2810bd1f1e5b"
+  url "https://github.com/Jackett/Jackett/archive/refs/tags/v0.22.2208.tar.gz"
+  sha256 "43ac6501aad25ad1c473576f388ff916adf75be07efeeb81f79dab45aaaf3281"
   license "GPL-2.0-only"
   head "https://github.com/Jackett/Jackett.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any,                 arm64_sequoia: "58fdee28a3167bfe2a0e1285ada0b347a1bb2963b91c9f16d7fce805f23039a3"
-    sha256 cellar: :any,                 arm64_sonoma:  "ee2d883d72a7fef0b010b327cecbf38669f65c9b44418b86daea6fa81e15601c"
-    sha256 cellar: :any,                 arm64_ventura: "2ea758536cc7a8a48f915f8be1d32dc238ea03361a2ef63b4e7708f492a39afa"
-    sha256 cellar: :any,                 sonoma:        "35497941844c9f93cae8897967e161da4e211a70e222bf7a7d7f3c30cd3d39fd"
-    sha256 cellar: :any,                 ventura:       "588df8002314e43776f0ea6c97ea234bbfe4f40d72152088d26e19c2824f9521"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "f924caaec9d2b2310b92865dc114c959b7fe0e04df227c1c77241c9e586fa369"
+    sha256 cellar: :any,                 arm64_sequoia: "227a34366de149f92738e4a697e84da4f2a151cae9a3c2ef93aba0aae539881c"
+    sha256 cellar: :any,                 arm64_sonoma:  "d1c17cc50b8e922f55a180497db4e52dc04034f439e9af47031254c575eed901"
+    sha256 cellar: :any,                 arm64_ventura: "f00840f5f268e723c103046cf5e0aec902ac2540a5f606febeb48b3463dc161e"
+    sha256 cellar: :any,                 ventura:       "54a960561d3949d623cc41fa36262c0e4dea196b8eca9efa66ba3960e2a8df86"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "0c5a8aa69d911bd2edfc74045defe35b2afc281ee096ce436b6b0effde6e6ecc"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "5cc2887138424e9d1f08e6b810f68489ee4eef930eb6256f117b452b75749dd9"
   end
 
-  depends_on "dotnet"
+  depends_on "dotnet@8"
 
   def install
-    dotnet = Formula["dotnet"]
-    os = OS.mac? ? "osx" : OS.kernel_name.downcase
-    arch = Hardware::CPU.intel? ? "x64" : Hardware::CPU.arch.to_s
+    ENV["DOTNET_CLI_TELEMETRY_OPTOUT"] = "1"
+    ENV["DOTNET_SYSTEM_GLOBALIZATION_INVARIANT"] = "1"
+
+    dotnet = Formula["dotnet@8"]
 
     args = %W[
       --configuration Release
       --framework net#{dotnet.version.major_minor}
       --output #{libexec}
-      --runtime #{os}-#{arch}
       --no-self-contained
+      --use-current-runtime
     ]
     if build.stable?
       args += %W[

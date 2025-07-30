@@ -1,23 +1,24 @@
 class GitCodereview < Formula
   desc "Tool for working with Gerrit code reviews"
   homepage "https://pkg.go.dev/golang.org/x/review/git-codereview"
-  url "https://github.com/golang/review/archive/refs/tags/v1.13.0.tar.gz"
-  sha256 "e67f223353f191aca75e8e2af713febd07adf596a1718a03276fbc6bab3db746"
+  url "https://github.com/golang/review/archive/refs/tags/v1.16.0.tar.gz"
+  sha256 "7e9d47d8025f1569c0a53c6030602e6eb049818d25c5fd0cad777efd21eeca20"
   license "BSD-3-Clause"
+  head "https://github.com/golang/review.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "cedfd30b6db4a1ee19104c3f2b9a1b0f0b46bd0559e6545b194e314f2b22047e"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "cedfd30b6db4a1ee19104c3f2b9a1b0f0b46bd0559e6545b194e314f2b22047e"
-    sha256 cellar: :any_skip_relocation, arm64_ventura: "cedfd30b6db4a1ee19104c3f2b9a1b0f0b46bd0559e6545b194e314f2b22047e"
-    sha256 cellar: :any_skip_relocation, sonoma:        "74875343a167eb4140b98b17c75ab1f2e121f90957a00a545731542c21866d29"
-    sha256 cellar: :any_skip_relocation, ventura:       "74875343a167eb4140b98b17c75ab1f2e121f90957a00a545731542c21866d29"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "e9ededa7834b7107a2b31dd49e3e3d71411d5b2070faf0c78a3497562f68b22b"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "141f8fec07cc5476f969bfad9d545a8a68860402807f3e58edbe9d0b2d088d65"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "141f8fec07cc5476f969bfad9d545a8a68860402807f3e58edbe9d0b2d088d65"
+    sha256 cellar: :any_skip_relocation, arm64_ventura: "141f8fec07cc5476f969bfad9d545a8a68860402807f3e58edbe9d0b2d088d65"
+    sha256 cellar: :any_skip_relocation, sonoma:        "ae2d74d81b3af07481fcc7532c8a682a797b4cc8631b1f84cc9a9b25f44dcb47"
+    sha256 cellar: :any_skip_relocation, ventura:       "ae2d74d81b3af07481fcc7532c8a682a797b4cc8631b1f84cc9a9b25f44dcb47"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "bd88be0c3888dc913d4161a346af8e7852b4e01eb3319b6231326ae166169d11"
   end
 
   depends_on "go" => :build
 
   def install
-    system "go", "build", *std_go_args, "./git-codereview"
+    system "go", "build", *std_go_args(ldflags: "-s -w"), "./git-codereview"
   end
 
   test do

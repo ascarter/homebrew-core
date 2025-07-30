@@ -1,30 +1,34 @@
 class Recc < Formula
   desc "Remote Execution Caching Compiler"
   homepage "https://buildgrid.gitlab.io/recc"
-  url "https://gitlab.com/BuildGrid/buildbox/buildbox/-/archive/1.2.32/buildbox-1.2.32.tar.gz"
-  sha256 "73120ba9a514e12808ed729a4d7ca6ff32216248fb3c8654557475141f20b4c0"
+  url "https://gitlab.com/BuildGrid/buildbox/buildbox/-/archive/1.3.26/buildbox-1.3.26.tar.gz"
+  sha256 "d5b4bbbe8948f79d140170bf7d1d9a35ea7ab4cdceb0609bda7b69e1a839c1f5"
   license "Apache-2.0"
   head "https://gitlab.com/BuildGrid/buildbox/buildbox.git", branch: "master"
 
   bottle do
-    sha256 arm64_sequoia: "7a788ce9dce3c9e249d8050ce379ecb248f68203c08d1a85ecd6a72805273ddb"
-    sha256 arm64_sonoma:  "cac3d008f8d5ec7cf30a8069a03f519cc449c32824e1d326dd18c4887dff796d"
-    sha256 arm64_ventura: "327a4b6d00cff1450272b9264f1b575f277dd681aeccbfa5ad3296de52a01991"
-    sha256 sonoma:        "65ae9c7d6e1dfe20ac82ca550a8a50dd04114b1f461731139a6b5779ff8fd1e7"
-    sha256 ventura:       "44833291d06279d587e4b7571aa26d32d846b30c7b700ba51d03519cf62fda1f"
-    sha256 x86_64_linux:  "1ff561f8d6ee889d84885b9c3c6fceea5b48acc5025dd92c094d731b3331cdf7"
+    sha256 arm64_sequoia: "586590ea2057a0584c9c44a0bcfbd45794e104a0dc9dd39e9d83546ebc490664"
+    sha256 arm64_sonoma:  "e7c81f8647be187c79c2e8583715e404c67048f3de112a6a46dfd228e6226c1a"
+    sha256 sonoma:        "cfb5271cda0e60be99aa69640b5c3c53a849ef82d7c6934abd89a555a8c119ea"
+    sha256 arm64_linux:   "4a0c33248c2e784a77e916c778af9d5b5955725ad3aba5cdccddf7ced8087805"
+    sha256 x86_64_linux:  "1c12fdca83643965d80efabcca05267bbee2c65c6c0e4cd2115dfd9bd0c2d616"
   end
 
   depends_on "cmake" => :build
   depends_on "gettext" => :build # for envsubst
+  depends_on "nlohmann-json" => :build
+  depends_on "pkgconf" => :build
   depends_on "tomlplusplus" => :build
   depends_on "abseil"
   depends_on "c-ares"
   depends_on "glog"
   depends_on "grpc"
+  depends_on macos: :sonoma # Needs C++20 features not in Ventura
   depends_on "openssl@3"
   depends_on "protobuf"
   depends_on "re2"
+
+  uses_from_macos "curl"
   uses_from_macos "zlib"
 
   on_macos do
@@ -32,7 +36,7 @@ class Recc < Formula
   end
 
   on_linux do
-    depends_on "pkg-config" => :build
+    depends_on "pkgconf" => :build
     depends_on "util-linux"
   end
 
@@ -103,9 +107,9 @@ class Recc < Formula
 
     # Create a source file to test caching
     test_file = testpath/"test.c"
-    test_file.write <<~EOS
+    test_file.write <<~C
       int main() {}
-    EOS
+    C
 
     # Wait for the server to start
     sleep 2 unless (recc_cache_dir/"casd.sock").exist?

@@ -1,27 +1,26 @@
 class Emqx < Formula
   desc "MQTT broker for IoT"
   homepage "https://www.emqx.io/"
-  url "https://github.com/emqx/emqx/archive/refs/tags/v5.8.1.tar.gz"
-  sha256 "ff58eef9dceb65047f172032c552e72bf311b0c667bcde044f972bf2a49f712b"
+  url "https://github.com/emqx/emqx/archive/refs/tags/v5.8.7.tar.gz"
+  sha256 "3536b48d5ec1b69e498c1abd48cf074bfc403f7fca8c616477851cdcbc1c63b8"
   license "Apache-2.0"
   head "https://github.com/emqx/emqx.git", branch: "master"
 
-  # There can be a notable gap between when a version is tagged and a
-  # corresponding release is created, so we check the "latest" release instead
-  # of the Git tags.
+  # Exclude beta and release canditate tags (`-rc` and `-beta` suffixes)
+  # and enterprise versions with BUSL license (their tag starts with `e`)
   livecheck do
     url :stable
-    strategy :github_latest
+    regex(/^v?(\d+(?:\.\d+)+)$/i)
   end
 
   bottle do
-    rebuild 1
-    sha256 cellar: :any,                 arm64_sequoia: "068c30053dcc4a9ad268627b50fa84408ea0164100d9aa2a2a925818485ccc99"
-    sha256 cellar: :any,                 arm64_sonoma:  "0d492410e1c49a92a59779ccedcc7cd9c920dd5860769890af0f096060914088"
-    sha256 cellar: :any,                 arm64_ventura: "fe27edc1be88ed5b42d8e61e5eae51e694ba34ae45aade8dee4374f248f492ad"
-    sha256 cellar: :any,                 sonoma:        "ac76d2b8b3f8ce4a701e33f2e066d0e265a51b8811082a20ba1754b7f886736e"
-    sha256 cellar: :any,                 ventura:       "2651c9426643443198ec883d510fd2e1ed8bb9662fffe0e2e20a527393c86ac3"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "260ff9c31a5a75171fcad6c923d2a0634ac4713af8ea19db08ec4774439edc54"
+    sha256 cellar: :any,                 arm64_sequoia: "6f6973c4b8c090856066a3aa8dfdffd5c2eb336a10a0febb9e30d6ba62c95d67"
+    sha256 cellar: :any,                 arm64_sonoma:  "67db4e2cd4aed71409f3a1e41db676181744f1d44fc677d00803baa7e21ad5f8"
+    sha256 cellar: :any,                 arm64_ventura: "83afced79ba880bf1304e594dce2f860d1c6fd3cd50792f906354629abfb3c5b"
+    sha256 cellar: :any,                 sonoma:        "18238971951417123f928edd4e7eadb3881f58e0ede50d68e0acc2c160b878b5"
+    sha256 cellar: :any,                 ventura:       "1b32912908f26dbfd60a84a30996efc6af3e4e89a0ed2c45d00cdebf6e89d63b"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "edfd7daed5e1f9c2b62290008386546a9038df7617df224465607f5c20f756fa"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "ee33d491701b8fe2632dda69836f5dba501f51ef52d5df6d1f93b8366787afc4"
   end
 
   depends_on "autoconf"  => :build
@@ -47,10 +46,15 @@ class Emqx < Formula
   conflicts_with "cassandra", because: "both install `nodetool` binaries"
 
   def install
+    # Workaround for cmake version 4
+    ENV["CMAKE_POLICY_VERSION_MINIMUM"] = "3.5"
+
     ENV["PKG_VSN"] = version.to_s
     ENV["BUILD_WITHOUT_QUIC"] = "1"
+
     touch(".prepare")
     system "make", "emqx-rel"
+
     prefix.install Dir["_build/emqx/rel/emqx/*"]
     %w[emqx.cmd emqx_ctl.cmd no_dot_erlang.boot].each do |f|
       rm bin/f

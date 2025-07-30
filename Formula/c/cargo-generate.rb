@@ -1,23 +1,22 @@
 class CargoGenerate < Formula
   desc "Use pre-existing git repositories as templates"
   homepage "https://github.com/cargo-generate/cargo-generate"
-  url "https://github.com/cargo-generate/cargo-generate/archive/refs/tags/v0.22.0.tar.gz"
-  sha256 "cbea9b09fe0d9d577723007e1c7ef8329f7cb36268ad042bb870b63dbeaad323"
+  url "https://github.com/cargo-generate/cargo-generate/archive/refs/tags/v0.23.4.tar.gz"
+  sha256 "dd70491daecdd8fe93d85fb0a9c4257d6a71a9f3bc3ed2ecd919b273ca808b92"
   license any_of: ["Apache-2.0", "MIT"]
   head "https://github.com/cargo-generate/cargo-generate.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any,                 arm64_sequoia:  "b9d75c2816fb85e86c7063c24eaee49e0312548102ecf5c76d07cd30cb5abb75"
-    sha256 cellar: :any,                 arm64_sonoma:   "b7c2aa1cf4d9399a92393095be0d0db98382c4134a5d23b2e690db38c3fa998d"
-    sha256 cellar: :any,                 arm64_ventura:  "ebacfd69ba9482f1bb85bbb216e43f04706e69156cb0199607bc4b86d6cc83dd"
-    sha256 cellar: :any,                 arm64_monterey: "3deb80088b59d79b13fefb9ac189af1220b8269e39857fbfa1df7610fe0a95a0"
-    sha256 cellar: :any,                 sonoma:         "e0d5693494cb6763204f33499965ce4954918751c0caae64f9de3a2427fccce2"
-    sha256 cellar: :any,                 ventura:        "caea467b6b29979e1d5d5040ef5839a5fe2ce1c1e94a87759a9b9838cfd5c30b"
-    sha256 cellar: :any,                 monterey:       "fdc8e442a0bd311e2dcc420ca98aa513d632e320edb7fb7cfa3cad32351c3b86"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:   "515399398dbaba43f5fa4225df8334c28b620e1e0e486771010fb6aeef6fb0ee"
+    sha256 cellar: :any,                 arm64_sequoia: "0ffa80f4abaa3d4feabcc36fe4b755c5ad45967e2ee83b3a06ce4aeb3ec42268"
+    sha256 cellar: :any,                 arm64_sonoma:  "279eac5b9d83530fbc55b90bced87691ee6ebf2b3c72cc9af3c19465430d4196"
+    sha256 cellar: :any,                 arm64_ventura: "6485993bc52592207a4656c4d4f73f29e2dd943b95ff6f1cf70ee92c72bbb952"
+    sha256 cellar: :any,                 sonoma:        "9ee3ff4af18ce549e41dfac1260bad157b2bb8b88eefdd86e51dd6bf494005c9"
+    sha256 cellar: :any,                 ventura:       "bcc3351c282ff86c9f201e5d7e4102b1a3c449ff1af52ba9adadfba12ed5d573"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "cc0ec16758aab990fb68ed6668dd18ef92158842c346a291de7c8d4cd5cbe1f2"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "40722defa278f2a04e21c0191f21df53355bad43c41f38094a28c45bb5f01245"
   end
 
-  depends_on "pkg-config" => :build
+  depends_on "pkgconf" => :build
   depends_on "rust" => :build
   depends_on "libgit2"
   depends_on "libssh2"
@@ -33,20 +32,14 @@ class CargoGenerate < Formula
     system "cargo", "install", "--no-default-features", *std_cargo_args
   end
 
-  def check_binary_linkage(binary, library)
-    binary.dynamically_linked_libraries.any? do |dll|
-      next false unless dll.start_with?(HOMEBREW_PREFIX.to_s)
-
-      File.realpath(dll) == File.realpath(library)
-    end
-  end
-
   test do
+    require "utils/linkage"
+
     assert_match "No favorites defined", shell_output("#{bin}/cargo-generate gen --list-favorites")
 
     system bin/"cargo-generate", "gen", "--git", "https://github.com/ashleygwilliams/wasm-pack-template",
                                  "--name", "brewtest"
-    assert_predicate testpath/"brewtest", :exist?
+    assert_path_exists testpath/"brewtest"
     assert_match "brewtest", (testpath/"brewtest/Cargo.toml").read
 
     linked_libraries = [
@@ -56,7 +49,7 @@ class CargoGenerate < Formula
     ]
     linked_libraries << (Formula["openssl@3"].opt_lib/shared_library("libcrypto")) if OS.mac?
     linked_libraries.each do |library|
-      assert check_binary_linkage(bin/"cargo-generate", library),
+      assert Utils.binary_linked_to_library?(bin/"cargo-generate", library),
              "No linkage with #{library.basename}! Cargo is likely using a vendored version."
     end
   end

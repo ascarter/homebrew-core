@@ -1,23 +1,22 @@
 class CargoDeny < Formula
   desc "Cargo plugin for linting your dependencies"
   homepage "https://github.com/EmbarkStudios/cargo-deny"
-  url "https://github.com/EmbarkStudios/cargo-deny/archive/refs/tags/0.16.1.tar.gz"
-  sha256 "8e09aef97b0c299eefd23f019ad615559887f4ae3d54bd6affdd33a503a04fcf"
+  url "https://github.com/EmbarkStudios/cargo-deny/archive/refs/tags/0.18.3.tar.gz"
+  sha256 "4d15dbd7cc653fcb53a21e42b0adaab6b501693c939b76e4a7683c04a4a689ad"
   license any_of: ["Apache-2.0", "MIT"]
   head "https://github.com/EmbarkStudios/cargo-deny.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_sequoia:  "62a4e06a12a1e1c2c9e02cee103d56486c375844b789fdf21c15384ca7d3d664"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:   "6d71bac91a624fe32580277526e4b3933a17b95aefc1d67c70536a49ba2f3d44"
-    sha256 cellar: :any_skip_relocation, arm64_ventura:  "fd9f9a0803d3e464c3c5de2e401663582ae89ca6f3743bc21736543a1ad5b406"
-    sha256 cellar: :any_skip_relocation, arm64_monterey: "18574e808f2260c1505df4790288e92365dbbee938162ef087ed7675867b1294"
-    sha256 cellar: :any_skip_relocation, sonoma:         "281aa4d1b1ed51cef2934f67c3cd5b5aab6e11ae6b5a7e22af981bf9f9d6ee68"
-    sha256 cellar: :any_skip_relocation, ventura:        "29219dbfb6086b4c868cf4f9685f9244381d0b7db54cd6dffee90d4482776398"
-    sha256 cellar: :any_skip_relocation, monterey:       "252326a58dd6bbc98ed75f15fc64695b8807925af3eadc8cb5cedfbc9035bb9c"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:   "4d1dd1818ae40ecfb041ce0116027d74bfd99a1fcd84d61996cf5def71f20cb3"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "9fa4e65cf3c2ccb59c3cd81a0a24c0fe5b5899ae8944eb8727da068a8c6fb656"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "1c00a1f08fa03638e78ba78bc7625ba313b3ca1e22639149c082eb0b73cf2bf5"
+    sha256 cellar: :any_skip_relocation, arm64_ventura: "836dd971390f2106344029e3f947536bfb5fb8d39a965bb64ceeca67248ddd70"
+    sha256 cellar: :any_skip_relocation, sonoma:        "b8c75615712ca4ac9ce3dcfef2d5d56528ee62e1905f5445e31e97a5d642940a"
+    sha256 cellar: :any_skip_relocation, ventura:       "4cfd5cbef7f013b6e7a7e9fe7257e098049abbf3bb775f90a977df4e09a089e6"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "0fe53d784ad55fe89fd2f570750df6d8d1bf5b132102145536d9832813fbdf35"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "a0e8efc03b6b230c4f921347914e5561c4a525d7eb5b4e79b3f6d503946f1031"
   end
 
-  depends_on "pkg-config" => :build
+  depends_on "pkgconf" => :build
   depends_on "rust" => :build
   depends_on "rustup" => :test
 
@@ -29,8 +28,8 @@ class CargoDeny < Formula
     # Show that we can use a different toolchain than the one provided by the `rust` formula.
     # https://github.com/Homebrew/homebrew-core/pull/134074#pullrequestreview-1484979359
     ENV.prepend_path "PATH", Formula["rustup"].bin
-    system "rustup", "default", "beta"
     system "rustup", "set", "profile", "minimal"
+    system "rustup", "default", "beta"
 
     crate = testpath/"demo-crate"
     mkdir crate do

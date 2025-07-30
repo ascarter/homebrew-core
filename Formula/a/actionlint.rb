@@ -1,30 +1,37 @@
 class Actionlint < Formula
   desc "Static checker for GitHub Actions workflow files"
   homepage "https://rhysd.github.io/actionlint/"
-  url "https://github.com/rhysd/actionlint/archive/refs/tags/v1.7.4.tar.gz"
-  sha256 "3004bcb4615510e671c76a56259755ed616c3200fb73b0be0ca9c3d6ea09c73a"
+  url "https://github.com/rhysd/actionlint/archive/refs/tags/v1.7.7.tar.gz"
+  sha256 "237aec651a903bf4e9f9c8eb638da6aa4d89d07c484f45f11cfb89c2dbf277a5"
   license "MIT"
+  head "https://github.com/rhysd/actionlint.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "4800fafd738d38fd98e07e3c2ba1e46926f74f0a03f153eb40fdb639da44a910"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "4800fafd738d38fd98e07e3c2ba1e46926f74f0a03f153eb40fdb639da44a910"
-    sha256 cellar: :any_skip_relocation, arm64_ventura: "4800fafd738d38fd98e07e3c2ba1e46926f74f0a03f153eb40fdb639da44a910"
-    sha256 cellar: :any_skip_relocation, sonoma:        "213db714539ffe8befc312eeeefbc3f6f6169f3d110006e18be07b631d839291"
-    sha256 cellar: :any_skip_relocation, ventura:       "213db714539ffe8befc312eeeefbc3f6f6169f3d110006e18be07b631d839291"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "06c290ccc5d780a1dc747bd21e280b0021308f3d2f94a7c8a99ce7f3072e80d7"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "8d94522b3eefa067708c2ffe00f95a3b7ea39180a5399ec2f570f021228fabe2"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "8d94522b3eefa067708c2ffe00f95a3b7ea39180a5399ec2f570f021228fabe2"
+    sha256 cellar: :any_skip_relocation, arm64_ventura: "8d94522b3eefa067708c2ffe00f95a3b7ea39180a5399ec2f570f021228fabe2"
+    sha256 cellar: :any_skip_relocation, sonoma:        "1059f386ad492562782f7286b73a94c3cdab1a2b52e28ffc2962edd051058b8c"
+    sha256 cellar: :any_skip_relocation, ventura:       "1059f386ad492562782f7286b73a94c3cdab1a2b52e28ffc2962edd051058b8c"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "2caae10ea1ea1e51620917cda993b6f53541d5400185b985778e3237a782e201"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "04830cca2357b8cb8cf30a297bbbe5e1e347f5c0320ca67f621805e6f4843a87"
   end
 
   depends_on "go" => :build
   depends_on "ronn" => :build
+  depends_on "shellcheck"
 
   def install
     ldflags = "-s -w -X github.com/rhysd/actionlint.version=#{version}"
+    # FIXME: we shouldn't need this, but patchelf.rb does not seem to work well with the layout of Aarch64 ELF files
+    ldflags += " -extld #{ENV.cc}" if OS.linux? && Hardware::CPU.arm?
     system "go", "build", *std_go_args(ldflags:), "./cmd/actionlint"
     system "ronn", "man/actionlint.1.ronn"
     man1.install "man/actionlint.1"
   end
 
   test do
+    assert_match version.to_s, shell_output("#{bin}/actionlint --version 2>&1")
+
     (testpath/"action.yaml").write <<~YAML
       name: Test
       on: push

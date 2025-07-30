@@ -1,26 +1,32 @@
 class Hbase < Formula
   desc "Hadoop database: a distributed, scalable, big data store"
   homepage "https://hbase.apache.org"
-  url "https://www.apache.org/dyn/closer.lua?path=hbase/2.6.1/hbase-2.6.1-bin.tar.gz"
-  mirror "https://archive.apache.org/dist/hbase/2.6.1/hbase-2.6.1-bin.tar.gz"
-  sha256 "76e6eeff822593cd8db4d11c2adf2e2db707f27f351277313af9193b09369150"
+  url "https://www.apache.org/dyn/closer.lua?path=hbase/2.6.3/hbase-2.6.3-bin.tar.gz"
+  mirror "https://archive.apache.org/dist/hbase/2.6.3/hbase-2.6.3-bin.tar.gz"
+  sha256 "c5d396994d85feea27bd9bc426598f815db09a4691da5cacbdbf90dc41822ffa"
   # We bundle hadoop-lzo which is GPL-3.0-or-later
   license all_of: ["Apache-2.0", "GPL-3.0-or-later"]
 
   bottle do
-    sha256 arm64_sequoia: "ef9abda0df4a73dc7dc79fc84bafb0458a28bd9214152f2c94724b40ebb3a6b5"
-    sha256 arm64_sonoma:  "2e29b17434154655014f2748b84333fade9c3a147ad0283cbe2dae9ec90659b6"
-    sha256 arm64_ventura: "29e6c268eae626c43cf0c0e56ade1fbbdf30a69368f05dc3c615db1a3164c431"
-    sha256 sonoma:        "47438928d3738dc6e906ea0665bc851d1795ffa865fb66b5938395cde0833ea4"
-    sha256 ventura:       "c33cf0818f374ef77bcfc09ce58a1eb7ccaea69dadf24aaeebdd99e79a8ec043"
-    sha256 x86_64_linux:  "d779413909edc9803f495fcb53eee1414e0f98f8b4496761df4350fdb6e4e767"
+    sha256 arm64_sequoia: "06384e13687b92cdd86018493fac160e50a7481e01351cbb3e82b4cb069500b0"
+    sha256 arm64_sonoma:  "228ee184adde9f474ccefb7d1ab9ef34c169d1a72f3f90727b18ca35f3a45e5f"
+    sha256 arm64_ventura: "0602ee8b314011812c3bdf5ddc44f2328705d6fb2e3ac916259b3d85254d4f72"
+    sha256 sonoma:        "4250b3dc10bc4bf4dcdfe9b1ba3fa031c4b0a3bc3e41c3ff63dc856b4a41c7e4"
+    sha256 ventura:       "d7450a59e01df807766ab4f04d0d6444e242e8b15d951926359be853022788ae"
+    sha256 arm64_linux:   "5bd30646a0fcb94e312ba8e19cf8e77ce53d12f490a08ae0e8ae971d8ea815e0"
+    sha256 x86_64_linux:  "5c8deb9f83ee3fc5d4e5a2cd9027b9d5ed6207e602e3d2deb89535d1d64c96a7"
   end
 
   depends_on "ant" => :build
   depends_on "lzo"
   depends_on "openjdk@11"
 
-  uses_from_macos "netcat" => :test
+  on_linux do
+    on_arm do
+      # Added automake as a build dependency to update config files for ARM support.
+      depends_on "automake" => :build
+    end
+  end
 
   resource "hadoop-lzo" do
     url "https://github.com/cloudera/hadoop-lzo/archive/refs/tags/0.4.14.tar.gz"
@@ -51,6 +57,12 @@ class Hbase < Formula
     end
 
     resource("hadoop-lzo").stage do
+      if OS.linux? && Hardware::CPU.arm?
+        # Workaround for ancient config files not recognizing aarch64 macos.
+        automake_dir = Formula["automake"].share/"automake-#{Formula["automake"].version.major_minor}"
+        %w[config.guess config.sub].each { |fn| cp automake_dir/fn, "src/native/config/#{fn}" }
+      end
+
       # Help configure to find liblzo on Linux.
       unless OS.mac?
         inreplace "src/native/configure",
@@ -61,9 +73,10 @@ class Hbase < Formula
       # Fixed upstream: https://github.com/cloudera/hadoop-lzo/blob/HEAD/build.xml#L235
       ENV["CLASSPATH"] = Dir["#{libexec}/lib/hadoop-common-*.jar"].first
       # Workaround for Xcode 14.3.
-      ENV["CFLAGS"] = "-m64 -Wno-implicit-function-declaration"
-      ENV["CXXFLAGS"] = "-m64"
+      ENV.append_to_cflags "-m64" if Hardware::CPU.intel?
+      ENV.append_to_cflags "-Wno-implicit-function-declaration"
       ENV["CPPFLAGS"] = "-I#{Formula["openjdk@11"].include}"
+
       system "ant", "compile-native", "tar"
       (libexec/"lib").install Dir["build/hadoop-lzo-*/hadoop-lzo-*.jar"]
       (libexec/"lib/native").install Dir["build/hadoop-lzo-*/lib/native/*"]
@@ -91,7 +104,7 @@ class Hbase < Formula
     # https://issues.apache.org/jira/browse/HBASE-15426
     inreplace "#{libexec}/conf/hbase-site.xml",
       /<configuration>/,
-      <<~EOS
+      <<~XML
         <configuration>
           <property>
             <name>hbase.rootdir</name>
@@ -117,7 +130,7 @@ class Hbase < Formula
             <name>hbase.master.dns.interface</name>
             <value>#{loopback}</value>
           </property>
-      EOS
+      XML
   end
 
   def post_install
@@ -161,9 +174,14 @@ class Hbase < Formula
     ENV["HBASE_PID_DIR"]  = testpath/"pid"
 
     system bin/"start-hbase.sh"
-    sleep 15
     begin
-      assert_match "Zookeeper", pipe_output("nc 127.0.0.1 #{port} 2>&1", "stats")
+      sleep 15
+      TCPSocket.open("127.0.0.1", port) do |sock|
+        sock.puts("stats")
+        assert_match "Zookeeper", sock.gets
+      ensure
+        sock.close
+      end
     ensure
       system bin/"stop-hbase.sh"
     end

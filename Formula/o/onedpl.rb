@@ -1,8 +1,8 @@
 class Onedpl < Formula
   desc "C++ standard library algorithms with support for execution policies"
-  homepage "https://software.intel.com/content/www/us/en/develop/tools/oneapi/components/dpc-library.html"
-  url "https://github.com/oneapi-src/oneDPL/archive/refs/tags/oneDPL-2022.0.0-release.tar.gz"
-  sha256 "e22eb0155258abdccd810dc131baa3eac4a856507b6eef37462a077d37cd810e"
+  homepage "https://github.com/uxlfoundation/oneDPL"
+  url "https://github.com/uxlfoundation/oneDPL/archive/refs/tags/oneDPL-2022.9.0-release.tar.gz"
+  sha256 "b38844878af9ecee07ca719426b90fec77f79a35c7bc55154422cb0d7f654343"
   # Apache License Version 2.0 with LLVM exceptions
   license "Apache-2.0" => { with: "LLVM-exception" }
 
@@ -12,8 +12,7 @@ class Onedpl < Formula
   end
 
   bottle do
-    rebuild 1
-    sha256 cellar: :any_skip_relocation, all: "41a83601bb2bb9542dcdbfa8c3f8dcfd542834ef0277013c85d21199759f9af7"
+    sha256 cellar: :any_skip_relocation, all: "ad75b1275b00bcd6dc3c9bb5777e51692b730ee6aa1abf67138939ecf31d11c7"
   end
 
   depends_on "cmake" => :build

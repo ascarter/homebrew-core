@@ -1,17 +1,25 @@
 class Superfile < Formula
   desc "Modern and pretty fancy file manager for the terminal"
-  homepage "https://github.com/yorukot/superfile"
-  url "https://github.com/yorukot/superfile/archive/refs/tags/v1.1.5.tar.gz"
-  sha256 "38ecb89048b712d244246c7317115d973c1b56323295e902fbe7e2cc400d9cd6"
+  homepage "https://superfile.netlify.app/"
+  url "https://github.com/yorukot/superfile/archive/refs/tags/v1.3.3.tar.gz"
+  sha256 "f50f4e9c56dff67d3682216950db164fc6caaa1418049c59b42bf5e65d31d04f"
   license "MIT"
 
+  # Upstream creates releases that use a stable tag (e.g., `v1.2.3`) but are
+  # labeled as "pre-release" on GitHub before the version is released, so it's
+  # necessary to use the `GithubLatest` strategy.
+  livecheck do
+    url :stable
+    strategy :github_latest
+  end
+
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "49fd082e2892c91bccc6071d8469092c9af84afcee7624996d1af56201227d1a"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "c092d10844ccb382fbd929c73f1eb64c8c737d60f88235e423e0e1ae04f03f00"
-    sha256 cellar: :any_skip_relocation, arm64_ventura: "b5dcf1e2eb1502f36d09d8ab9f5e4aaa7c1830f2ad4f917ec541e4bbc82aed7b"
-    sha256 cellar: :any_skip_relocation, sonoma:        "2c7ce7ac07f2795bafadb66473c39e04412e4ffde166f13dcfb7d2f4678451c2"
-    sha256 cellar: :any_skip_relocation, ventura:       "98a45a4aa25f82bae99d39cd47627341c83f3fc71ab00f4c68e5d43c049d6bb3"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "5f600b994ed2ec0e146046e8c6b02db19fc5c79bf09a8b83465105eeb35fc52e"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "2effb87953c80ab50e0ab351599c4d9c1f3c89300a1451f8113bb4152d025567"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "b823bdd45f7c323030ce9c81fa718443128388012bcbe5f1ba63f7b4f874f6cf"
+    sha256 cellar: :any_skip_relocation, arm64_ventura: "851d247dd23aa52231ea96cc9540811df8e410d205df8971f8cc4064a3f90ca4"
+    sha256 cellar: :any_skip_relocation, sonoma:        "9d0a12f90d183d1790101dd58b524550046b93a46e334d87a2dac2611447d4ab"
+    sha256 cellar: :any_skip_relocation, ventura:       "f0d0a9b2f4ea1cedc0a54e58eb5b09942d4ca5ad6bf56e7144afe08597791b76"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "49271ebc391f9d5ea927c28f45cebb7ab8378d31952fd6fd2743c04b935ef828"
   end
 
   depends_on "go" => :build

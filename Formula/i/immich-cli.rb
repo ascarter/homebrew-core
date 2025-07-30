@@ -1,12 +1,12 @@
 class ImmichCli < Formula
   desc "Command-line interface for self-hosted photo manager Immich"
   homepage "https://immich.app/docs/features/command-line-interface"
-  url "https://registry.npmjs.org/@immich/cli/-/cli-2.2.30.tgz"
-  sha256 "5d321c2ac1e572310fe39d2ff4f3cfa6e4d955cf524576eec5d3b7601d160fcd"
+  url "https://registry.npmjs.org/@immich/cli/-/cli-2.2.73.tgz"
+  sha256 "9fec913a0b12cdf7fb19a3b4cdfe1ad593bb140f9e034ffb0e56cf8b5cab24e9"
   license "AGPL-3.0-only"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, all: "4ac539d357c7cc7953b2b8f7956c2974fb7700a958da69e56b37c05bd14de4d0"
+    sha256 cellar: :any_skip_relocation, all: "c108b8b9b599fe7e50a3480eaab5378f3952b99760b3835c4d18a6ee80e77b11"
   end
 
   depends_on "node"

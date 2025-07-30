@@ -1,8 +1,8 @@
 class Gradle < Formula
   desc "Open-source build automation tool based on the Groovy and Kotlin DSL"
   homepage "https://www.gradle.org/"
-  url "https://services.gradle.org/distributions/gradle-8.11-all.zip"
-  sha256 "73d2d553933194d8eefed0a291acbe45392ca3572ba13834cbbf373da375276d"
+  url "https://services.gradle.org/distributions/gradle-8.14.3-all.zip"
+  sha256 "ed1a8d686605fd7c23bdf62c7fc7add1c5b23b2bbc3721e661934ef4a4911d7c"
   license "Apache-2.0"
 
   livecheck do
@@ -11,7 +11,7 @@ class Gradle < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, all: "399044d8f24c64605e7690c8b54b44ad10551601865e16e19b9109b78bf75cce"
+    sha256 cellar: :any_skip_relocation, all: "c17d226eaddf29b9044dac1365a2ebca2a4190ecf832420ace73e49f04749e1c"
   end
 
   # https://github.com/gradle/gradle/blob/master/platforms/documentation/docs/src/docs/userguide/releases/compatibility.adoc
@@ -32,9 +32,9 @@ class Gradle < Formula
     assert_match version.to_s, shell_output("#{bin}/gradle --version")
 
     (testpath/"settings.gradle").write ""
-    (testpath/"build.gradle").write <<~EOS
+    (testpath/"build.gradle").write <<~GRADLE
       println "gradle works!"
-    EOS
+    GRADLE
     gradle_output = shell_output("#{bin}/gradle build --no-daemon")
     assert_includes gradle_output, "gradle works!"
   end

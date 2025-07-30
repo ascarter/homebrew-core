@@ -1,17 +1,18 @@
 class Argc < Formula
   desc "Easily create and use cli based on bash script"
   homepage "https://github.com/sigoden/argc"
-  url "https://github.com/sigoden/argc/archive/refs/tags/v1.21.1.tar.gz"
-  sha256 "0cef31e887711e935083a99a01ce6d3b19bb02ea39bf4e010530c59dc607b164"
+  url "https://github.com/sigoden/argc/archive/refs/tags/v1.23.0.tar.gz"
+  sha256 "d3eb85faf26a69c582dcea6d0fc2025bcfeec1dd0b9b35384a67059c2833103c"
   license any_of: ["Apache-2.0", "MIT"]
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "3d5b77facc41271bdb15f7f40ec59bdb2a7639c2b318a730d0286881b2b8ab2b"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "e9ef935b89fcfc420b6c6da092d1dbe47f984c2c63e49e6adc715b82dbe62b52"
-    sha256 cellar: :any_skip_relocation, arm64_ventura: "35be90cec3b85e819702f5b9c33c4b8c7cc684bfdd35dae2c639d66eaa123886"
-    sha256 cellar: :any_skip_relocation, sonoma:        "5394cd70e60ca547ebb6ae7452b01741fc7725f2c38dedb2c4d5bb8d6a38b30c"
-    sha256 cellar: :any_skip_relocation, ventura:       "1d343ba577cf1606b73ae4d298c32eec914597fa1f7fa491b1091998598417e2"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "f448c2f0435bbbbf6df7c7adb88a3575ef6d24a0ea794c23bc1ce0faf10008bc"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "36a5733acc21f8146c6cb3d6dd23968d3d77d4ce3c501b391c50d6cf44556a19"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "e17c17e8c931f998b2da7cd5d93365097716a332d1028786c28bf50ff815e4ad"
+    sha256 cellar: :any_skip_relocation, arm64_ventura: "318fd0396e6396ec672e0b302630fccf146564948d1f1cd21bc340954fc33904"
+    sha256 cellar: :any_skip_relocation, sonoma:        "50fe3f4adf05485dd7491edf7557457ad160bff95db98d4eb428af060b6254e7"
+    sha256 cellar: :any_skip_relocation, ventura:       "46274957c0ee5d3974c6e4aa4a953d16bfb318638935cdd0dc130bf4b89843ab"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "f4195f0d5d08d008ad7a470641d8a8246e737ee42395e5915dcf78272db830b4"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "bf572063a6a97cf2f9a663c93133e5467b7b06f37c233d0623dc9f8079bc7bd2"
   end
 
   depends_on "rust" => :build
@@ -24,7 +25,7 @@ class Argc < Formula
 
   test do
     system bin/"argc", "--argc-create", "build"
-    assert_predicate testpath/"Argcfile.sh", :exist?
+    assert_path_exists testpath/"Argcfile.sh"
     assert_match "build", shell_output("#{bin}/argc build")
   end
 end

@@ -1,18 +1,20 @@
 class TelegramDownloader < Formula
   desc "Telegram Messenger downloader/tools written in Golang"
   homepage "https://docs.iyear.me/tdl/"
-  url "https://github.com/iyear/tdl/archive/refs/tags/v0.17.7.tar.gz"
-  sha256 "10fec235481ad25ccf0314af083150a642ccb4a46db7bea2ac0865b798711db8"
+  url "https://github.com/iyear/tdl/archive/refs/tags/v0.19.1.tar.gz"
+  sha256 "73d94d344e213945f2907be2f2e9c7e10a6a76a2c084fdd23d4b5b2191cd9a49"
   license "AGPL-3.0-only"
   head "https://github.com/iyear/tdl.git", branch: "master"
 
+  no_autobump! because: :requires_manual_review
+
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "e8073e3eaf39c58ca99c8a050f164efe6aa431ce0895f12f4b091628ac435370"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "bab8645b04e2546a408ea07a1ab858ec8abd78a10f18e8c42f04585dfd893473"
-    sha256 cellar: :any_skip_relocation, arm64_ventura: "283ac7dc06b8288f5e74ab62862f2eef704a4031c5ea6c51edfe001e0900ecb8"
-    sha256 cellar: :any_skip_relocation, sonoma:        "2c1bc78c5814693dfbea03c61caa179b1388380135c8429b087649401f08585d"
-    sha256 cellar: :any_skip_relocation, ventura:       "7ed00f11f02c5710d8c03a3260cd6ee1dcfc96d3ce39b6f7f2b781fb09e8ea0e"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "2624dcc75d3db01579f625c9bf4a9e225641d73e2e4a577ef935efb7c1fcefea"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "b7ea231c234bbddcf524686219b25676d98c923930ed8511090e93ced14cca13"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "019db7aa2c9dc9a91fda57b2c04f07249f31c7bbbdabc7937c0c116523bb85ae"
+    sha256 cellar: :any_skip_relocation, arm64_ventura: "0901f760e4978713da8598c761f14ed6c793af99211254e67d12e62f3864844a"
+    sha256 cellar: :any_skip_relocation, sonoma:        "24dc299a3d41adaaaa41bfe14e10055c0e0b41125d9e9f3bdeb26bb5f2096f6c"
+    sha256 cellar: :any_skip_relocation, ventura:       "1771773d1c578965491cb3f7feeee03dd2eb6eaf83d33049ccd3db471dfc7aeb"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "9184ee76388978d5bfb1cfe8a2ff6c6eca254d265d6bae5b053382b91b631e01"
   end
 
   depends_on "go" => :build

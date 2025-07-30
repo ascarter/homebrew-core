@@ -2,31 +2,12 @@ class Curl < Formula
   desc "Get a file from an HTTP, HTTPS or FTP server"
   homepage "https://curl.se"
   # Don't forget to update both instances of the version in the GitHub mirror URL.
-  # `url` goes below this comment when the `stable` block is removed.
+  url "https://curl.se/download/curl-8.15.0.tar.bz2"
+  mirror "https://github.com/curl/curl/releases/download/curl-8_15_0/curl-8.15.0.tar.bz2"
+  mirror "http://fresh-center.net/linux/www/curl-8.15.0.tar.bz2"
+  mirror "http://fresh-center.net/linux/www/legacy/curl-8.15.0.tar.bz2"
+  sha256 "699a6d2192322792c88088576cff5fe188452e6ea71e82ca74409f07ecc62563"
   license "curl"
-  revision 1
-
-  stable do
-    url "https://curl.se/download/curl-8.11.0.tar.bz2"
-    mirror "https://github.com/curl/curl/releases/download/curl-8_11_0/curl-8.11.0.tar.bz2"
-    mirror "http://fresh-center.net/linux/www/curl-8.11.0.tar.bz2"
-    mirror "http://fresh-center.net/linux/www/legacy/curl-8.11.0.tar.bz2"
-    sha256 "c95d5a1368803729345a632ce42cceeefd5f09c3b4d9582f858f6779f4b8b254"
-
-    # Remove the following patches with `stable` block on next release.
-    # Fix netrc parsing that affects git.
-    # https://github.com/curl/curl/issues/15496
-    patch do
-      url "https://github.com/curl/curl/commit/f5c616930b5cf148b1b2632da4f5963ff48bdf88.patch?full_index=1"
-      sha256 "fa1991cab62d62ef97a86aae215330e9df3d54d60dcf8338fdd98e758b87cc62"
-    end
-    # Fix support for larger netrc file or longer lines/tokens in it
-    # https://github.com/curl/curl/issues/15513
-    patch do
-      url "https://github.com/curl/curl/commit/0cdde0fdfbeb8c35420f6d03fa4b77ed73497694.patch?full_index=1"
-      sha256 "e1d10cb2327b4aa6b90eb153dce8b06fb4c683936edb9353fb2c9a4341cababd"
-    end
-  end
 
   livecheck do
     url "https://curl.se/download/"
@@ -35,12 +16,13 @@ class Curl < Formula
 
   bottle do
     rebuild 1
-    sha256 cellar: :any,                 arm64_sequoia: "0e473c47dbd796d60e564c40f6447f406bc325aae2d0c5085074a60e2466b257"
-    sha256 cellar: :any,                 arm64_sonoma:  "47b31a69fda0558adedb16bdac0d4003a3efd902a0f28a6615734dbf3c1042d1"
-    sha256 cellar: :any,                 arm64_ventura: "fa50c33145ed41a6de273ce0ea9af5491f975bb34c4c1f11dfb598bc899e0c77"
-    sha256 cellar: :any,                 sonoma:        "7dadb384a5a42e7a4b5607791b5e43209d825df771172aca4aea549bb8f09c8a"
-    sha256 cellar: :any,                 ventura:       "e92eb6ae945a5ff54db7e4564df57b98cf02b958a7b0efbf7872103076ffabf2"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "48c94b796c1615b3695ebea3b95b8f40168697e80122ca4f1266e410d3eca91c"
+    sha256 cellar: :any,                 arm64_sequoia: "5b3365c6327695b3fd7013edce642836dc10320c6f04460feceb1c91c1b69233"
+    sha256 cellar: :any,                 arm64_sonoma:  "1fa6e2c3bc05bd5ac1354d1ad3c22001886e63f49bb405597fe36e1358fd48bd"
+    sha256 cellar: :any,                 arm64_ventura: "35a869eddf4cd88b291e26d2946407585fea8cc1d61c3966d17ce5b8b70a7072"
+    sha256 cellar: :any,                 sonoma:        "442c98283e65e7257c6f461add5bdf660f459c52467449e67e30f25f2e552b20"
+    sha256 cellar: :any,                 ventura:       "b8f4914a81b43a48256648068b2db9efd6d64640b521a5251b33186b71fe44c7"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "e86622df994fd9d482f79011fec9ae1ed4b24626f3b6693405d91011108d241b"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "677082f7b0f58297f34b5f286a25370bcefd5f08cf604449c77ec584e7cf5220"
   end
 
   head do
@@ -53,9 +35,11 @@ class Curl < Formula
 
   keg_only :provided_by_macos
 
-  depends_on "pkg-config" => :build
+  depends_on "pkgconf" => [:build, :test]
   depends_on "brotli"
   depends_on "libnghttp2"
+  depends_on "libnghttp3"
+  depends_on "libngtcp2"
   depends_on "libssh2"
   depends_on "openssl@3"
   depends_on "rtmpdump"
@@ -63,7 +47,7 @@ class Curl < Formula
 
   uses_from_macos "krb5"
   uses_from_macos "openldap"
-  uses_from_macos "zlib"
+  uses_from_macos "zlib", since: :sierra
 
   on_system :linux, macos: :monterey_or_older do
     depends_on "libidn2"
@@ -76,7 +60,10 @@ class Curl < Formula
            "Please make sure the URL is correct."
     end
 
-    system "./buildconf" if build.head?
+    # Use our `curl` formula with `wcurl`
+    inreplace "scripts/wcurl", 'CMD="curl "', "CMD=\"#{opt_bin}/curl \""
+
+    system "autoreconf", "--force", "--install", "--verbose" if build.head?
 
     args = %W[
       --disable-silent-rules
@@ -84,10 +71,11 @@ class Curl < Formula
       --without-ca-bundle
       --without-ca-path
       --with-ca-fallback
-      --with-secure-transport
       --with-default-ssl-backend=openssl
       --with-librtmp
       --with-libssh2
+      --with-nghttp3
+      --with-ngtcp2
       --without-libpsl
       --with-zsh-functions-dir=#{zsh_completion}
       --with-fish-functions-dir=#{fish_completion}
@@ -120,13 +108,16 @@ class Curl < Formula
   test do
     # Fetch the curl tarball and see that the checksum matches.
     # This requires a network connection, but so does Homebrew in general.
-    filename = (testpath/"test.tar.gz")
+    filename = testpath/"test.tar.gz"
     system bin/"curl", "-L", stable.url, "-o", filename
     filename.verify_checksum stable.checksum
 
+    # Verify QUIC and HTTP3 support
+    system bin/"curl", "--verbose", "--http3-only", "--head", "https://cloudflare-quic.com"
+
     # Check dependencies linked correctly
     curl_features = shell_output("#{bin}/curl-config --features").split("\n")
-    %w[brotli GSS-API HTTP2 IDN libz SSL zstd].each do |feature|
+    %w[brotli GSS-API HTTP2 HTTP3 IDN libz SSL zstd].each do |feature|
       assert_includes curl_features, feature
     end
     curl_protocols = shell_output("#{bin}/curl-config --protocols").split("\n")
@@ -135,7 +126,11 @@ class Curl < Formula
     end
 
     system libexec/"mk-ca-bundle.pl", "test.pem"
-    assert_predicate testpath/"test.pem", :exist?
-    assert_predicate testpath/"certdata.txt", :exist?
+    assert_path_exists testpath/"test.pem"
+    assert_path_exists testpath/"certdata.txt"
+
+    with_env(PKG_CONFIG_PATH: lib/"pkgconfig") do
+      system "pkgconf", "--cflags", "libcurl"
+    end
   end
 end

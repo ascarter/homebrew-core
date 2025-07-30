@@ -1,18 +1,19 @@
 class Ocicl < Formula
   desc "OCI-based ASDF system distribution and management tool for Common Lisp"
   homepage "https://github.com/ocicl/ocicl"
-  url "https://github.com/ocicl/ocicl/archive/refs/tags/v2.5.13.tar.gz"
-  sha256 "ba28c9dc813fcd9f519a736daacc3362e6e4780a33f6fceba9b25fb0fdef35a5"
+  url "https://github.com/ocicl/ocicl/archive/refs/tags/v2.6.5.tar.gz"
+  sha256 "a4cc0055e66c948dce070c98067ebd445d55bd3e349030e819547dd203d5e75b"
   license "MIT"
   revision 1
 
   bottle do
-    sha256 arm64_sequoia: "225ce3b0531983673b264b9cbddab740dbe436f6f9370d4d7e52d51458db1374"
-    sha256 arm64_sonoma:  "49c0978da52737b7c779dcbcb2d1ac303ed4225f4616d6fbc23dbb44d94c9c28"
-    sha256 arm64_ventura: "ec01b9c86a7d97f3096ba684dbe72fce6cb7e01b7ee01688d3fa15d780c1ba7f"
-    sha256 sonoma:        "8c56987e4a96595ec567e92401ffa91742426c72e65b7c8b7fb721728e875e10"
-    sha256 ventura:       "92423e44512c7cd31dafc29e42866690fd77cfcbb4a1dcf2b4399a0f156749ef"
-    sha256 x86_64_linux:  "05b84d129fa33f548079bf233c21126b0d5d90cf2e98fc7da806a0629a158f9c"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "26e4fc8832665f46bc1e30e81f525d2400ffebfa97c22881fc374fa307253638"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "ff1a0794b5de1c10c4f866e3901df7e03c3212aa61de5baf69b51f80f224b318"
+    sha256 cellar: :any_skip_relocation, arm64_ventura: "3c7454ffb9c0702e7fa175846a08000b918b8869d1266e161e3be0c080c405e5"
+    sha256 cellar: :any_skip_relocation, sonoma:        "f7b2daeb010ad3d7c3e669d51fd126efa22d307d7196223085ea1cfff6dfb493"
+    sha256 cellar: :any_skip_relocation, ventura:       "22554dc9c176b203b071c9604e495c078f11cab097e5c492c9cd6f57ef7f8ecc"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "4c5ef4bb48dac29cbe9806e26ee9f1624f9a898a1483aaf599354b595bfd578c"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "e300821200e6a83d64266119a700cc7527d01d5a26a130a4c0e0c2ac58316bf3"
   end
 
   depends_on "sbcl"
@@ -39,18 +40,18 @@ class Ocicl < Formula
            LISP
 
     # Write a shell script to wrap ocicl
-    (bin/"ocicl").write <<~EOS
+    (bin/"ocicl").write <<~LISP
       #!/usr/bin/env -S sbcl --core #{libexec}/ocicl.core --script
       (uiop:restore-image)
       (ocicl:main)
-    EOS
+    LISP
   end
 
   test do
     system bin/"ocicl", "install", "chat"
-    assert_predicate testpath/"systems.csv", :exist?
+    assert_path_exists testpath/"ocicl.csv"
 
-    version_files = testpath.glob("systems/cl-chat*/_00_OCICL_VERSION")
+    version_files = testpath.glob("ocicl/cl-chat*/_00_OCICL_VERSION")
     assert_equal 1, version_files.length, "Expected exactly one _00_OCICL_VERSION file"
 
     (testpath/"init.lisp").write shell_output("#{bin}/ocicl setup")

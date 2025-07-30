@@ -1,8 +1,8 @@
 class Melange < Formula
   desc "Build APKs from source code"
   homepage "https://github.com/chainguard-dev/melange"
-  url "https://github.com/chainguard-dev/melange/archive/refs/tags/v0.14.10.tar.gz"
-  sha256 "ed1edc3f232645f4a7b0c7f25053ddd28fa5eed0a44b725b06177be1449bda8d"
+  url "https://github.com/chainguard-dev/melange/archive/refs/tags/v0.30.1.tar.gz"
+  sha256 "1082540294f294f4c0e5a4255a961e88fa3335bbf7f910ca5a49790c6829e364"
   license "Apache-2.0"
   head "https://github.com/chainguard-dev/melange.git", branch: "main"
 
@@ -12,12 +12,12 @@ class Melange < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "f0e9be3e237ba2dcf6d54535cb3944333e476edba047631d576a83a1fc3609ff"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "f0e9be3e237ba2dcf6d54535cb3944333e476edba047631d576a83a1fc3609ff"
-    sha256 cellar: :any_skip_relocation, arm64_ventura: "f0e9be3e237ba2dcf6d54535cb3944333e476edba047631d576a83a1fc3609ff"
-    sha256 cellar: :any_skip_relocation, sonoma:        "224a938695337f39130eaada1ac1c9e7e5b07ecc3855f544b03a4a3fd89c73d2"
-    sha256 cellar: :any_skip_relocation, ventura:       "224a938695337f39130eaada1ac1c9e7e5b07ecc3855f544b03a4a3fd89c73d2"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "cf9a3def4dc3a98eecfad4286c6c44e6d17ba4f4fcb70e4cb246904fcb62f74f"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "813be0524b58b5b57f6646b5772cc23c8f4ac17a3a986fd28b1f23bb59f97530"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "68826c9785054ff988d11d6910f203181fe608633a45dd79f10d3009714cde88"
+    sha256 cellar: :any_skip_relocation, arm64_ventura: "a9920140d5acd1bff81f47765272560723ed50ca5a69e5bd7ffab644ae6de395"
+    sha256 cellar: :any_skip_relocation, sonoma:        "ec53274e145eadbf4691e27d0274a935136c8c430539eae5d0fa4d4892519005"
+    sha256 cellar: :any_skip_relocation, ventura:       "c9304bbf76859f2ac3196d6f09115c67b7473fa1cc30a720ea7a6add469adf46"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "1c12734e5f2dfb08ea5204003e337bc6624cf0a99c6a19b177a6db3ff362de46"
   end
 
   depends_on "go" => :build
@@ -79,7 +79,7 @@ class Melange < Formula
     assert_equal "hello-2.12-r0", shell_output("#{bin}/melange package-version #{testpath}/test.yml")
 
     system bin/"melange", "keygen"
-    assert_predicate testpath/"melange.rsa", :exist?
+    assert_path_exists testpath/"melange.rsa"
 
     assert_match version.to_s, shell_output(bin/"melange version 2>&1")
   end

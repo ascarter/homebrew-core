@@ -2,8 +2,8 @@ class DeviceMapper < Formula
   desc "Userspace library and tools for logical volume management"
   homepage "https://sourceware.org/dm"
   url "https://sourceware.org/git/lvm2.git",
-      tag:      "v2_03_28",
-      revision: "f87a6ad6d6f7cde0170fd479a45ee5b0a1c63d52"
+      tag:      "v2_03_34",
+      revision: "f6abf8abe2bf8493806ed549e92fcc8d41ed8dfb"
   license "LGPL-2.1-only"
 
   livecheck do
@@ -12,11 +12,14 @@ class DeviceMapper < Formula
     strategy :page_match
   end
 
+  no_autobump! because: :incompatible_version_format
+
   bottle do
-    sha256 cellar: :any_skip_relocation, x86_64_linux: "0e9e3a6ed8b745338383e56a2cde2fd67190ff2006a666f8774df3941628000c"
+    sha256 cellar: :any_skip_relocation, arm64_linux:  "3f53602ab23605fc08a7e516ae960f071c03d5ef4ce8957ff018bcf5ef2fda4d"
+    sha256 cellar: :any_skip_relocation, x86_64_linux: "fb40b1659968060ef1be8c9dd9e02acd28cf025a15c1889fa8747e2a320c9963"
   end
 
-  depends_on "pkg-config" => :build
+  depends_on "pkgconf" => :build
   depends_on "libaio"
   depends_on :linux
 

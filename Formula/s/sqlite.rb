@@ -1,9 +1,9 @@
 class Sqlite < Formula
   desc "Command-line interface for SQLite"
   homepage "https://sqlite.org/index.html"
-  url "https://www.sqlite.org/2024/sqlite-autoconf-3470000.tar.gz"
-  version "3.47.0"
-  sha256 "83eb21a6f6a649f506df8bd3aab85a08f7556ceed5dbd8dea743ea003fc3a957"
+  url "https://www.sqlite.org/2025/sqlite-autoconf-3500300.tar.gz"
+  version "3.50.3"
+  sha256 "ec5496cdffbc2a4adb59317fd2bf0e582bf0e6acd8f4aae7e97bc723ddba7233"
   license "blessing"
 
   livecheck do
@@ -14,14 +14,17 @@ class Sqlite < Formula
     end
   end
 
+  no_autobump! because: :incompatible_version_format
+
   bottle do
-    sha256 cellar: :any,                 arm64_sequoia: "f4716de629ecdf2acf41951e753e7d5f10d154915fad2ce4484231e36f13ade0"
-    sha256 cellar: :any,                 arm64_sonoma:  "3c1e59085e104ef0c1ea1e867300797329c403f46cd4cf15cb7c1a0b19bb1b4a"
-    sha256 cellar: :any,                 arm64_ventura: "4a4312a5da0dea4e6be511f3581ce11f166c20d34f327b62686ff1c6f5c22b59"
-    sha256 cellar: :any,                 sequoia:       "a36aaf898c49bdc6ab939f323dad41502c9773d5f4d92f028023d62b64d68acf"
-    sha256 cellar: :any,                 sonoma:        "dfc775408f49afdaf1238e2428c292336bcd20d5ff152dcb83d55b1646649748"
-    sha256 cellar: :any,                 ventura:       "5756aaabf9cf51b3ba263fd38aeeac189fae38d2d281a0fd48e7f47fb95bd5ac"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "876ee5b13d16e4147a7ed7df891037188dba92d016d3aeb922eb785bd2f5a816"
+    sha256 cellar: :any,                 arm64_sequoia: "d5ac21b30a733b24e58531bfdbe510ccbe14b72972e3b71ecad78a5243f6cfb1"
+    sha256 cellar: :any,                 arm64_sonoma:  "17759620116ae72926fbcdef96aa7145c9919dda59e4fe0545f319844df990e6"
+    sha256 cellar: :any,                 arm64_ventura: "aca8523f790a8042c7a1412257f24108100959407c3acabb5823cbccadf52d20"
+    sha256 cellar: :any,                 sequoia:       "efdac2a067ddd79d2a844ba4124cb29b55cc817d9340e5da87f1134dea1cf426"
+    sha256 cellar: :any,                 sonoma:        "0e4a86d2a03bd164dcf582c472090d76acaa66fe7d988954a07ca45b882d838f"
+    sha256 cellar: :any,                 ventura:       "092fb4fa333028e779cff60ebf8f58dfd70939c86919ba708e53ef391c048d1d"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "30de509413be99c4033b4df15576c0db2c732330bad3bcbecc186f03ef525e7f"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "e7cea8cedb8cadd9041d11effd55437bc79529a0813d06259106314b1b90798f"
   end
 
   keg_only :provided_by_macos
@@ -49,16 +52,15 @@ class Sqlite < Formula
       -DSQLITE_USE_URI=1
     ].join(" ")
 
-    args = %W[
-      --prefix=#{prefix}
-      --disable-dependency-tracking
-      --enable-dynamic-extensions
-      --enable-readline
-      --disable-editline
-      --enable-session
+    args = [
+      "--enable-readline",
+      "--disable-editline",
+      "--enable-session",
+      "--with-readline-cflags=-I#{Formula["readline"].opt_include}",
+      "--with-readline-ldflags=-L#{Formula["readline"].opt_lib} -lreadline",
     ]
 
-    system "./configure", *args
+    system "./configure", *args, *std_configure_args
     system "make", "install"
 
     # Avoid rebuilds of dependants that hardcode this path.
@@ -67,13 +69,13 @@ class Sqlite < Formula
 
   test do
     path = testpath/"school.sql"
-    path.write <<~EOS
+    path.write <<~SQL
       create table students (name text, age integer);
       insert into students (name, age) values ('Bob', 14);
       insert into students (name, age) values ('Sue', 12);
       insert into students (name, age) values ('Tim', 13);
       select name from students order by age asc;
-    EOS
+    SQL
 
     names = shell_output("#{bin}/sqlite3 < #{path}").strip.split("\n")
     assert_equal %w[Sue Tim Bob], names

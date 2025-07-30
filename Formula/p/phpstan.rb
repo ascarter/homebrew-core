@@ -1,17 +1,18 @@
 class Phpstan < Formula
   desc "PHP Static Analysis Tool"
   homepage "https://github.com/phpstan/phpstan"
-  url "https://github.com/phpstan/phpstan/releases/download/2.0.1/phpstan.phar"
-  sha256 "e6c82bd6c839adc29c9575a9a4b0d3efc418d0497c380dac4dd626507d08b87d"
+  url "https://github.com/phpstan/phpstan/releases/download/2.1.21/phpstan.phar"
+  sha256 "5575bc0bd0b306567fd890e11fe03c1abb2c0412a01ab21f661c8bf5fb1953f1"
   license "MIT"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "f14eedda51695c2b99aed7fde08eaa300d4a7a3d4ca35d20da6979f800688769"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "f14eedda51695c2b99aed7fde08eaa300d4a7a3d4ca35d20da6979f800688769"
-    sha256 cellar: :any_skip_relocation, arm64_ventura: "f14eedda51695c2b99aed7fde08eaa300d4a7a3d4ca35d20da6979f800688769"
-    sha256 cellar: :any_skip_relocation, sonoma:        "f098c4d490831dff9aae9960fe0c8a1694cbfe5ce1af2d8935b25399fc2724b0"
-    sha256 cellar: :any_skip_relocation, ventura:       "f098c4d490831dff9aae9960fe0c8a1694cbfe5ce1af2d8935b25399fc2724b0"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "16f41a349fb7970fc45ecbc7af9016b22c1aa72c76761b4a7207e2f5648d4fb3"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "f859764a178631357b19ea2283f166c0d5f53c7d71a7cf7899c8078110aee402"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "f859764a178631357b19ea2283f166c0d5f53c7d71a7cf7899c8078110aee402"
+    sha256 cellar: :any_skip_relocation, arm64_ventura: "f859764a178631357b19ea2283f166c0d5f53c7d71a7cf7899c8078110aee402"
+    sha256 cellar: :any_skip_relocation, sonoma:        "40ee8a88a963bd5e27a78a413a63f7beb1355dc3119101386afe545910495f1d"
+    sha256 cellar: :any_skip_relocation, ventura:       "40ee8a88a963bd5e27a78a413a63f7beb1355dc3119101386afe545910495f1d"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "142ea081e35219de17f45578fd9cf4913870e57f1d7a206a28af348516000228"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "142ea081e35219de17f45578fd9cf4913870e57f1d7a206a28af348516000228"
   end
 
   depends_on "php" => :test

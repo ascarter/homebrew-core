@@ -1,9 +1,10 @@
 class Youtubeuploader < Formula
   desc "Scripted uploads to Youtube"
   homepage "https://github.com/porjo/youtubeuploader"
-  url "https://github.com/porjo/youtubeuploader/archive/refs/tags/24.02.tar.gz"
-  sha256 "cd62bb1043bae7eae7fa462beb7d7f1ad8e1038b54bd9159d70ec24ff8a055ec"
+  url "https://github.com/porjo/youtubeuploader/archive/refs/tags/v1.25.3.tar.gz"
+  sha256 "77d862f38e007939810b1b2b703f9c377e1db5108dd15d7ac953ee80eb2d8595"
   license "Apache-2.0"
+  version_scheme 1
   head "https://github.com/porjo/youtubeuploader.git", branch: "master"
 
   # Upstream creates stable version tags (e.g., `23.03`) before a release but
@@ -16,12 +17,12 @@ class Youtubeuploader < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "030c2ca4236eeee1475861c5f777fa083ead3871e90f5a72c2ef56ddf70acb61"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "030c2ca4236eeee1475861c5f777fa083ead3871e90f5a72c2ef56ddf70acb61"
-    sha256 cellar: :any_skip_relocation, arm64_ventura: "030c2ca4236eeee1475861c5f777fa083ead3871e90f5a72c2ef56ddf70acb61"
-    sha256 cellar: :any_skip_relocation, sonoma:        "8100f9c2526af5bc4e4a424364a0188c67fab700c27399913b0bb5098fcd4f65"
-    sha256 cellar: :any_skip_relocation, ventura:       "8100f9c2526af5bc4e4a424364a0188c67fab700c27399913b0bb5098fcd4f65"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "4b24acc0c03b98aa0faeb6aa7b4bfa29596cf10d10b7651a771d707fad75df45"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "18a805d453c04a01ff040f4de994ebedf0547a7d3eb7e498bbcef680d00d88c0"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "18a805d453c04a01ff040f4de994ebedf0547a7d3eb7e498bbcef680d00d88c0"
+    sha256 cellar: :any_skip_relocation, arm64_ventura: "18a805d453c04a01ff040f4de994ebedf0547a7d3eb7e498bbcef680d00d88c0"
+    sha256 cellar: :any_skip_relocation, sonoma:        "151952984e108c6dd23b446845a624659a829c5c950eaec326d2ae8b97561981"
+    sha256 cellar: :any_skip_relocation, ventura:       "151952984e108c6dd23b446845a624659a829c5c950eaec326d2ae8b97561981"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "a2b852b5218f710cc38653d4fb6af14a0a8a1aa0f89626f1c07b3bd77a812392"
   end
 
   depends_on "go" => :build
@@ -61,6 +62,6 @@ class Youtubeuploader < Formula
     JSON
 
     output = shell_output("#{bin}/youtubeuploader -filename #{test_fixtures("test.m4a")} 2>&1", 1)
-    assert_match 'oauth2: "invalid_client" "The OAuth client was not found."', output
+    assert_match 'oauth2: \"invalid_client\" \"The OAuth client was not found.\"', output
   end
 end

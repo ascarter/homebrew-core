@@ -1,70 +1,79 @@
 class Pdal < Formula
   desc "Point data abstraction library"
   homepage "https://www.pdal.io/"
-  url "https://github.com/PDAL/PDAL/releases/download/2.8.1/PDAL-2.8.1-src.tar.bz2"
-  sha256 "0e8d7deabe721f806b275dda6cf5630a8e43dc7210299b57c91f46fadcc34b31"
+  url "https://github.com/PDAL/PDAL/releases/download/2.9.0/PDAL-2.9.0-src.tar.bz2"
+  sha256 "f0be2f6575021d0c4751d5babd4c1096d4e5934f86f8461914e9f9c6dc63567d"
   license "BSD-3-Clause"
   revision 1
   head "https://github.com/PDAL/PDAL.git", branch: "master"
 
-  # The upstream GitHub repository sometimes creates tags that only include a
-  # major/minor version (`1.2`) and then uses major/minor/patch (`1.2.0`) for
-  # the release tarball. This inconsistency can be a problem if we need to
-  # substitute the version from livecheck in the `stable` URL, so we check the
-  # first-party download page, which links to the tarballs on GitHub.
   livecheck do
-    url "https://pdal.io/en/latest/download.html"
-    regex(/href=.*?PDAL[._-]v?(\d+(?:\.\d+)+)[._-]src\.t/i)
+    url :stable
+    strategy :github_latest
   end
 
   bottle do
-    sha256 cellar: :any,                 arm64_sequoia: "5ace63b345d073dff970808b106404c6948a3c11d485809811ca1b7688d3e63c"
-    sha256 cellar: :any,                 arm64_sonoma:  "3c902d2284736cb833b7df51a6aebfdbc287106cb083b99eff902217da069cff"
-    sha256 cellar: :any,                 arm64_ventura: "6ed67bc6d48660119474b32a6619767d2773b596b8d532abfb47e66c0a667402"
-    sha256 cellar: :any,                 sonoma:        "d32e2895b2ded2584177286909dc4610de3966ed88f0f55f496bcdf7bcc6480a"
-    sha256 cellar: :any,                 ventura:       "445cd7662377535b2edc3a4c7ac45c454256d09c7b03187e724c644c837202fd"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "a388ac898e825428521848a1a71c3bd92e25132b250040bdd7def926e9ebe96f"
+    sha256 cellar: :any,                 arm64_sequoia: "f633f676ee645772d3e537af008e22097b913bdf078f2bf307c4d7f276eb3daf"
+    sha256 cellar: :any,                 arm64_sonoma:  "fec1430ce746325d44ca434eae08ddfc4d1dcaaad089fc53a001ef073013eee7"
+    sha256 cellar: :any,                 arm64_ventura: "cb0ea9b7e3a83f9455d7204123b54fda9c2309587607735b1388ebb2135faa1a"
+    sha256 cellar: :any,                 sonoma:        "960331dd9ba8505bc26c3e6833ddfd544de311f2bbb5e33a8c9be525d19eb550"
+    sha256 cellar: :any,                 ventura:       "4dbcd46cc0528ebee4b0c4cd73f84d5b7496869f9cec9ffe58e863ae9861afe9"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "8a99fb356056c81a8fd9f802a59a76951e64204fae1c59b33ad28f7884bd9597"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "baefbdbb742d9f5873594f3540a29d4777e1143d83278a299daa6744289cf3a4"
   end
 
   depends_on "cmake" => :build
-  depends_on "pkg-config" => :build
+  depends_on "googletest" => :build
+  depends_on "pkgconf" => :build
+
+  depends_on "apache-arrow"
+  depends_on "curl"
+  depends_on "draco"
   depends_on "gdal"
   depends_on "hdf5"
-  depends_on "laszip"
   depends_on "libgeotiff"
   depends_on "libpq"
   depends_on "libxml2"
+  depends_on "lz4"
   depends_on "numpy"
   depends_on "openssl@3"
   depends_on "proj"
+  depends_on "tiledb"
+  depends_on "xerces-c"
   depends_on "zstd"
 
-  uses_from_macos "curl"
   uses_from_macos "zlib"
 
   on_linux do
     depends_on "libunwind"
   end
 
-  fails_with gcc: "5" # gdal is compiled with GCC
+  # Two patches below are related to apache-arrow 21.0.0 support
+  # See https://github.com/PDAL/PDAL/pull/4773 and https://github.com/PDAL/PDAL/pull/4777
+  patch do
+    url "https://github.com/PDAL/PDAL/commit/8deb4e577ab6a73e74cd720256e1d574509ea3e9.patch?full_index=1"
+    sha256 "93c4682fa8b1e5f62665967f7917ff97e1285ad4b9b4c227d3b27d0694ae9404"
+  end
+
+  patch do
+    url "https://github.com/PDAL/PDAL/commit/ea822192f6054d6d0b1c68265a185fe4f292194f.patch?full_index=1"
+    sha256 "02258e334a97fe95f4e5942a39734be9e574443e303105ee95aef864717a9dc3"
+  end
 
   def install
-    # Work around an Xcode 15 linker issue which causes linkage against LLVM's
-    # libunwind due to it being present in a library search path.
-    if DevelopmentTools.clang_build_version >= 1500
-      recursive_dependencies
-        .select { |d| d.name.match?(/^llvm(@\d+)?$/) }
-        .map { |llvm_dep| llvm_dep.to_formula.opt_lib }
-        .each { |llvm_lib| ENV.remove "HOMEBREW_LIBRARY_PATHS", llvm_lib }
-    end
-
     args = %w[
-      -DWITH_LASZIP=TRUE
-      -DBUILD_PLUGIN_GREYHOUND=ON
+      -DWITH_TESTS=OFF
+      -DENABLE_CTEST=OFF
+      -DBUILD_PLUGIN_ARROW=ON
+      -DBUILD_PLUGIN_TILEDB=ON
       -DBUILD_PLUGIN_ICEBRIDGE=ON
+      -DBUILD_PLUGIN_HDF=ON
       -DBUILD_PLUGIN_PGPOINTCLOUD=ON
-      -DBUILD_PLUGIN_PYTHON=ON
-      -DBUILD_PLUGIN_SQLITE=ON
+      -DBUILD_PLUGIN_E57=ON
+      -DBUILD_PLUGIN_DRACO=ON
+      -DBUILD_PGPOINTCLOUD_TESTS=OFF
+      -DWITH_ZSTD=ON
+      -DWITH_ZLIB=ON
     ]
     if OS.linux?
       libunwind = Formula["libunwind"]
@@ -74,7 +83,7 @@ class Pdal < Formula
         -DLIBUNWIND_LIBRARY=#{libunwind.opt_lib/shared_library("libunwind")}
       ]
     end
-    system "cmake", "-S", ".", "-B", "build", *std_cmake_args, *args
+    system "cmake", "-S", ".", "-B", "build", *args, *std_cmake_args
     system "cmake", "--build", "build"
     system "cmake", "--install", "build"
 

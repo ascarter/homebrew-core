@@ -1,26 +1,30 @@
 class Rclone < Formula
   desc "Rsync for cloud storage"
   homepage "https://rclone.org/"
-  url "https://github.com/rclone/rclone/archive/refs/tags/v1.68.1.tar.gz"
-  sha256 "26259526855a12499d00e3a3135ee95e7aeb3ecf2f85886d8c837a2e7b236226"
+  url "https://github.com/rclone/rclone/archive/refs/tags/v1.70.3.tar.gz"
+  sha256 "0b25fb9f0cb26883cfa885576ddb34276564a1e224edc5aacab826f9ba22179d"
   license "MIT"
   head "https://github.com/rclone/rclone.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "82b882393191d64add101a4ca9757757e41decee662749784710add138a15480"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "4be9c7437c9edb198c8590db9777aa33d0049266c631a1eabc4455341b3fca11"
-    sha256 cellar: :any_skip_relocation, arm64_ventura: "1ff458becc764f1fa737160b2754deef05f957215142ac5a3195b1609d32920d"
-    sha256 cellar: :any_skip_relocation, sonoma:        "d73b8b4bf9c7615c8f50f4f07ef70a87a8f99d9a5a7ea65d8a7313f51e49f542"
-    sha256 cellar: :any_skip_relocation, ventura:       "f73b6de31b16de94d88729ce0229a554606bd6cef3b2ef02951efa6b8a6f1ce0"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "43f98a6d4e58cc834056434af23238dfb81cce633d7fea84190f936e5b04e808"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "88f68f773f201fe8519cfd5f2f43e19b6b031e6dff9d80769f6d9c33435b3d67"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "cfd8d19db35ae2f3ffd6b0aca47f7b7dd15bf156c5b39cf303fbc2272d20933f"
+    sha256 cellar: :any_skip_relocation, arm64_ventura: "f821054e37ea2730afe194e78427e17fcadf4dd1a394f500af0d90f1b1539d32"
+    sha256 cellar: :any_skip_relocation, sonoma:        "3b1da20eb88b913ffb5614dd7bed8571ec63c751d6516fceae47a00d44ebb05d"
+    sha256 cellar: :any_skip_relocation, ventura:       "5a147b19d298a6d0427b291261e545e7a7647c10933cb1a77d318a8e5e5d2cda"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "382c43672dcf92de64f20df8bc02e13e7ab1ce674de7448afa6275117f764440"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "f35f2c6c2fed7316c6d8019c7eaba52aea9d0f2f37905a8e63b13846a37a4d63"
   end
 
   depends_on "go" => :build
 
   def install
-    args = *std_go_args(ldflags: "-s -w -X github.com/rclone/rclone/fs.Version=v#{version}")
-    args += ["-tags", "brew"] if OS.mac?
-    system "go", "build", *args
+    ldflags = %W[
+      -s -w
+      -X github.com/rclone/rclone/fs.Version=v#{version}
+    ]
+    tags = "brew" if OS.mac?
+    system "go", "build", *std_go_args(ldflags:, tags:)
     man1.install "rclone.1"
     system bin/"rclone", "genautocomplete", "bash", "rclone.bash"
     system bin/"rclone", "genautocomplete", "zsh", "_rclone"

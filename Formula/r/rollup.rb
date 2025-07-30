@@ -1,17 +1,18 @@
 class Rollup < Formula
   desc "Next-generation ES module bundler"
   homepage "https://rollupjs.org/"
-  url "https://registry.npmjs.org/rollup/-/rollup-4.25.0.tgz"
-  sha256 "2e7f7f6bd027979c78afdbda9e3c0e21ea9245907ab22589dd864c8dfbace3a8"
+  url "https://registry.npmjs.org/rollup/-/rollup-4.46.2.tgz"
+  sha256 "6dc9b57afe35cafcd40fa1d11138f37b8b5871b19b5fe29bd0205b20bf1a6b49"
   license all_of: ["ISC", "MIT"]
 
   bottle do
-    sha256 cellar: :any,                 arm64_sequoia: "6e9744efc938ac8b96fe7e9b70c4fff01545ab15f4675a58723ab618574b832e"
-    sha256 cellar: :any,                 arm64_sonoma:  "6e9744efc938ac8b96fe7e9b70c4fff01545ab15f4675a58723ab618574b832e"
-    sha256 cellar: :any,                 arm64_ventura: "6e9744efc938ac8b96fe7e9b70c4fff01545ab15f4675a58723ab618574b832e"
-    sha256 cellar: :any,                 sonoma:        "e30f7c28b34b567d450d4fca42e770e7a96e33872b4755dc17e051a124e31a59"
-    sha256 cellar: :any,                 ventura:       "e30f7c28b34b567d450d4fca42e770e7a96e33872b4755dc17e051a124e31a59"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "c1c5173b368e0d0070e7674e829e907bf2128a9f5447979175c5f5b0d753311b"
+    sha256 cellar: :any,                 arm64_sequoia: "f0ad1db1d0a728ddad6f744b705f0d593a5c3bd1112423f957b70427da5c75af"
+    sha256 cellar: :any,                 arm64_sonoma:  "f0ad1db1d0a728ddad6f744b705f0d593a5c3bd1112423f957b70427da5c75af"
+    sha256 cellar: :any,                 arm64_ventura: "f0ad1db1d0a728ddad6f744b705f0d593a5c3bd1112423f957b70427da5c75af"
+    sha256 cellar: :any,                 sonoma:        "51066d36c961f4e443f5855caaf5ac9d874b1160e4cc53bff6548ce9da894eda"
+    sha256 cellar: :any,                 ventura:       "51066d36c961f4e443f5855caaf5ac9d874b1160e4cc53bff6548ce9da894eda"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "e79e86080cb86db217cb09dd500b9e18bbd15dabfe8991541a57b47176d3e707"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "0b2866300def36f54cf290e2b5b041ee16e7ba65e195a657ae6d895b6eafb47e"
   end
 
   depends_on "node"
@@ -19,23 +20,21 @@ class Rollup < Formula
   def install
     system "npm", "install", *std_npm_args
     bin.install_symlink Dir["#{libexec}/bin/*"]
-
-    deuniversalize_machos
   end
 
   test do
-    (testpath/"test/main.js").write <<~EOS
+    (testpath/"test/main.js").write <<~JS
       import foo from './foo.js';
       export default function () {
         console.log(foo);
       }
-    EOS
+    JS
 
-    (testpath/"test/foo.js").write <<~EOS
+    (testpath/"test/foo.js").write <<~JS
       export default 'hello world!';
-    EOS
+    JS
 
-    expected = <<~EOS
+    expected = <<~JS
       'use strict';
 
       var foo = 'hello world!';
@@ -45,7 +44,7 @@ class Rollup < Formula
       }
 
       module.exports = main;
-    EOS
+    JS
 
     assert_equal expected, shell_output("#{bin}/rollup #{testpath}/test/main.js -f cjs")
   end

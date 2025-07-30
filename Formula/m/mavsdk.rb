@@ -2,8 +2,8 @@ class Mavsdk < Formula
   desc "API and library for MAVLink compatible systems written in C++17"
   homepage "https://mavsdk.mavlink.io"
   url "https://github.com/mavlink/MAVSDK.git",
-      tag:      "v2.12.12",
-      revision: "a82b29756dcc4ea44c8c2c18f116b2cbdf4142c3"
+      tag:      "v3.7.2",
+      revision: "faf36edc6fda478a2c013698c78a42dfc663ef23"
   license "BSD-3-Clause"
   revision 1
 
@@ -13,16 +13,17 @@ class Mavsdk < Formula
   end
 
   bottle do
-    sha256 cellar: :any,                 arm64_sequoia: "4bab1d1fe30a901998bbc9c6221c933690c9fdcf6cad987a0d73d45121b3b1e1"
-    sha256 cellar: :any,                 arm64_sonoma:  "5238bdca1c66dcc5877b774e6b9f31e22b39a05263ee15912cd0497f23e58f8c"
-    sha256 cellar: :any,                 arm64_ventura: "97ff971409615b08a399d9ca0964befa23c738ec969d4baaa09e214a1c22e47d"
-    sha256 cellar: :any,                 sonoma:        "6385476bb61a390f02a54e523106704cd0fe1b7a324720f018af3b13bb052be0"
-    sha256 cellar: :any,                 ventura:       "8939f0004611fd039e2c76d31d2a32153cbd9b7845339fdea92f30f342664726"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "08dfbfce09b32b7a9e765f6c1bc518306e71c3d889c8e6cc88d6f153ed89cc40"
+    sha256                               arm64_sequoia: "4884a3d192059503e00cf0e7fdd50fed874ecaa98e5f193ea00f84e31e11f4f6"
+    sha256                               arm64_sonoma:  "e1cdbdc6fc9c8419623663ce0d96f0468c9de2df3ae326bf229b6c690a4a4a9e"
+    sha256                               arm64_ventura: "eb3e54706ef3b60bdbea39593f579b7a71136c8488242b469da89ca65cda4704"
+    sha256 cellar: :any,                 sonoma:        "bfb6d7b6f67fae424c31a1215f63d6a621f812e568442975db96b35c2fb343f4"
+    sha256 cellar: :any,                 ventura:       "39721886df5163f71dd54d0e68e6ec195de210209dd0e2fe929aac317c69fec6"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "37eac374e560f9d34cdaa933a641327c7d6165d36ee709b830e4c49ea67b0ff2"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "9b561f0977cfe5f6f311816c1cf3a0b236dc19ab750a1e019319d1acba8ad391"
   end
 
   depends_on "cmake" => :build
-  depends_on "python@3.12" => :build
+  depends_on "python@3.13" => :build
   depends_on "abseil"
   depends_on "c-ares"
   depends_on "curl"
@@ -42,20 +43,18 @@ class Mavsdk < Formula
 
   fails_with :clang do
     build 1100
-    cause <<-EOS
+    cause <<~EOS
       Undefined symbols for architecture x86_64:
         "std::__1::__fs::filesystem::__status(std::__1::__fs::filesystem::path const&, std::__1::error_code*)"
     EOS
   end
 
-  fails_with gcc: "5"
-
   # ver={version} && \
-  # curl -s https://raw.githubusercontent.com/mavlink/MAVSDK/v$ver/third_party/mavlink/CMakeLists.txt && \
+  # curl -s https://raw.githubusercontent.com/mavlink/MAVSDK/v$ver/third_party/mavlink/CMakeLists.txt \
   # | grep 'MAVLINK_GIT_HASH'
   resource "mavlink" do
     url "https://github.com/mavlink/mavlink.git",
-        revision: "f1d42e2774cae767a1c0651b0f95e3286c587257"
+        revision: "5e3a42b8f3f53038f2779f9f69bd64767b913bb8"
   end
 
   def install
@@ -69,7 +68,7 @@ class Mavsdk < Formula
 
     resource("mavlink").stage do
       system "cmake", "-S", ".", "-B", "build",
-                      "-DPython_EXECUTABLE=#{which("python3.12")}",
+                      "-DPython_EXECUTABLE=#{which("python3.13")}",
                       *std_cmake_args(install_prefix: libexec)
       system "cmake", "--build", "build"
       system "cmake", "--install", "build"
@@ -77,15 +76,17 @@ class Mavsdk < Formula
 
     # Source build adapted from
     # https://mavsdk.mavlink.io/develop/en/contributing/build.html
-    system "cmake", "-S", ".", "-B", "build",
-                    "-DSUPERBUILD=OFF",
-                    "-DBUILD_SHARED_LIBS=ON",
-                    "-DBUILD_MAVSDK_SERVER=ON",
-                    "-DBUILD_TESTS=OFF",
-                    "-DVERSION_STR=v#{version}-#{tap.user}",
-                    "-DCMAKE_PREFIX_PATH=#{libexec}",
-                    "-DCMAKE_INSTALL_RPATH=#{rpath}",
-                    *std_cmake_args
+    args = %W[
+      -DSUPERBUILD=OFF
+      -DBUILD_SHARED_LIBS=ON
+      -DBUILD_MAVSDK_SERVER=ON
+      -DBUILD_TESTS=OFF
+      -DVERSION_STR=v#{version}-#{tap.user}
+      -DCMAKE_PREFIX_PATH=#{libexec}
+      -DCMAKE_INSTALL_RPATH=#{rpath}
+    ]
+
+    system "cmake", "-S", ".", "-B", "build", *args, *std_cmake_args
     system "cmake", "--build", "build"
     system "cmake", "--install", "build"
   end
@@ -99,7 +100,7 @@ class Mavsdk < Formula
       #include <mavsdk/mavsdk.h>
       using namespace mavsdk;
       int main() {
-          Mavsdk mavsdk{Mavsdk::Configuration{Mavsdk::ComponentType::GroundStation}};
+          Mavsdk mavsdk{Mavsdk::Configuration{ComponentType::GroundStation}};
           std::cout << mavsdk.version() << std::endl;
           return 0;
       }

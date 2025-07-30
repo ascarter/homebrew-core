@@ -1,12 +1,12 @@
 class Bashunit < Formula
   desc "Simple testing library for bash scripts"
   homepage "https://bashunit.typeddevs.com"
-  url "https://github.com/TypedDevs/bashunit/releases/download/0.18.0/bashunit"
-  sha256 "70dffb79118b9dba8f1a8c83a60fdf79b01b0442c6260dba4e694522bc6637d7"
+  url "https://github.com/TypedDevs/bashunit/releases/download/0.22.3/bashunit"
+  sha256 "efae498584b4f11cd05e4acbba586009e391259fdbfac391844b75b7552e00d7"
   license "MIT"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, all: "c31823359d7c203e280c39c7efe933afc37504d370ff14c141db06d2e23a04e0"
+    sha256 cellar: :any_skip_relocation, all: "8b491a85d3542b16bb380c27e1174493746e6c7666bd9b9c8c4f3d3eb36172f8"
   end
 
   def install
@@ -14,14 +14,14 @@ class Bashunit < Formula
   end
 
   test do
-    (testpath/"test.sh").write <<~EOS
+    (testpath/"test.sh").write <<~SHELL
       function test_addition() {
         local result
         result="$((2 + 2))"
 
         assert_equals "4" "$result"
       }
-    EOS
+    SHELL
     assert "addition", shell_output("#{bin}/bashunit test.sh")
 
     assert_match version.to_s, shell_output("#{bin}/bashunit --version")

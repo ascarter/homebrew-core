@@ -11,11 +11,12 @@ class Iptables < Formula
   end
 
   bottle do
+    sha256 arm64_linux:  "38c583268c51dbe06d76e48b6146b4caf75bc34726745574e96006e0ec715a64"
     sha256 x86_64_linux: "4de49c1ece1a24f6f72d8290a3d1b4f875a94b9a277640f65faf3258e578a6da"
   end
 
   depends_on "linux-headers@5.15" => :build
-  depends_on "pkg-config" => :build
+  depends_on "pkgconf" => :build
   depends_on "libmnl"
   depends_on "libnetfilter_conntrack"
   depends_on "libnfnetlink"
@@ -26,11 +27,12 @@ class Iptables < Formula
 
   def install
     ENV.append "CFLAGS", "-I#{Formula["linux-headers@5.15"].opt_include}"
-    system "./configure", *std_configure_args, "--disable-silent-rules",
-      "--enable-bpf-compiler",
-      "--enable-devel",
-      "--enable-libipq",
-      "--enable-shared"
+    system "./configure", "--disable-silent-rules",
+                          "--enable-bpf-compiler",
+                          "--enable-devel",
+                          "--enable-libipq",
+                          "--enable-shared",
+                          *std_configure_args
     system "make"
     system "make", "install"
   end

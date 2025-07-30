@@ -1,17 +1,18 @@
 class Fcft < Formula
   desc "Simple library for font loading and glyph rasterization"
   homepage "https://codeberg.org/dnkl/fcft"
-  url "https://codeberg.org/dnkl/fcft/archive/3.1.9.tar.gz"
-  sha256 "4b7e3b2ab7e14f532d8a9cb0f2d3b0cdf9d2919b95e6ab8030f7ac87d059c2b6"
+  url "https://codeberg.org/dnkl/fcft/archive/3.3.2.tar.gz"
+  sha256 "79e52aaafc0b57fa2b68ed6127de13e98318050399a939691b8ca30d44d48591"
   license "MIT"
 
   bottle do
-    sha256 x86_64_linux: "962ff7e1761e82e6b50e7790011c405ebedfa25688ecc5ad373f902b506d14b5"
+    sha256 arm64_linux:  "4c442d6255bcd98515e0f7beb19ab35d2cb2409dfc741412c4be3a23993a4f0e"
+    sha256 x86_64_linux: "d2775892b516a9d3fed80cf9a5573eafc9db1f0a24e878f3409c94274f117607"
   end
 
   depends_on "meson" => :build
   depends_on "ninja" => :build
-  depends_on "pkg-config" => :build
+  depends_on "pkgconf" => :build
   depends_on "scdoc" => :build
   depends_on "tllist" => :build
 
@@ -31,14 +32,14 @@ class Fcft < Formula
   end
 
   test do
-    (testpath/"test.c").write <<~EOS
+    (testpath/"test.c").write <<~C
       #include <stdio.h>
       #include <fcft/fcft.h>
 
       int main() {
         printf("%u", fcft_capabilities());
       }
-    EOS
+    C
 
     pixman = Formula["pixman"]
     utf8proc = Formula["utf8proc"]

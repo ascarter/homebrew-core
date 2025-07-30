@@ -1,38 +1,31 @@
 class Sk < Formula
   desc "Fuzzy Finder in rust!"
-  homepage "https://github.com/lotabout/skim"
-  url "https://github.com/lotabout/skim/archive/refs/tags/v0.10.4.tar.gz"
-  sha256 "eb5609842ad7c19b1267e77682ee5ae11aa8e84e46c27d9d198cc22d00c5e924"
+  homepage "https://github.com/skim-rs/skim"
+  url "https://github.com/skim-rs/skim/archive/refs/tags/v0.20.3.tar.gz"
+  sha256 "b001b4fceb1b23b363ca8aea08aebc4e6ded87f0ba8fbdec2a74631dfda47c8c"
   license "MIT"
-  head "https://github.com/lotabout/skim.git", branch: "master"
+  head "https://github.com/skim-rs/skim.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_sequoia:  "e8607c7f9e3c72059b5168aded78582bfe459e754381f669cce9a6169523832f"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:   "0aa120c7df0fb4a61903c952d5a64dad4030a0b1a48df8c2d0bac01dac458ec8"
-    sha256 cellar: :any_skip_relocation, arm64_ventura:  "e28dbbdb5930443d04b934d8966af2dec58f037f859432f7a412c52568990e1d"
-    sha256 cellar: :any_skip_relocation, arm64_monterey: "a96933375963dac24744a541d7835a9694bf9050481e8d302b9f22187a0e8184"
-    sha256 cellar: :any_skip_relocation, arm64_big_sur:  "e7b9c3bc71263bd5f16a6cdf08cb36e1076ea698f5b26fcac5fa8fe1c82032c1"
-    sha256 cellar: :any_skip_relocation, sonoma:         "e6e9e40fdafaf8d5807947b960698535edf426923fbcef6ebc5ff70dc114aa89"
-    sha256 cellar: :any_skip_relocation, ventura:        "afaa23049ae7c7268e5bc86bdba95abe0d99dfe83057c4614ce95ae7ac580830"
-    sha256 cellar: :any_skip_relocation, monterey:       "de7b821fe89afa96598770fdd98d7b55a78b57be6867284f6e4aa41db9469331"
-    sha256 cellar: :any_skip_relocation, big_sur:        "ab8e698b22382f4faed083f426fb8aa1fa0e0393c7e43169deba03021fa502ea"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:   "9dee90b1f10ffc8ab60ed7549c0c5fb16afda00b94de1a34eee59ffd21205412"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "d3c074859f7e01b4ca090f69d88fc292d2ba3df3ba7b7da84141fdf27d7681b9"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "10db0d8ab53890399f1090455e65a1956444ab069024256828181b23c9865a80"
+    sha256 cellar: :any_skip_relocation, arm64_ventura: "a8dc78dc49469256b02a092f56a9a86b64878cad72593b7c967b19e4c6a5b140"
+    sha256 cellar: :any_skip_relocation, sonoma:        "3448b50214275cfc91ec8a8410ff8318a28b2f84cff295645d09a9248d721e24"
+    sha256 cellar: :any_skip_relocation, ventura:       "faf9d26f99699b796e9b1e10b347f53948512bd227d363460cc3aabba6267621"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "d022f3948ec09efc775521df78cea6d3996eac0149928d7939df3ee9ad2a7ea1"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "2853e21443c47eb120f930811c63c1852fdb97bd727b7fa71f55c637db30efcb"
   end
 
   depends_on "rust" => :build
 
   def install
-    (buildpath/"src/github.com/lotabout").mkpath
-    ln_s buildpath, buildpath/"src/github.com/lotabout/skim"
-    system "cargo", "install", *std_cargo_args
+    system "cargo", "install", *std_cargo_args(path: "skim")
 
-    pkgshare.install "install"
+    generate_completions_from_executable(bin/"sk", "--shell")
     bash_completion.install "shell/key-bindings.bash"
-    bash_completion.install "shell/completion.bash"
     fish_completion.install "shell/key-bindings.fish" => "skim.fish"
     zsh_completion.install "shell/key-bindings.zsh"
-    zsh_completion.install "shell/completion.zsh"
-    man1.install "man/man1/sk.1", "man/man1/sk-tmux.1"
+    man1.install buildpath.glob("man/man1/*.1")
     bin.install "bin/sk-tmux"
   end
 

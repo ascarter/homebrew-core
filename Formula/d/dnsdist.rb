@@ -1,8 +1,10 @@
 class Dnsdist < Formula
+  include Language::Python::Virtualenv
+
   desc "Highly DNS-, DoS- and abuse-aware loadbalancer"
   homepage "https://www.dnsdist.org/"
-  url "https://downloads.powerdns.com/releases/dnsdist-1.9.7.tar.bz2"
-  sha256 "285111c2b7dff6bc8a2407106a51c365cc5bf5e6287fe459a29b396c74620332"
+  url "https://downloads.powerdns.com/releases/dnsdist-2.0.0.tar.xz"
+  sha256 "da30742f51aac8be7e116677cb07bc49fbea979fc5443e7e1fa8fa7bd0a63fe5"
   license "GPL-2.0-only"
 
   livecheck do
@@ -11,16 +13,19 @@ class Dnsdist < Formula
   end
 
   bottle do
-    sha256 cellar: :any,                 arm64_sequoia: "cab9add17f959e5a0c37cb16161a8276254a1ae95a9ee451fca72444783f58f8"
-    sha256 cellar: :any,                 arm64_sonoma:  "3613abc48b829688f50b7a417968efa9886c18307615a9145ab38b86a06f51fa"
-    sha256 cellar: :any,                 arm64_ventura: "3643541508b1a3edfc6fcef8eb257b95653081176452368f2d1da6a7b89e7623"
-    sha256 cellar: :any,                 sonoma:        "08e868d21ca368c82493927677fc4a563761b671bda573cc039ec4fddafb94d2"
-    sha256 cellar: :any,                 ventura:       "3763357c02a74c2bba45d5a1172dd6f93ab7ca16d53a90f96f804da2e2e8ef4f"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "6b3314eadd5faf6e1ced56b990ef519675a70cad7f6a625e1ae40c4b61654e52"
+    sha256 arm64_sequoia: "dedc86e6490fc2d3ee19848d21e710a0671b4b366effe81ad5e51a6d96e99640"
+    sha256 arm64_sonoma:  "2fc046179361176023daa6f76b78c1c8c3c88bb1aa16b30af292002d5a9882ef"
+    sha256 arm64_ventura: "08cb6165180a71956e32fbe05da5d0c8801a49fc6abc90a8f4d9780e988b5e0a"
+    sha256 sonoma:        "28e522c9c3c32bcda2eb114eca36a331a202906d9812a17e558b43ef0bd3cecf"
+    sha256 ventura:       "89bc47322c385ceaff2e135b7234e95bbba84e95d955be282fc0c6f73c81e7dd"
+    sha256 arm64_linux:   "098ee30431ee79b80458c5fbfe1e5bee902c0c8a2cdb15cc66174719357adaed"
+    sha256 x86_64_linux:  "6c0ab154479464328731732032552c402237e4f04a27c836c68aa2dcf825d423"
   end
 
   depends_on "boost" => :build
-  depends_on "pkg-config" => :build
+  depends_on "libyaml" => :build # for PyYaml
+  depends_on "pkgconf" => :build
+  depends_on "python@3.13" => :build
   depends_on "abseil"
   depends_on "fstrm"
   depends_on "libnghttp2"
@@ -32,9 +37,16 @@ class Dnsdist < Formula
 
   uses_from_macos "libedit"
 
-  fails_with gcc: "5"
+  resource "PyYaml" do
+    url "https://files.pythonhosted.org/packages/54/ed/79a089b6be93607fa5cdaedf301d7dfb23af5f25c398d5ead2525b063e17/pyyaml-6.0.2.tar.gz"
+    sha256 "d584d9ec91ad65861cc08d42e834324ef890a082e591037abe114850ff7bbc3e"
+  end
 
   def install
+    venv = virtualenv_create(buildpath/"bootstrap", "python3")
+    venv.pip_install resources
+    ENV.prepend_path "PATH", venv.root/"bin"
+
     system "./configure", "--disable-silent-rules",
                           "--without-net-snmp",
                           "--enable-dns-over-tls",

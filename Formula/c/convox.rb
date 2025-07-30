@@ -1,10 +1,11 @@
 class Convox < Formula
   desc "Command-line interface for the Convox PaaS"
   homepage "https://convox.com/"
-  url "https://github.com/convox/convox/archive/refs/tags/3.19.3.tar.gz"
-  sha256 "43baa79010cfec572f0f4f2d2af21c671f2598e67744b0323e2671fc379745c5"
+  url "https://github.com/convox/convox/archive/refs/tags/3.21.5.tar.gz"
+  sha256 "ffb6806b88095f7c76a4f4fb84f9297f8c2e8e07d75a4dafead7ddcfc7470e95"
   license "Apache-2.0"
   version_scheme 1
+  head "https://github.com/convox/convox.git", branch: "master"
 
   livecheck do
     url :stable
@@ -12,16 +13,17 @@ class Convox < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "f0a9ef4ab6b33eb1cba527c8a2e3637a70a0f656999cee722c17db1974d4db5a"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "ca3e9f392793a2ac5cfbab444b860b0aa81d1d59a8c3a3a6a2800836c193b41c"
-    sha256 cellar: :any_skip_relocation, arm64_ventura: "20848bfd53dc72c35cadf5192392ae5908b7d9f055186218e142e8c8a016fc5b"
-    sha256 cellar: :any_skip_relocation, sonoma:        "247e1882e4c987df52fed7ae771ea52a6976e823905f3b9cd89ee44b772f985a"
-    sha256 cellar: :any_skip_relocation, ventura:       "09fc70b66ccb23f187872dd6742f74e534145ea105a3826c1e7ea04ded99eacc"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "17bf84f96562c814d9c3eebee13bc6a6e138826c08f1a580b68f4403e30b2030"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "349e67c75c42c1ca333cd23e1a01f44231311dd7185be3e647d72fef660b863e"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "f847cf8d920c2ff815e77a0c6b20fd70b8f239a95b8d337e92c88ddac6edf011"
+    sha256 cellar: :any_skip_relocation, arm64_ventura: "4fb21dbf47f456f66607dd069e18bc14d1aa7d2760ae89b01d60e4e4ecf31dc1"
+    sha256 cellar: :any_skip_relocation, sonoma:        "fa06a991bd71eb0f6bde3b322780e655d2cc0b70ba38c10d2063d645e367f637"
+    sha256 cellar: :any_skip_relocation, ventura:       "72b4303e9f398bf6ad3262f121d0b877557c8802ff0b82c8ace3cb9714f5a0b4"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "100ed07e71c5f9b2c7fabce9779d5332aa4a20821427de11dd2a7912174c53c2"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "4947b625b9ddac31e70246c0e40c6f3f5398a8faa85bea41814f8cd48b54ca98"
   end
 
   depends_on "go" => :build
-  depends_on "pkg-config" => :build
+  depends_on "pkgconf" => :build
 
   on_linux do
     depends_on "systemd" # for libudev

@@ -1,18 +1,19 @@
 class Chsrc < Formula
   desc "Change Source for every software on every platform from the command-line"
   homepage "https://github.com/RubyMetric/chsrc"
-  url "https://github.com/RubyMetric/chsrc/archive/refs/tags/v0.1.9.tar.gz"
-  sha256 "29ed92853355495561c238d19abd1df4f7336217ca576611c273c35c74175e37"
+  url "https://github.com/RubyMetric/chsrc/archive/refs/tags/v0.2.2.tar.gz"
+  sha256 "9985c8e3be047ba47d54650ec284a28314d3221be2636a8c031744241c01f482"
   license "GPL-3.0-or-later"
   head "https://github.com/RubyMetric/chsrc.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "5fb55224200e74a6cbd0345a1cccd583f64a3b24418664586422fee2bb16bd0f"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "aff6154136a890bb478a7d7c0b468bc06eaeb789fabce73a05afe25c399fe9a3"
-    sha256 cellar: :any_skip_relocation, arm64_ventura: "8801a24bfcee5d9b813fd04c89094359136776ee22dcadfa4bd8854b2f1d17a8"
-    sha256 cellar: :any_skip_relocation, sonoma:        "a3fe5d32d07d638e25f0d00f51aed05a88144c69959ff402a1ba34c624a91e93"
-    sha256 cellar: :any_skip_relocation, ventura:       "750620a10ceab6349edd948955bed55b182a6f4f4e2676e0209ff07c4469bd1c"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "f4c7f104abc446a5c5846d7b9b27c97932b9cb4951ca708fa9fc6ca4c1590cbd"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "8915d8c4fbb1ccc2110a405121763d53a520e3468a996d79615b94b6502c21d6"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "e53a86f9d38d700757603d6c222a2cba61fc70800d9f9e6446d72e9078af1b80"
+    sha256 cellar: :any_skip_relocation, arm64_ventura: "6791abc9d81e8f7781c6a1b456c115dadee08a8894112a86ec74fc10cb46590d"
+    sha256 cellar: :any_skip_relocation, sonoma:        "dab70cbe9901152120b5a950e52c0590ebfa1b5cc17c8e58bd28ab4d6199989d"
+    sha256 cellar: :any_skip_relocation, ventura:       "7d49b57c953c852d16c0f6c5203a4badc83aa102500fded99d033365eb01bdfb"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "4969a3ea64a8245e5195989d698e6a9ff340fee686629a6550fd6287280a1203"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "29ae178aa9fdab7880156f2a00c099137be3ae117304a7467507d2e2c1eae698"
   end
 
   def install

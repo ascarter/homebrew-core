@@ -1,10 +1,9 @@
 class Znc < Formula
   desc "Advanced IRC bouncer"
   homepage "https://wiki.znc.in/ZNC"
-  url "https://znc.in/releases/znc-1.9.1.tar.gz"
-  sha256 "e8a7cf80e19aad510b4e282eaf61b56bc30df88ea2e0f64fadcdd303c4894f3c"
+  url "https://znc.in/releases/znc-1.10.1.tar.gz"
+  sha256 "4e6e76851dbf2606185972b53ec5decad68fe53b63a56e4df8b8b3c0a6c46800"
   license "Apache-2.0"
-  revision 2
 
   livecheck do
     url "https://znc.in/releases/"
@@ -12,24 +11,29 @@ class Znc < Formula
   end
 
   bottle do
-    sha256 arm64_sequoia: "47a4377429c552b85f0f0d01c4bd626c16b870b25e5c236b3638d7d364b8515f"
-    sha256 arm64_sonoma:  "cd03c571acd62e9278b6a4a516e8eb62e4b6094c3207130b6bae9aa8e15e022b"
-    sha256 arm64_ventura: "8d500898246859202ec756125592c33b07419d7d42e19ec739d3cdb7a87d6339"
-    sha256 sonoma:        "f7d4596fc318adca1268a55c3e0d065999e69dedc7b55f84b89a72cb8fb1ae51"
-    sha256 ventura:       "ab19a326ac21a984ff8e0594239d567d8bbe9c793566040d54d283eefd8c37b4"
-    sha256 x86_64_linux:  "0da654df490b1c2eb22af53ec756b181d5116006b24ecb78451a325812929a14"
+    sha256 arm64_sequoia: "3f879e3a53f671bf91948290672d9afc4b2c525be1a8391a8edcc579c23a1367"
+    sha256 arm64_sonoma:  "f352b0898686f3e1971ac5f93838267f3f25cc7c5dbc21339866f27d764da5f5"
+    sha256 arm64_ventura: "0559e03b2e5cd7017a819de05f004344156598ca0df4e1a645123cdd61aa0a3b"
+    sha256 sonoma:        "53321095073216bd88a4065e2ddd853d6251fd20ed747833d99a5592eb1f3606"
+    sha256 ventura:       "eadae1e71666ba8f013eb2080e91cce2f34d6e2b0113710cfbcc4b6425b0a1d7"
+    sha256 arm64_linux:   "b2567236b256be9c054c3c51bbb8ba3ec2072137e5d80ebe44414ea5fe33bd4b"
+    sha256 x86_64_linux:  "22d73b1c7debe47b930d2cf16eec7cb509d450c4f01c5e8ba2d6babe3be95a53"
   end
 
   depends_on "cmake" => :build
-  depends_on "pkg-config" => :build
+  depends_on "gettext" => :build
+  depends_on "pkgconf" => :build
   depends_on "boost"
-  depends_on "icu4c@76"
+  depends_on "cctz"
+  depends_on "icu4c@77"
   depends_on "openssl@3"
   depends_on "python@3.13"
 
   uses_from_macos "zlib"
 
   def install
+    rm_r(["third_party/cctz", "third_party/googletest"])
+
     python3 = "python3.13"
     xy = Language::Python.major_minor_version python3
 
@@ -60,6 +64,6 @@ class Znc < Formula
   test do
     mkdir ".znc"
     system bin/"znc", "--makepem"
-    assert_predicate testpath/".znc/znc.pem", :exist?
+    assert_path_exists testpath/".znc/znc.pem"
   end
 end

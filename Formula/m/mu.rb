@@ -4,8 +4,8 @@
 class Mu < Formula
   desc "Tool for searching e-mail messages stored in the maildir-format"
   homepage "https://www.djcbsoftware.nl/code/mu/"
-  url "https://github.com/djcb/mu/releases/download/v1.12.7/mu-1.12.7.tar.xz"
-  sha256 "d916ba9b8ada90996b37eedf7f5fc70c35eb77f47fd933a502fbe0dccf2a6529"
+  url "https://github.com/djcb/mu/releases/download/v1.12.12/mu-1.12.12.tar.xz"
+  sha256 "2eacc122297a5569ce2136dd2d4116616d310b04e9891f6748e6727ab8889907"
   license "GPL-3.0-or-later"
   head "https://github.com/djcb/mu.git", branch: "master"
 
@@ -18,12 +18,13 @@ class Mu < Formula
   end
 
   bottle do
-    sha256 cellar: :any, arm64_sequoia: "b6a33fa31f3573014104a07185888b360edd54b6b53ed1787f8f5c53638146ac"
-    sha256 cellar: :any, arm64_sonoma:  "02a8fabc201b66024940d4b3f4bd37478d0ee5c3555c1c5cab2487f2f2dac363"
-    sha256 cellar: :any, arm64_ventura: "f7066054702fa006ff01baa15f7db74c31e68ed0214adf9685130633288191fb"
-    sha256 cellar: :any, sonoma:        "a740ad58e95867017d049e98f5592f4a119cbaf8a222bf8a923372a26531bd91"
-    sha256 cellar: :any, ventura:       "7a340cd2dc7302b87806544dd67ee2a4adb39e61b4d2fd6aa299f2f5a4901864"
-    sha256               x86_64_linux:  "45f957add52e578e5f6c3bedf66d0116ceb27472c1beba965badf64095920b00"
+    sha256 cellar: :any, arm64_sequoia: "29ff5566f73bb5eb5813c25a8fa454bcf654ea74c118ced01380328d865afe1a"
+    sha256 cellar: :any, arm64_sonoma:  "2208c3a0831a8d1aa1ef1e7a8697c8b6187b51cab3476042614da3df1f44a798"
+    sha256 cellar: :any, arm64_ventura: "e4a9ea57164def3be6ab1560e931a462372fe688376c7143c4626f7ff4ac01db"
+    sha256 cellar: :any, sonoma:        "bfc06ebe08e6826bfaa37d34fec5de659e2c1fee20cd45a68022dd7fdee3a3fd"
+    sha256 cellar: :any, ventura:       "b1c456531a037acf9b62fc54ba7bb12e5fbf60856f725ddda3da6c0f6cea78fb"
+    sha256               arm64_linux:   "b04d722ae37becf49f0ca18100499cd12b03659d28312f53aef5858a9110a9b4"
+    sha256               x86_64_linux:  "5e6016f410f3264254ec633f69d66640d50721c67e98d51575a3eb17de1cf53a"
   end
 
   depends_on "emacs" => :build
@@ -31,7 +32,7 @@ class Mu < Formula
   depends_on "libtool" => :build
   depends_on "meson" => :build
   depends_on "ninja" => :build
-  depends_on "pkg-config" => :build
+  depends_on "pkgconf" => :build
   depends_on "texinfo" => :build
   depends_on "gettext"
   depends_on "glib"
@@ -39,8 +40,6 @@ class Mu < Formula
   depends_on "xapian"
 
   conflicts_with "mu-repo", because: "both install `mu` binaries"
-
-  fails_with gcc: "5"
 
   def install
     system "meson", "setup", "build", "-Dlispdir=#{elisp}", *std_meson_args

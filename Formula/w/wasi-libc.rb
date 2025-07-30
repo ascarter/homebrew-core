@@ -9,36 +9,29 @@ class WasiLibc < Formula
   head "https://github.com/WebAssembly/wasi-libc.git", branch: "main"
 
   stable do
-    # Check the commit hash of `src/wasi-libc` corresponding to the latest tag at:
-    # https://github.com/WebAssembly/wasi-sdk
-    url "https://github.com/WebAssembly/wasi-libc/archive/1b19fc65ad84b223876c50dd4fcd7d5a08c311dc.tar.gz"
-    version "24"
-    sha256 "a9d5e43c80b5b82fa92325fd73f6f6112ba5631f005030e8d51350efd4c9e61d"
+    url "https://github.com/WebAssembly/wasi-libc/archive/refs/tags/wasi-sdk-27.tar.gz"
+    sha256 "00850da0742670d5ad7fd556bf7bc5452512bac79f17ac76d5cfaa3b74526898"
 
     resource "WASI" do
-      # Check the commit hash of `tools/wasi-headers/WASI` from the commit hash above.
+      # Check the commit hash of `tools/wasi-headers/WASI` from the commit of the tag above.
       url "https://github.com/WebAssembly/WASI/archive/59cbe140561db52fc505555e859de884e0ee7f00.tar.gz"
       sha256 "fc78b28c2c06b64e0233544a65736fc5c515c5520365d6cf821408eadedaf367"
     end
   end
 
-  livecheck do
-    url "https://github.com/WebAssembly/wasi-sdk.git"
-  end
-
   bottle do
-    rebuild 1
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "baa8c0d028e3691de22e06d6e9958a61898ad0764ffac57441627bb941da6814"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "baa8c0d028e3691de22e06d6e9958a61898ad0764ffac57441627bb941da6814"
-    sha256 cellar: :any_skip_relocation, arm64_ventura: "baa8c0d028e3691de22e06d6e9958a61898ad0764ffac57441627bb941da6814"
-    sha256 cellar: :any_skip_relocation, sonoma:        "baa8c0d028e3691de22e06d6e9958a61898ad0764ffac57441627bb941da6814"
-    sha256 cellar: :any_skip_relocation, ventura:       "baa8c0d028e3691de22e06d6e9958a61898ad0764ffac57441627bb941da6814"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "32bf0d734a80239892bcaa7c605aea4021e2e45bd2b906231219ab743da488c0"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "f3f302ae2ace8f8c4ec65ae1945ac3bf3ac191dcbb9bd591750ad0c99f5e707b"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "f3f302ae2ace8f8c4ec65ae1945ac3bf3ac191dcbb9bd591750ad0c99f5e707b"
+    sha256 cellar: :any_skip_relocation, arm64_ventura: "f3f302ae2ace8f8c4ec65ae1945ac3bf3ac191dcbb9bd591750ad0c99f5e707b"
+    sha256 cellar: :any_skip_relocation, sonoma:        "f3f302ae2ace8f8c4ec65ae1945ac3bf3ac191dcbb9bd591750ad0c99f5e707b"
+    sha256 cellar: :any_skip_relocation, ventura:       "f3f302ae2ace8f8c4ec65ae1945ac3bf3ac191dcbb9bd591750ad0c99f5e707b"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "cb897cf5452150158acd426d3bd4ada857e4e751d503aeff9e877bd216e25a57"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "cb897cf5452150158acd426d3bd4ada857e4e751d503aeff9e877bd216e25a57"
   end
 
   depends_on "llvm" => [:build, :test]
   depends_on "lld" => :test
-  depends_on "wasmtime" => :test
+  depends_on "wasm-micro-runtime" => :test
 
   # Needs clang
   fails_with :gcc
@@ -77,7 +70,6 @@ class WasiLibc < Formula
 
     targets.each do |target|
       system "make", *make_args, "TARGET_TRIPLE=#{target}", "install", *target_flags[target]
-      system "make", "clean"
     end
   end
 
@@ -106,6 +98,6 @@ class WasiLibc < Formula
     (testpath/"lib/wasm32-unknown-wasi").install_symlink "libclang_rt.builtins-wasm32.a" => "libclang_rt.builtins.a"
     wasm_args = %W[--target=wasm32-wasi --sysroot=#{share}/wasi-sysroot]
     system clang, *wasm_args, "-v", "test.c", "-o", "test", "-resource-dir=#{testpath}"
-    assert_equal "the answer is 42", shell_output("wasmtime #{testpath}/test")
+    assert_equal "the answer is 42", shell_output("iwasm #{testpath}/test")
   end
 end

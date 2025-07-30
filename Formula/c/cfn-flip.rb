@@ -9,13 +9,14 @@ class CfnFlip < Formula
   revision 2
 
   bottle do
-    rebuild 1
-    sha256 cellar: :any,                 arm64_sequoia: "56fe9fe6185019ce53a85c5ddc71abbd373c24c27bb26a4ba6e73463b89b1df4"
-    sha256 cellar: :any,                 arm64_sonoma:  "6adc448d4253f808ffc13a4d4191acd29608047c62f573916567bd5dee5cd37c"
-    sha256 cellar: :any,                 arm64_ventura: "e7a1d40f2eedb27478defd049e6779b5f8717c583f3ea3b1c8b293f3ef3bbea7"
-    sha256 cellar: :any,                 sonoma:        "fb306034d555f7d8bef38114f949c89c0af36747814cb7fe91d7c59367614c96"
-    sha256 cellar: :any,                 ventura:       "29d0c987000711a22b22cf4035132104e7e3decaae3980f7ef347139c6c0d30e"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "4f53b22e1f37ddd7932bc70841da5bf64cff519693b166098a0309642a539406"
+    rebuild 3
+    sha256 cellar: :any,                 arm64_sequoia: "5442b8b312ae32f1f553fb978ccf09c63a8faec827d97d1c0ee6c25e6b8bec69"
+    sha256 cellar: :any,                 arm64_sonoma:  "e34be5905def03dfd1a3b2e978175a2a20c04c9a707526437f747f290f72d575"
+    sha256 cellar: :any,                 arm64_ventura: "0f477d1324b35e9d08f22bf9440d350dbef9eb7064a4a349dc61634037ccdc38"
+    sha256 cellar: :any,                 sonoma:        "8621b8bd4592dbff5713e74fe7ba0e2df3e49ed586b11dd29f28c8cd3a716579"
+    sha256 cellar: :any,                 ventura:       "0cbd0c1da955391882c5993e2c5ca0673b31aa9e96ccfa4735efe0bd179ec41d"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "0cfc26cd8e493d0423d00e49da1185a278aa84b79e3cd4325678fb161856607a"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "f22cd5a684f506f67a27cb9bcd7c4a9192909ec3222ae9b87eacba18776f43c8"
   end
 
   depends_on "libyaml"
@@ -38,6 +39,8 @@ class CfnFlip < Formula
 
   def install
     virtualenv_install_with_resources
+
+    generate_completions_from_executable(bin/"cfn-flip", shell_parameter_format: :click)
   end
 
   test do
@@ -56,13 +59,13 @@ class CfnFlip < Formula
       }
     JSON
 
-    expected = <<~EOS
+    expected = <<~YAML
       Resources:
         Bucket:
           Type: AWS::S3::Bucket
           Properties:
             BucketName: !Ref 'AWS::StackName'
-    EOS
+    YAML
 
     assert_match expected, shell_output("#{bin}/cfn-flip test.json")
   end

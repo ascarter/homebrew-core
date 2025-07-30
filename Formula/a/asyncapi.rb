@@ -1,31 +1,38 @@
 class Asyncapi < Formula
   desc "All in one CLI for all AsyncAPI tools"
   homepage "https://github.com/asyncapi/cli"
-  url "https://registry.npmjs.org/@asyncapi/cli/-/cli-2.8.1.tgz"
-  sha256 "76d196302645ec73334e731baf3f7ec2497b27f314f7a50d0f5cc08c28ae8a12"
+  url "https://registry.npmjs.org/@asyncapi/cli/-/cli-3.2.0.tgz"
+  sha256 "e8a9f2f2939362db86b8117ae8665ae7b4808490385d614580285900486cbd9f"
   license "Apache-2.0"
 
+  no_autobump! because: :bumped_by_upstream
+
   bottle do
-    sha256 cellar: :any,                 arm64_sequoia: "4c369e127195a2661d8620c674ee4ddb4a491d3eed8a2ee5a3dafe045126f63b"
-    sha256 cellar: :any,                 arm64_sonoma:  "4c369e127195a2661d8620c674ee4ddb4a491d3eed8a2ee5a3dafe045126f63b"
-    sha256 cellar: :any,                 arm64_ventura: "4c369e127195a2661d8620c674ee4ddb4a491d3eed8a2ee5a3dafe045126f63b"
-    sha256 cellar: :any,                 sonoma:        "d0c6ddaaa98d0a043230db753d3a221b3aa7a7338ac3781d7238cd93324a9a8b"
-    sha256 cellar: :any,                 ventura:       "d0c6ddaaa98d0a043230db753d3a221b3aa7a7338ac3781d7238cd93324a9a8b"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "3b6f0ea68d9675bcd9087a496b6846b589aff46559c71876cc9150de19435a08"
+    sha256 cellar: :any,                 arm64_sequoia: "d9ec6cb315aa2a5c5adf745642f0f21c17ad2c9c93fe3856332e867e55c91d20"
+    sha256 cellar: :any,                 arm64_sonoma:  "d9ec6cb315aa2a5c5adf745642f0f21c17ad2c9c93fe3856332e867e55c91d20"
+    sha256 cellar: :any,                 arm64_ventura: "d9ec6cb315aa2a5c5adf745642f0f21c17ad2c9c93fe3856332e867e55c91d20"
+    sha256                               sonoma:        "eebcd8f05d19ba0ccac1c3b3a0a96e158a747bc00b1caa40e090b0033759ac6a"
+    sha256                               ventura:       "eebcd8f05d19ba0ccac1c3b3a0a96e158a747bc00b1caa40e090b0033759ac6a"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "fdcfdca7796c80831cda900197d035f72e67459fb0003a503e3a1274b5fa3495"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "01dec2447f8b12e1f10c0dd1bb9f5e81ba6f90469c85aaa8f7482c041f652e93"
   end
 
   depends_on "node"
 
   def install
-    system "npm", "install", *std_npm_args
+    system "npm", "install", "--ignore-scripts", *std_npm_args
     bin.install_symlink Dir["#{libexec}/bin/*"]
 
+    # Cleanup .pnpm folder
+    node_modules = libexec/"lib/node_modules/@asyncapi/cli/node_modules"
+    rm_r (node_modules/"@asyncapi/studio/build/standalone/node_modules/.pnpm") if OS.linux?
+
     # Replace universal binaries with their native slices
-    deuniversalize_machos
+    deuniversalize_machos node_modules/"fsevents/fsevents.node"
   end
 
   test do
-    system bin/"asyncapi", "new", "--file-name=asyncapi.yml", "--example=default-example.yaml", "--no-tty"
-    assert_predicate testpath/"asyncapi.yml", :exist?, "AsyncAPI file was not created"
+    system bin/"asyncapi", "new", "file", "--file-name=asyncapi.yml", "--example=default-example.yaml", "--no-tty"
+    assert_path_exists testpath/"asyncapi.yml", "AsyncAPI file was not created"
   end
 end

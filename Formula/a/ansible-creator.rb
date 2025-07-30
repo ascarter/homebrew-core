@@ -3,25 +3,26 @@ class AnsibleCreator < Formula
 
   desc "CLI tool for scaffolding Ansible Content"
   homepage "https://ansible.readthedocs.io/projects/creator/"
-  url "https://files.pythonhosted.org/packages/64/32/a049dcd08d1140e9615e1961d69fccd0286ab0f3e98202e678b2d83f5eb2/ansible_creator-24.10.1.tar.gz"
-  sha256 "a4ccc401a0b33903e39a7b5e23b5fd06fd2d486dcb4fd00772d47da5deeb8b8e"
+  url "https://files.pythonhosted.org/packages/b3/92/a35f29614659ae0addedbf6f31e6340b41780ca09617a0de9456061e0017/ansible_creator-25.7.1.tar.gz"
+  sha256 "860d2433d36066612509b7993fbe81fcc9fb2e1c9df60ae13086291bdfac7ee0"
   license "Apache-2.0"
 
   bottle do
-    sha256 cellar: :any,                 arm64_sequoia: "d0bd5bd14732a622296aae99dac5f09d76f03cba7ff288bb8870958358e90dcf"
-    sha256 cellar: :any,                 arm64_sonoma:  "ee41b4f69312282ea69db180044ae145c0b14bc336a8b6bfa428f5dbc997891b"
-    sha256 cellar: :any,                 arm64_ventura: "2ab76c7144c045686ca568c13f96280c6d78703067b4b8ac45f93f5d069b6fc4"
-    sha256 cellar: :any,                 sonoma:        "504cad91d80f1c89a0c3efbdd3fa8b0b49638c81f68481acc7a92e6367ebf770"
-    sha256 cellar: :any,                 ventura:       "a5cabd6eefd262fef8f406b6d457e6e59aca3f4bd69dec4b16f5b593953d69c5"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "d1b6133f79a6a84f29e2c091571d0334ae179a1deb093e3893f3efc9c912620f"
+    sha256 cellar: :any,                 arm64_sequoia: "51c900f8168f7ed93066226601e1cd2c24fdbc97c78a3a73c3912dd8feafcd07"
+    sha256 cellar: :any,                 arm64_sonoma:  "a5109c58556558b1f435d4db0221ea92df66356b35afa83756616b2f38b234cc"
+    sha256 cellar: :any,                 arm64_ventura: "d3c07d272a7b584ba3978872ffccdd75c607ff57be36a9e100434a1d3c837716"
+    sha256 cellar: :any,                 sonoma:        "95aca1d3d3dac220cd5b41a1edead7697c425190c5941e9bff59f0d536154e2d"
+    sha256 cellar: :any,                 ventura:       "00131f411e64c94ee05119e45ebbe3f3c23971acaefa42c4f12841abd17a90fe"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "28dd836f55297e7ff3688ed7144c0015086afdd9b989be6de04b151c35ce5767"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "21f7495c4ce0b90ec2700472a33065a2788100d9bcbbb480264b68354fe98ca3"
   end
 
   depends_on "libyaml"
   depends_on "python@3.13"
 
   resource "jinja2" do
-    url "https://files.pythonhosted.org/packages/ed/55/39036716d19cab0747a5020fc7e907f362fbf48c984b14e62127f7e68e5d/jinja2-3.1.4.tar.gz"
-    sha256 "4a3aee7acbbe7303aede8e9648d13b8bf88a429282aa6122a993f0ac800cb369"
+    url "https://files.pythonhosted.org/packages/df/bf/f7da0350254c0ed7c72f3e33cef02e048281fec7ecec5f032d4aac52226b/jinja2-3.1.6.tar.gz"
+    sha256 "0137fb05990d35f1275a587e9aee6d56da821fc83491a0fb838183be43f66d6d"
   end
 
   resource "markupsafe" do
@@ -42,7 +43,7 @@ class AnsibleCreator < Formula
     ENV["ANSIBLE_REMOTE_TEMP"] = testpath/"tmp"
     system bin/"ansible-creator", "init", "examplenamespace.examplename",
       "--init-path", testpath/"example"
-    assert_predicate testpath/"example/galaxy.yml", :exist?
+    assert_path_exists testpath/"example/galaxy.yml"
 
     assert_match version.to_s, shell_output("#{bin}/ansible-creator --version")
   end

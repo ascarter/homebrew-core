@@ -1,8 +1,8 @@
 class Gleam < Formula
   desc "Statically typed language for the Erlang VM"
   homepage "https://gleam.run"
-  url "https://github.com/gleam-lang/gleam/archive/refs/tags/v1.5.1.tar.gz"
-  sha256 "9955f255567b7e975505ab3633841bc0650afabd4bb31f3a337bce91e2fc29de"
+  url "https://github.com/gleam-lang/gleam/archive/refs/tags/v1.11.1.tar.gz"
+  sha256 "34dfdc397835849bc56ac01bf45e68ee9cfc3c99609fb7b3ab02910930a8c40d"
   license "Apache-2.0"
   head "https://github.com/gleam-lang/gleam.git", branch: "main"
 
@@ -12,25 +12,25 @@ class Gleam < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "41e5c98a1be5cc2e6e22be0aa0e26c5d15c892d36222711dfac7f5318659e0d9"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "902c039c235d4a3afe20c2ecaa835fde9fb494b5d53291a638c53bdc255e97c4"
-    sha256 cellar: :any_skip_relocation, arm64_ventura: "6f539596273fb44b0fed78000e5eed867518b1f9a91c8f8a2163000d5f236d76"
-    sha256 cellar: :any_skip_relocation, sonoma:        "81fc2d568306bfffb6a6c35ae8985d3c151439bc1913e32330820c5cb59f739e"
-    sha256 cellar: :any_skip_relocation, ventura:       "85746a076b92c7ef05491b2023bc7d274449f82788c1ef0e12d1b252306a1c08"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "4f67dfe40f7063e34b4689bba2782882fec9a93272d4fce4e627011a72816f6a"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "4672bd93a1564e16658b71e7a1597e2ecd36f64ba010313060b0c2b0a2e6345b"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "79f885035c083d23f6ccc833790db330bf5dc483f498cd107df3c3775f90aa73"
+    sha256 cellar: :any_skip_relocation, arm64_ventura: "60c2bc58545d7ebf9d571361105bdf0027ca82bd530ea194be3915343a4c57cf"
+    sha256 cellar: :any_skip_relocation, sonoma:        "762844129b1b37222b5ad4e2cd77b126e25f8f7fc0eb7330c053a612c787ef37"
+    sha256 cellar: :any_skip_relocation, ventura:       "1f318d60c97f77d74d08bee529d478ca6b2aae08a6a42ab75b77802b496baf37"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "820490880769cd092bd5b53d2cc72f76c42433caef13a5c09bff7328e30d0040"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "8654349efaf3e850b5eafa95f685f9cfd35151e25f27cfea37f8e40593c11661"
   end
 
-  depends_on "pkg-config" => :build
+  depends_on "pkgconf" => :build
   depends_on "rust" => :build
   depends_on "erlang"
   depends_on "rebar3"
 
   def install
-    system "cargo", "install", *std_cargo_args(path: "compiler-cli")
+    system "cargo", "install", *std_cargo_args(path: "gleam-bin")
   end
 
   test do
-    Dir.chdir testpath
     system bin/"gleam", "new", "test_project"
     Dir.chdir "test_project"
     system bin/"gleam", "test"

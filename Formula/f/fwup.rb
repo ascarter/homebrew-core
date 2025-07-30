@@ -1,31 +1,32 @@
 class Fwup < Formula
   desc "Configurable embedded Linux firmware update creator and runner"
   homepage "https://github.com/fwup-home/fwup"
-  url "https://github.com/fwup-home/fwup/releases/download/v1.11.0/fwup-1.11.0.tar.gz"
-  sha256 "782ed26e25c2e27a416aced1eda7f0cc8ebefe0a73eef01fd8b108b4728104af"
+  url "https://github.com/fwup-home/fwup/releases/download/v1.13.2/fwup-1.13.2.tar.gz"
+  sha256 "7ae6d373c38853ac59a06201c5c7b2cbe1fc601057e4417710838303325f21d0"
   license "Apache-2.0"
 
   bottle do
-    sha256 cellar: :any,                 arm64_sequoia: "115cdea755621e9587d6534a5184bf21742ae0491202fccbd5e96bcb39dca9b8"
-    sha256 cellar: :any,                 arm64_sonoma:  "12db65bb45b7ebf37e617e5125af0dace338e6a5eb82910744e880460cc50b54"
-    sha256 cellar: :any,                 arm64_ventura: "d2d2eefd55cd8f4e0a46dfa0df0f2528111cc337f3f25228797a6f09895e69ba"
-    sha256 cellar: :any,                 sonoma:        "e2133ddb40c6d7b980711c7f7153dca476a00e32addf28f71ae4f757d0f95d34"
-    sha256 cellar: :any,                 ventura:       "68299bb9ebc2b5225c62cf0b609c599d55fdc9d1f101af4c51de38a1dea1710d"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "1267aba26b012ba18bc6f2c57a046d5a3633f3886e6c934ee6620db096a9b164"
+    sha256 cellar: :any,                 arm64_sequoia: "42e1c381f3f10b5f735e06c311c487e12c35eff57dbb50f0a37b2636c8530820"
+    sha256 cellar: :any,                 arm64_sonoma:  "47e57ee087ad76ae94fc90f11a7a3f9408096075c0c4a0d75f58f590705914e2"
+    sha256 cellar: :any,                 arm64_ventura: "412d633d3c2bf02f0288b081fd4b57b315b00332f6990a3d6c89a54ba85db13d"
+    sha256 cellar: :any,                 sonoma:        "ea8a31acc0a200921626e502d1ad49ac47906913986a301cfaafc5b3aa5c4764"
+    sha256 cellar: :any,                 ventura:       "5517841dbb8f1494078ab96d88ed61c2c37faa3ea6a7da1ffd64e1e83c1cd1dd"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "cca27211d8e0dc7507396d533762a4408581cc1a283a8c6828ebb87815b2c0cb"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "1b767468618b5b325b588466aa8b767e49a8d5c6de9a718645f63652dc0c3676"
   end
 
-  depends_on "pkg-config" => :build
+  depends_on "pkgconf" => :build
   depends_on "confuse"
   depends_on "libarchive"
 
   def install
-    system "./configure", "--prefix=#{prefix}", "--disable-dependency-tracking"
+    system "./configure", *std_configure_args
     system "make", "install"
   end
 
   test do
     system bin/"fwup", "-g"
-    assert_predicate testpath/"fwup-key.priv", :exist?, "Failed to create fwup-key.priv!"
-    assert_predicate testpath/"fwup-key.pub", :exist?, "Failed to create fwup-key.pub!"
+    assert_path_exists testpath/"fwup-key.priv", "Failed to create fwup-key.priv!"
+    assert_path_exists testpath/"fwup-key.pub", "Failed to create fwup-key.pub!"
   end
 end

@@ -4,9 +4,9 @@ class Wolfssl < Formula
   # Git checkout automatically enables extra hardening flags
   # Ref: https://github.com/wolfSSL/wolfssl/blob/master/m4/ax_harden_compiler_flags.m4#L71
   url "https://github.com/wolfSSL/wolfssl.git",
-      tag:      "v5.7.4-stable",
-      revision: "bdd62314f00fca0e216bf8c963c8eeff6327e0cb"
-  license "GPL-2.0-or-later"
+      tag:      "v5.8.2-stable",
+      revision: "decea12e223869c8f8f3ab5a53dc90b69f436eb2"
+  license "GPL-3.0-or-later"
   head "https://github.com/wolfSSL/wolfssl.git", branch: "master"
 
   livecheck do
@@ -16,12 +16,13 @@ class Wolfssl < Formula
   end
 
   bottle do
-    sha256 cellar: :any,                 arm64_sequoia: "c0b4b4477caa3db76cac87f4cedeb5e33595d64301f6ae581c017551f684f333"
-    sha256 cellar: :any,                 arm64_sonoma:  "203cfe671001a5c5dcea8fe9b8b56c362da1368067ae37591866fc87c864fabd"
-    sha256 cellar: :any,                 arm64_ventura: "039f074f6784d380e4f3f1734be5276c4a466a63757154a5b1512cf0aefa8ad5"
-    sha256 cellar: :any,                 sonoma:        "c8c8740772a0e25fde64d6bd40d1a21112a82389b79c6730d5bfc707db590735"
-    sha256 cellar: :any,                 ventura:       "5375a3fb86be4efcfe002c1a8ba73bac078e48029a051f63e4ac5d4d37424219"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "24b81668dacaa26247cd267ae745d09f1c70db8eccbcb107a26d2566f819ec9f"
+    sha256 cellar: :any,                 arm64_sequoia: "44c8763615d5c0b67f49b16e0d7789329e84fd573277a9dc0c56bc6068917ed8"
+    sha256 cellar: :any,                 arm64_sonoma:  "9e0676d21cb03b5fa391c1764ca008cd12f8190b217d94e7cf27f8ae68699210"
+    sha256 cellar: :any,                 arm64_ventura: "c9e58662829671584d8cfc2c047bcabacd30ef33cdef940c607adcafae651421"
+    sha256 cellar: :any,                 sonoma:        "45c38bf6c1fca774e0efe0c1789cd74a0a1259d0f199bf3c5f9bd78ba23147a1"
+    sha256 cellar: :any,                 ventura:       "b1b087f768878b139a39e161b202270b21a7175767a4e65434b62d5c068662da"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "e9ede4cdae63c6acea1f3a02ac00e640b5cde98a40f466a975d86e0323d8d685"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "f83fa4dbec5dab24d91a3e1113a3c6a582cf9cf82249bd4d712d1629389ec264"
   end
 
   depends_on "autoconf" => :build
@@ -44,6 +45,9 @@ class Wolfssl < Formula
       --enable-all
       --enable-reproducible-build
     ]
+
+    # https://github.com/wolfSSL/wolfssl/issues/8148
+    args << "--disable-armasm" if OS.linux? && Hardware::CPU.arm?
 
     # Extra flag is stated as a needed for the Mac platform.
     # https://www.wolfssl.com/docs/wolfssl-manual/ch2/

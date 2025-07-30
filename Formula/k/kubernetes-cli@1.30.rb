@@ -2,8 +2,8 @@ class KubernetesCliAT130 < Formula
   desc "Kubernetes command-line interface"
   homepage "https://kubernetes.io/docs/reference/kubectl/"
   url "https://github.com/kubernetes/kubernetes.git",
-      tag:      "v1.30.6",
-      revision: "00f20d443ba0cbc485d6ce36a7d3f9a9c4e8ed7a"
+      tag:      "v1.30.13",
+      revision: "50af91c466658b6a33d123fae8a487db1630971c"
   license "Apache-2.0"
 
   livecheck do
@@ -12,12 +12,13 @@ class KubernetesCliAT130 < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "f6ce571104f69c6ffa28bd6a15503a88e32a718f9533fcff74d23adb9e0972ee"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "835291d94630e8feba855c639788d6f39272109420bfca9fd83141a2b423b8b6"
-    sha256 cellar: :any_skip_relocation, arm64_ventura: "387a1964cc93d5d4dbe3c27b473add5d829706098fa23ba842ff253dbd0c43f8"
-    sha256 cellar: :any_skip_relocation, sonoma:        "3eb7bba78a05aedc16d7514c908df42f95f3c8890ab357f7be9c459016f25ed8"
-    sha256 cellar: :any_skip_relocation, ventura:       "4062e42691b3e69ed00db5fe8e061ff1f94ba14a02976aee4b133fa9f527f246"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "89710e84c1cf0fc9b61f184d806a04102329e15fc58b4cb5c5a7ede47b5ead94"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "449a3876eac5b7508ae83162e78df0cc0ab7c7e849a8637beb5fa0a21b547e60"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "d5b7b3e0df3acf0fb2e27f40369396f0e9b3f848dec675bfaa9af47330271992"
+    sha256 cellar: :any_skip_relocation, arm64_ventura: "da1188cec14b2b23fbf60944bf20b4bb6ccf286631c9b27230af67c98cd226c7"
+    sha256 cellar: :any_skip_relocation, sonoma:        "9b221c81f9fa3df54591ab48d787b164adf37b8e19c7144045ee3b90d83bdce2"
+    sha256 cellar: :any_skip_relocation, ventura:       "f4cae26ad2e69c8999f723671fe85feb2284a3185afdd3d688ab51182e5bdef5"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "7355e559217d879541552e3ca34fba6ff7bcc75a64fe6284d761ba65bd80e2b7"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "d8b4d29bbb01ca18b79ef79d9210ce4677dde1675fef4a83a8a887ed68a8feac"
   end
 
   keg_only :versioned_formula
@@ -40,7 +41,7 @@ class KubernetesCliAT130 < Formula
     system "make", "WHAT=cmd/kubectl"
     bin.install "_output/bin/kubectl"
 
-    generate_completions_from_executable(bin/"kubectl", "completion", base_name: "kubectl")
+    generate_completions_from_executable(bin/"kubectl", "completion")
 
     # Install man pages
     # Leave this step for the end as this dirties the git tree

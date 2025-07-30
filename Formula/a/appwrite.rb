@@ -1,24 +1,26 @@
 class Appwrite < Formula
   desc "Command-line tool for Appwrite"
   homepage "https://appwrite.io"
-  url "https://registry.npmjs.org/appwrite-cli/-/appwrite-cli-6.1.0.tgz"
-  sha256 "9075b1d772b6ead948cb20af775231279ed2969b005e8c0f6d850f318a90f28e"
+  url "https://registry.npmjs.org/appwrite-cli/-/appwrite-cli-8.3.0.tgz"
+  sha256 "d9874a4a4478570f7c6f638479d64c60d823aea0d61f32eb07c947d52eaf371d"
   license "BSD-3-Clause"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "5f39a860b0244bf0a644dfb85ad21c650cab8eb9a67f0bb446846d70552be2bd"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "5f39a860b0244bf0a644dfb85ad21c650cab8eb9a67f0bb446846d70552be2bd"
-    sha256 cellar: :any_skip_relocation, arm64_ventura: "5f39a860b0244bf0a644dfb85ad21c650cab8eb9a67f0bb446846d70552be2bd"
-    sha256 cellar: :any_skip_relocation, sonoma:        "43d3ca501f01c4cd9dd2b4c68c904447a00431c64ac393ef5d2b955626fdb81f"
-    sha256 cellar: :any_skip_relocation, ventura:       "43d3ca501f01c4cd9dd2b4c68c904447a00431c64ac393ef5d2b955626fdb81f"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "5f39a860b0244bf0a644dfb85ad21c650cab8eb9a67f0bb446846d70552be2bd"
+    sha256 cellar: :any_skip_relocation, all: "b847c0002eecfe3cdcd292f857f134dd7bdad45d39edf53969c534de5217ac08"
   end
 
   depends_on "node"
 
   def install
     system "npm", "install", *std_npm_args
-    bin.install_symlink Dir["#{libexec}/bin/*"]
+    bin.install_symlink libexec.glob("bin/*")
+
+    # Ensure uniform bottles
+    inreplace [
+      libexec/"lib/node_modules/appwrite-cli/install.sh",
+      libexec/"lib/node_modules/appwrite-cli/ldid/Makefile",
+      libexec/"lib/node_modules/appwrite-cli/node_modules/jake/Makefile",
+    ], "/usr/local", HOMEBREW_PREFIX
   end
 
   test do

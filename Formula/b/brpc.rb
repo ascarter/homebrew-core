@@ -1,28 +1,19 @@
 class Brpc < Formula
   desc "Better RPC framework"
   homepage "https://brpc.apache.org/"
+  url "https://dlcdn.apache.org/brpc/1.14.0/apache-brpc-1.14.0-src.tar.gz"
+  sha256 "9fa7ed12ad37f6dea6d021bffe37fee59982b4ad7d9f697bbfc14ac24b10f938"
   license "Apache-2.0"
   head "https://github.com/apache/brpc.git", branch: "master"
 
-  stable do
-    url "https://dlcdn.apache.org/brpc/1.11.0/apache-brpc-1.11.0-src.tar.gz"
-    sha256 "7076b564bf3d4e1f9ed248ba7051ae42e9c63340febccea5005efc89d068f339"
-
-    # Backport support for newer protobuf
-    patch do
-      url "https://github.com/apache/brpc/commit/282776acaf2c894791d2b5d4c294a28cfa2d4138.patch?full_index=1"
-      sha256 "ce55b0d5df5b8aaf1c54cd7d80f32c01e8fd35c97f12b864ea6618b38d2db547"
-    end
-  end
-
   bottle do
-    rebuild 1
-    sha256 cellar: :any,                 arm64_sequoia: "2af87a85e6d75f15512f01442cc4a738a8c0becb5cdd13f46b92cdfb8f19b517"
-    sha256 cellar: :any,                 arm64_sonoma:  "95a43bd8abe377cecc3932e7654dc3ec56b4dfe08e09558e51e453cafdae1ce1"
-    sha256 cellar: :any,                 arm64_ventura: "3e6f4e3f9d7fc7fa029f68a7aabedf713d2c446a1967865f48e71f90cdcd93f5"
-    sha256 cellar: :any,                 sonoma:        "5a481367fa8a12938533fa4e4ef91c8ab019835ae6780e0c9ddc7a340b1a0373"
-    sha256 cellar: :any,                 ventura:       "037a83e91466e226a862829f57d9c5b8e67bebcf409364053cce17dcc62b6053"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "ac0410f858e2a042f3e4f045bbaea52b4ed43d7cb38c3fd5e7bc0a2a5bbc2b9f"
+    sha256 cellar: :any,                 arm64_sequoia: "3250052cc4ddcb3775072a457404838c682a6f4662b6753b079006125a38a83c"
+    sha256 cellar: :any,                 arm64_sonoma:  "90469b5d0c05e636061b90d141913938be0b40e421afae656e659d0e739b335d"
+    sha256 cellar: :any,                 arm64_ventura: "113262fcee16609506320ff1662ac47954daec764696a73e976d67564e2b8d62"
+    sha256 cellar: :any,                 sonoma:        "cd4c2db0db2658485ee428b0cfe2d68c5fd95a22af34d45ea871b27cf83b3f88"
+    sha256 cellar: :any,                 ventura:       "3a53073a9476a3c4a48c56d5126c198422f3ac9599887c104a2ffc0b7440bf30"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "d7cb5ec8a1842e9636cb09ec7208aebea8935450bf0daa3745b82c8c01ddc36f"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "8179b289c85dc0cd513576316aa69d54a09582fb2992cecb42c04c2f05ae3610"
   end
 
   depends_on "cmake" => :build
@@ -31,7 +22,11 @@ class Brpc < Formula
   depends_on "gperftools"
   depends_on "leveldb"
   depends_on "openssl@3"
-  depends_on "protobuf"
+  depends_on "protobuf@29"
+
+  on_linux do
+    depends_on "pkgconf" => :test
+  end
 
   def install
     inreplace "CMakeLists.txt", "/usr/local/opt/openssl",
@@ -49,6 +44,7 @@ class Brpc < Formula
       -DBUILD_UNIT_TESTS=OFF
       -DDOWNLOAD_GTEST=OFF
       -DWITH_DEBUG_SYMBOLS=OFF
+      -DCMAKE_POLICY_VERSION_MINIMUM=3.5
     ]
     system "cmake", "-S", ".", "-B", "build", *args, *std_cmake_args
     system "cmake", "--build", "build"
@@ -83,7 +79,8 @@ class Brpc < Formula
         return 0;
       }
     CPP
-    protobuf = Formula["protobuf"]
+
+    protobuf = Formula["protobuf@29"]
     gperftools = Formula["gperftools"]
     flags = %W[
       -I#{include}
@@ -95,7 +92,11 @@ class Brpc < Formula
       -lprotobuf
       -ltcmalloc
     ]
-    system ENV.cxx, "-std=c++17", testpath/"test.cpp", "-o", "test", *flags
+    # Work around for undefined reference to symbol
+    # '_ZN4absl12lts_2024072212log_internal21CheckOpMessageBuilder7ForVar2Ev'
+    flags += shell_output("pkgconf --libs absl_log_internal_check_op").chomp.split if OS.linux?
+
+    system ENV.cxx, "-std=c++17", "test.cpp", "-o", "test", *flags
     assert_equal "200", shell_output("./test")
   end
 end

@@ -1,18 +1,19 @@
 class Hwatch < Formula
   desc "Modern alternative to the watch command"
   homepage "https://github.com/blacknon/hwatch"
-  url "https://github.com/blacknon/hwatch/archive/refs/tags/0.3.16.tar.gz"
-  sha256 "0026bf677dd5b6a0c0160e537c6638902917e26aec2265bd0144a6e0f6d78e56"
+  url "https://github.com/blacknon/hwatch/archive/refs/tags/0.3.19.tar.gz"
+  sha256 "b0c7da2b8279e483a88019f07a058c978c324f37cd67c34b50de46fb5bd0db16"
   license "MIT"
   head "https://github.com/blacknon/hwatch.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "b47c451a2adae468d375277ab6aac3a4e39ac48c32903902da26c81df717cb58"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "02dfeac01590fb6a56a10d0e9ce2640984122f238abaf22fec4ac4984f4724ea"
-    sha256 cellar: :any_skip_relocation, arm64_ventura: "268c221940effc8717e8c0718165cab772fd3cf698b78c209dff5f9fa3ac1310"
-    sha256 cellar: :any_skip_relocation, sonoma:        "ce2c09eeb5cb02424b86533ab837fda135db237043801f5b0cf7428b700c78e1"
-    sha256 cellar: :any_skip_relocation, ventura:       "301222e51e8ced22afa28794fcc29747b37ec5debcd9d0a60edd08d27cfb6037"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "1ef11e41bd6a353ad0abcdfbf18a2395043af04fa00507b702aeb01da532c37c"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "28288a789480c819fde11788c0b35086e29c19691ce52075565fb46b2abc4f7b"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "78cabd0217cac85bdd8d4b459cf2ff9eac0d5cc6fc865fd1287a2b7cceb07c4d"
+    sha256 cellar: :any_skip_relocation, arm64_ventura: "bd598066ec25a28c99b6af7d3cf2dd4f21568effda47fe2d337eccdb97f6acbd"
+    sha256 cellar: :any_skip_relocation, sonoma:        "ae0f06837309e0c232866023b8258b77825353eb931b6f0c8adabf789cb8b7eb"
+    sha256 cellar: :any_skip_relocation, ventura:       "c9fa547c1b2b927bde3a9ad76e3a2f730cd3338e1ccff8ad935633900271d7da"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "e23c602171e0c2b3fef61c8efbaf763609dac8e410368c07798221acd54cd154"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "e4fd00a8be3bb4833c96b76ca42e5ed029ff3da919deae9a199ed09273840038"
   end
 
   depends_on "rust" => :build

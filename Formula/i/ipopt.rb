@@ -1,24 +1,24 @@
 class Ipopt < Formula
   desc "Interior point optimizer"
   homepage "https://coin-or.github.io/Ipopt/"
-  url "https://github.com/coin-or/Ipopt/archive/refs/tags/releases/3.14.16.tar.gz"
-  sha256 "cc8c217991240db7eb14189eee0dff88f20a89bac11958b48625fa512fe8d104"
+  url "https://github.com/coin-or/Ipopt/archive/refs/tags/releases/3.14.18.tar.gz"
+  sha256 "a3e94b409871f84487c9f452e85d512848f536a2306bf7c02a3e1c691d77ac6b"
   license "EPL-2.0"
   head "https://github.com/coin-or/Ipopt.git", branch: "stable/3.14"
 
   bottle do
-    rebuild 1
-    sha256 cellar: :any,                 arm64_sequoia: "f27c151e814d4c9a0caeb33bb0a584c5d885121ec6a70a0586b330b8485779fa"
-    sha256 cellar: :any,                 arm64_sonoma:  "9a7c783b3ccd11860b615afc874ead0f60700a7f97dde4d5752a4444778aa86d"
-    sha256 cellar: :any,                 arm64_ventura: "5e623167a75d4f3516f6e2b50c61578bd3222f18c63abb7d5483c95dd2a0c53b"
-    sha256 cellar: :any,                 sonoma:        "fb86b1e3c17ed6cfb6b44bf1fcaca4a989a62335b364baa36490b4f0003675b8"
-    sha256 cellar: :any,                 ventura:       "467af1d0edd4ee1beb1ef2496bf277992988c8599b3082467f5be3d6891cd85b"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "6e2c7ebb501bd2b73e5c847f1f5e82dcedfd3a9528de22c6848e9393cedaede6"
+    sha256 cellar: :any,                 arm64_sequoia: "ffcb18d097246419e403378fe05082940d7cd098925807b63ed06f13fa507a32"
+    sha256 cellar: :any,                 arm64_sonoma:  "85b5c0af8c85ef66f1c390e778f0e029ec46b2c228db12200efc00b015990e07"
+    sha256 cellar: :any,                 arm64_ventura: "da028da228974183f9f0f82847f7e621a2bb90bc16153eb01368648971620533"
+    sha256 cellar: :any,                 sonoma:        "518c4faad34af5a856109efa9aa40af9cffe91c753ef6c2106e6800ee557816e"
+    sha256 cellar: :any,                 ventura:       "1cd18f15f5b261a264af7305a5c31e8c03b11d23dccf4b7cb632cce8ac2400f5"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "a0551c65260758da75f30ec4c1b00d2932af0681b3aeb82bb798464bc14bf3ea"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "a5b3f41d9dc6303da2baa7f0692b7f99a250f57c877021b511580f8d385f4100"
   end
 
   depends_on "openjdk" => :build
-  depends_on "pkg-config" => [:build, :test]
-  depends_on "ampl-mp"
+  depends_on "pkgconf" => [:build, :test]
+  depends_on "ampl-asl"
   depends_on "gcc" # for gfortran
   depends_on "openblas"
 
@@ -42,16 +42,6 @@ class Ipopt < Formula
     end
   end
 
-  resource "test" do
-    url "https://github.com/coin-or/Ipopt/archive/refs/tags/releases/3.14.16.tar.gz"
-    sha256 "cc8c217991240db7eb14189eee0dff88f20a89bac11958b48625fa512fe8d104"
-  end
-
-  resource "miniampl" do
-    url "https://github.com/dpo/miniampl/archive/refs/tags/v1.0.tar.gz"
-    sha256 "b836dbf1208426f4bd93d6d79d632c6f5619054279ac33453825e036a915c675"
-  end
-
   def install
     ENV.delete("MPICC")
     ENV.delete("MPICXX")
@@ -71,24 +61,21 @@ class Ipopt < Formula
       lib.install Dir[
         "lib/#{shared_library("*")}",
         "libseq/#{shared_library("*")}",
-        "PORD/lib/#{shared_library("*")}"
+        "PORD/lib/#{shared_library("*")}",
       ]
     end
 
     args = [
-      "--disable-debug",
-      "--disable-dependency-tracking",
       "--disable-silent-rules",
       "--enable-shared",
-      "--prefix=#{prefix}",
       "--with-blas=-L#{Formula["openblas"].opt_lib} -lopenblas",
       "--with-mumps-cflags=-I#{buildpath}/mumps_include",
       "--with-mumps-lflags=-L#{lib} -ldmumps -lmpiseq -lmumps_common -lopenblas -lpord",
-      "--with-asl-cflags=-I#{Formula["ampl-mp"].opt_include}/asl",
-      "--with-asl-lflags=-L#{Formula["ampl-mp"].opt_lib} -lasl",
+      "--with-asl-cflags=-I#{Formula["ampl-asl"].opt_include}/asl",
+      "--with-asl-lflags=-L#{Formula["ampl-asl"].opt_lib} -lasl",
     ]
 
-    system "./configure", *args
+    system "./configure", *args, *std_configure_args
     system "make"
 
     ENV.deparallelize
@@ -96,9 +83,19 @@ class Ipopt < Formula
   end
 
   test do
+    resource "test" do
+      url "https://github.com/coin-or/Ipopt/archive/refs/tags/releases/3.14.18.tar.gz"
+      sha256 "a3e94b409871f84487c9f452e85d512848f536a2306bf7c02a3e1c691d77ac6b"
+    end
+
+    resource "miniampl" do
+      url "https://github.com/dpo/miniampl/archive/refs/tags/v1.0.tar.gz"
+      sha256 "b836dbf1208426f4bd93d6d79d632c6f5619054279ac33453825e036a915c675"
+    end
+
     testpath.install resource("test")
-    pkg_config_flags = shell_output("pkg-config --cflags --libs ipopt").chomp.split
-    system ENV.cxx, "examples/hs071_cpp/hs071_main.cpp", "examples/hs071_cpp/hs071_nlp.cpp", *pkg_config_flags
+    pkgconf_flags = shell_output("pkgconf --cflags --libs ipopt").chomp.split
+    system ENV.cxx, "examples/hs071_cpp/hs071_main.cpp", "examples/hs071_cpp/hs071_nlp.cpp", *pkgconf_flags
     system "./a.out"
 
     resource("miniampl").stage do

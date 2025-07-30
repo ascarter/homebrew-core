@@ -1,17 +1,18 @@
 class MarkdownOxide < Formula
   desc "Personal Knowledge Management System for the LSP"
   homepage "https://oxide.md"
-  url "https://github.com/Feel-ix-343/markdown-oxide/archive/refs/tags/v0.24.3.tar.gz"
-  sha256 "ef7cef6461bcccdabeefb1150478a19091453a4477331e093bf7082f5dcd9588"
+  url "https://github.com/Feel-ix-343/markdown-oxide/archive/refs/tags/v0.25.5.tar.gz"
+  sha256 "c9e157b27427a645c5eeef51efef00e97a3988e1838f11c1cb47a18bd6e29ebb"
   license "Apache-2.0"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "a20cc29a79a286727f1ae989d09c22b785b02a97266b78a734267dc13daf5c74"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "2ec9668c37b791320bb7699575fd41dd4d1421a8abb874639391bd741d82883e"
-    sha256 cellar: :any_skip_relocation, arm64_ventura: "42922caeaca02f5f790f645e4b282eeee475ad8885b693013f74615c77fd05b7"
-    sha256 cellar: :any_skip_relocation, sonoma:        "b65a62ed575ca28406130fac763e2a5bcde35fa4e9f528c74f8698989fc15b0d"
-    sha256 cellar: :any_skip_relocation, ventura:       "a0392d95b4fe36178adccd6c86fe072683c0ccbeaf6356a9009d0965831e59cf"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "d33edb5480b51fc52c144d8c4952bdeff096e78f5e403da8feaf09680a47f930"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "3ce0bfaa449f7bac913fcc8b137b87246cbce65bcf30009d3eca7b7093264dc0"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "212d32af6a62920ea608d24909098de5df80dac940533316b0edbd3eaf91e8cd"
+    sha256 cellar: :any_skip_relocation, arm64_ventura: "846201fe7a32dd9f0a86a71bd36ab6afee5d84b8880cdde2d4e5e270dcab42d7"
+    sha256 cellar: :any_skip_relocation, sonoma:        "2de85f4f5eaa14006f815978a02b6aee8db653afdb72646e6f5417043ec82e5e"
+    sha256 cellar: :any_skip_relocation, ventura:       "5367d0093a4e3bf1db84b47256ac6aebda8e641d3acc7bdc7cedbccab6e2f46c"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "b1f3bde1dba33b8c30fb4d920aa67eadd36ed649d081b1093ed8650970365c61"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "42c13641a49e8f756bbd423d349889b300b993928312dc2da767ecb5759817f7"
   end
 
   depends_on "rust" => :build

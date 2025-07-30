@@ -1,26 +1,26 @@
 class PetscComplex < Formula
   desc "Portable, Extensible Toolkit for Scientific Computation (complex)"
   homepage "https://petsc.org/"
-  url "https://web.cels.anl.gov/projects/petsc/download/release-snapshots/petsc-3.20.5.tar.gz"
-  sha256 "fb4e637758737af910b05f30a785245633916cd0a929b7b6447ad1028da4ea5a"
+  url "https://web.cels.anl.gov/projects/petsc/download/release-snapshots/petsc-3.23.5.tar.gz"
+  sha256 "b0bb614dfbf36c286c8cad30912fe77359dccbf6b65a5edd1dde82af293f21fc"
   license "BSD-2-Clause"
-  revision 1
 
   livecheck do
     formula "petsc"
   end
 
   bottle do
-    sha256 arm64_sequoia:  "b011fd9da06732ba95b9f41b746fae0d6dc511f1e45a90d25949845a9604d907"
-    sha256 arm64_sonoma:   "79474f5eac3712c82a73ef28208f32f129a722920ef2efc48061ee6ed82850a1"
-    sha256 arm64_ventura:  "bfdee742583b9fc2d3b1609e837a8b659ea554f0f9d58c232ad6bbe83d3a49bc"
-    sha256 arm64_monterey: "a6cdd1fbecd38ce9a502c89a426691a76779b9e2cfcf57f342316dbe385eacb6"
-    sha256 sonoma:         "e0598cc3ecc9c0c2a52d78fa3b28b8c1e9d3846151d1b73b1b605be2a86e6dea"
-    sha256 ventura:        "90eb7075046e1e7afb15a64429e95419ad0b7ac8e3c48f6ff430f183a7f30f6f"
-    sha256 monterey:       "02c918d0fb776665e9648f07727918f4f99938511cde34a7244c7043349e9e24"
-    sha256 x86_64_linux:   "c63d9a17db67e029d8dc5f783b804efbd7152063451b6f305c3231f88bd2b6a5"
+    sha256 arm64_sequoia: "12dac7d154710847c2399ec509813c3f33f5e484f67cd6ef5fce8d40e0b66614"
+    sha256 arm64_sonoma:  "f49702704559f5db13f4f23e6f427aafb1e522540c3f31d6966accc7874133b4"
+    sha256 arm64_ventura: "2932dc76867bedae474ccc2e529cccd01098cce4e16f9213cc9740febc689572"
+    sha256 sonoma:        "0a4ab856b517acb9144567f1a502bac6df461b047c20e739617cc5d47cb2d959"
+    sha256 ventura:       "60030d426908852d4aad6a6b6ecbb465b5978028cb9ed059c9a1eafdf667f4e4"
+    sha256 arm64_linux:   "22164772c7a0314a214c008cedb06b62b91dd91ba1df2b82e11a1d16cf849156"
+    sha256 x86_64_linux:  "1721a7bef938f3d2c636173f174e91bc9c0a462e41f5936652a60e394236781a"
   end
 
+  depends_on "fftw"
+  depends_on "gcc"
   depends_on "hdf5-mpi"
   depends_on "hwloc"
   depends_on "metis"
@@ -42,6 +42,11 @@ class PetscComplex < Formula
                           "--CXX=mpicxx",
                           "--F77=mpif77",
                           "--FC=mpif90",
+                          "--with-fftw-dir=#{Formula["fftw"].opt_prefix}",
+                          "--with-hdf5-dir=#{Formula["hdf5-mpi"].opt_prefix}",
+                          "--with-hdf5-fortran-bindings=1",
+                          "--with-metis-dir=#{Formula["metis"].opt_prefix}",
+                          "--with-scalapack-dir=#{Formula["scalapack"].opt_prefix}",
                           "MAKEFLAGS=$MAKEFLAGS"
 
     # Avoid references to Homebrew shims (perform replacement before running `make`, or else the shim

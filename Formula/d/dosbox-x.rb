@@ -1,8 +1,8 @@
 class DosboxX < Formula
   desc "DOSBox with accurate emulation and wide testing"
   homepage "https://dosbox-x.com/"
-  url "https://github.com/joncampbell123/dosbox-x/archive/refs/tags/dosbox-x-v2024.10.01.tar.gz"
-  sha256 "9940662759b9910e3c4549216be8db0278ceaaa80ace5b19f87b04d0b6ff8a3a"
+  url "https://github.com/joncampbell123/dosbox-x/archive/refs/tags/dosbox-x-v2025.05.03.tar.gz"
+  sha256 "b29a2c9c38bfe1d1c1f2420d546b8c2456ae2ddce4c1f6b4d19f258841ce1581"
   license "GPL-2.0-or-later"
   version_scheme 1
   head "https://github.com/joncampbell123/dosbox-x.git", branch: "master"
@@ -19,17 +19,19 @@ class DosboxX < Formula
   end
 
   bottle do
-    sha256 arm64_sequoia: "63a69fa78f5e233fcffab6603d0adfe11fc4bfdc627d7522fb994865cd479320"
-    sha256 arm64_sonoma:  "ee12e910570c143fe748c6a7f7406be1a917c6d566a580dc06656e0bb49bd727"
-    sha256 arm64_ventura: "94bacc0eda5263ffdb07c51111b0cae5146c511a879e9714eba2d75454af626b"
-    sha256 sonoma:        "bd61a5e1889cddaa086047b6ec899eeb00982c1eaee4bbb287c7dee34c5b9a0f"
-    sha256 ventura:       "776db85c289ed70159da126fd4a7c6d9672ce054cbc122c756ac2d83c8651fe0"
-    sha256 x86_64_linux:  "69851fb6278d41a426c011ebfcf7f2b0d631cd196f395d3e56b686ad692f6523"
+    rebuild 1
+    sha256 arm64_sequoia: "b3831fa8f34f93d0947d5b6f784553a26efc62fdfa7899333688a3bd106b2715"
+    sha256 arm64_sonoma:  "3f335d476fb1ae9890c156ed2755643b57caa2f0c7f0be693beebd87a8436268"
+    sha256 arm64_ventura: "bf746bc868a57ce1b6a790b5a07decea4cb49d5a9681c198cfcca74ce2abad08"
+    sha256 sonoma:        "f5e3d6df263e52c29acf741903088ed5a1f9c24c10de0bbf35352b8c36da1483"
+    sha256 ventura:       "e7e366991faff23c2d558f8b6e609ea167c51f0ae9da3f6af96e47983d7cd896"
+    sha256 arm64_linux:   "91d2cd8eb95c2dcfea89654e27709650bffc25588754f97cb869e34e94cbdf18"
+    sha256 x86_64_linux:  "cc28152648d5a5891bb4817e9c0e26895181b902ebf4c87b92dbaf74f2e74072"
   end
 
   depends_on "autoconf" => :build
   depends_on "automake" => :build
-  depends_on "pkg-config" => :build
+  depends_on "pkgconf" => :build
 
   depends_on "fluid-synth"
   depends_on "freetype"
@@ -53,8 +55,6 @@ class DosboxX < Formula
     depends_on "libxrandr"
   end
 
-  fails_with gcc: "5"
-
   def install
     ENV.cxx11
 
@@ -68,7 +68,7 @@ class DosboxX < Formula
     ]
 
     system "./autogen.sh"
-    system "./configure", *args, *std_configure_args
+    system "./configure", *args, *std_configure_args.reject { |s| s["--disable-debug"] }
     system "make" # Needs to be called separately from `make install`.
     system "make", "install"
   end

@@ -1,8 +1,8 @@
 class Sbcl < Formula
   desc "Steel Bank Common Lisp system"
   homepage "https://www.sbcl.org/"
-  url "https://downloads.sourceforge.net/project/sbcl/sbcl/2.4.10/sbcl-2.4.10-source.tar.bz2"
-  sha256 "ceeb396b69d2913eee04841c2af6beca5c342ce1464c3fe3e453f2de10c5e2f8"
+  url "https://downloads.sourceforge.net/project/sbcl/sbcl/2.5.7/sbcl-2.5.7-source.tar.bz2"
+  sha256 "c4fafeb795699d5bcff9085091acc762dcf5e55f85235625f3d7aef12c89d1d3"
   license all_of: [:public_domain, "MIT", "Xerox", "BSD-3-Clause"]
   head "https://git.code.sf.net/p/sbcl/sbcl.git", branch: "master"
 
@@ -11,12 +11,13 @@ class Sbcl < Formula
   end
 
   bottle do
-    sha256 cellar: :any,                 arm64_sequoia: "da0c659136582f7bcea4fac58afe9fc38efb7412555c7883d76ca160c025c6a9"
-    sha256 cellar: :any,                 arm64_sonoma:  "a8da2ba2e2f45a0ab7aad2a41df335e4cb23724b421196c1fd60826a44336c21"
-    sha256 cellar: :any,                 arm64_ventura: "7a418524dbbff6efc133c6af11c122e2a6123f06d9643033a953f1235a7cd2ce"
-    sha256 cellar: :any,                 sonoma:        "c43afb20a2bf776d624260faac2a1aef44cdfe4c302af734873f3204331d00a9"
-    sha256 cellar: :any,                 ventura:       "11167bc009bfcd4fe7bafc4e4ca2e385cff40262bbf7783d7e2f946f6a2b3aba"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "06a839d45656cb4b65322fea7cb02994954bc0e7d45d28c0c63d699c22210854"
+    sha256 cellar: :any,                 arm64_sequoia: "66a0a3269ef4838fff841e5ef0508b6f396893eacc4b28d44221f32db4745490"
+    sha256 cellar: :any,                 arm64_sonoma:  "7199583f6f6233d480e6b622d22ca8433d89d68fd5e1bad8f86e556b3aee12c7"
+    sha256 cellar: :any,                 arm64_ventura: "7a5c843ad6248bdcda665ee6b5fb0f7b9b07e23ce7d1255ceb7ea1fda297d580"
+    sha256 cellar: :any,                 sonoma:        "f59fe3477704a8e42a82c3d2f99eeebb7a4e8e442a570109fbe42cd854fc60b5"
+    sha256 cellar: :any,                 ventura:       "846d46822f1790d55cb6bde4a42e3799e7b314089c5556ac1ccb6b5fb41c24c3"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "d760fa69d0222f6d69d10b99e23018076a7b677287b59104f320ae3e34e24682"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "0761796a62f53b70b7dc325f9fbcf4403f92cda6b6583f712ca14d06fd6f5e98"
   end
 
   depends_on "ecl" => :build
@@ -52,17 +53,17 @@ class Sbcl < Formula
                              SBCL_SOURCE_ROOT: pkgshare/"src",
                              SBCL_HOME:        lib/"sbcl"
     pkgshare.install %w[contrib src]
-    (lib/"sbcl/sbclrc").write <<~EOS
+    (lib/"sbcl/sbclrc").write <<~LISP
       (setf (logical-pathname-translations "SYS")
         '(("SYS:SRC;**;*.*.*" #p"#{pkgshare}/src/**/*.*")
           ("SYS:CONTRIB;**;*.*.*" #p"#{pkgshare}/contrib/**/*.*")))
-    EOS
+    LISP
   end
 
   test do
-    (testpath/"simple.sbcl").write <<~EOS
+    (testpath/"simple.sbcl").write <<~LISP
       (write-line (write-to-string (+ 2 2)))
-    EOS
+    LISP
     output = shell_output("#{bin}/sbcl --script #{testpath}/simple.sbcl")
     assert_equal "4", output.strip
   end

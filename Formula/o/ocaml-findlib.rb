@@ -1,9 +1,10 @@
 class OcamlFindlib < Formula
   desc "OCaml library manager"
   homepage "http://projects.camlcity.org/projects/findlib.html"
-  url "http://download.camlcity.org/download/findlib-1.9.7.tar.gz"
-  sha256 "ccd822008f1b87abd56a12ff7f4af195a0cda2e3bc0113921779a205c9791e29"
+  url "http://download.camlcity.org/download/findlib-1.9.8.tar.gz"
+  sha256 "662c910f774e9fee3a19c4e057f380581ab2fc4ee52da4761304ac9c31b8869d"
   license "MIT"
+  revision 1
 
   livecheck do
     url "http://download.camlcity.org/download/"
@@ -11,21 +12,18 @@ class OcamlFindlib < Formula
   end
 
   bottle do
-    sha256 arm64_sequoia: "eb5b2b68030d3527fd4b2e9c260a944605862909325bc9249b57c890449ad9f0"
-    sha256 arm64_sonoma:  "71160fdec707a48d88e6f2e79f38d0df3e970e3fe81141c0da6687bbd1cb2704"
-    sha256 arm64_ventura: "82ccb62e19cdbf9c9b581603ddf1a1c8d8ebe5789960df955bd29cf7764f6e09"
-    sha256 sonoma:        "fda2c76eff2c5bf058045e51b92663ba21c9b0ba92ffac80d27369cffaff291d"
-    sha256 ventura:       "47d5af648254ec365ad4127fd96fb2c5d384f2199963f8ca12d482718875f2f2"
-    sha256 x86_64_linux:  "45f892f48a91e37037c44cf98b6937a35a29621993d9c9a54224bead2623c958"
+    sha256 arm64_sequoia: "9364a3bfccbfa17b1de67b0811237748181251ca875105e010deca7c8b8c7c38"
+    sha256 arm64_sonoma:  "45a15d80b15f259a02a9665646a85ec6844445670e3b7f083ab1bcd447b2d480"
+    sha256 arm64_ventura: "70d057e89961c844b0a54234a7630f0e73ef9654bda57da6da9ac98bd4ea6e26"
+    sha256 sonoma:        "7d40608def1547faa7db079f9d6e8e1bb84ecd22bb3b51af0562416eae5b580d"
+    sha256 ventura:       "9953fc46d00a4952c6f5982e241743aee3a1587abbaaa2ab084e3c1a07f5f94a"
+    sha256 arm64_linux:   "946dec027ce88f81d2342a021bb3839ca38d7eda3e8777bb115f369575af4cd6"
+    sha256 x86_64_linux:  "2aada46fd1e1d708cbb09f084dc896e26d35869ea8fdfd2830fb0d31caeb0b27"
   end
 
   depends_on "ocaml"
 
   uses_from_macos "m4" => :build
-
-  # Fix to not null parameter `dynlink_subdir`
-  # https://github.com/ocaml/ocamlfind/issues/88
-  patch :DATA
 
   def install
     # Specify HOMEBREW_PREFIX here so those are the values baked into the compile,
@@ -56,21 +54,3 @@ class OcamlFindlib < Formula
     assert_equal "#{HOMEBREW_PREFIX}/lib/ocaml/findlib", output.chomp
   end
 end
-
-__END__
-diff --git a/configure b/configure
-index a1ca170..07570c0 100755
---- a/configure
-+++ b/configure
-@@ -502,6 +502,11 @@ check_library () {
-         # Library is present - exit code is 0 because the library is found
-         # (e.g. detection for Unix) but we don't actually add it to the
-         # generated_META list.
-+        package_dir="${ocaml_sitelib}/$1"
-+        package_subdir="$1"
-+        package_key="$(echo "$1" | tr - _)"
-+        eval "${package_key}_dir=\"${package_dir}\""
-+        eval "${package_key}_subdir=\"${package_subdir}\""
-         return 0
-     fi
- 

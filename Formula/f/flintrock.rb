@@ -8,13 +8,14 @@ class Flintrock < Formula
   license "Apache-2.0"
 
   bottle do
-    rebuild 3
-    sha256 cellar: :any,                 arm64_sequoia: "24fa38c3037c441cea8ddda14ed7d0017c958bbe7fcd1a5eaa538a3200eb04b0"
-    sha256 cellar: :any,                 arm64_sonoma:  "8da514e5c1f5ff0cc944d6d5574fafe09310c20341b90a493b9151dd5e651be9"
-    sha256 cellar: :any,                 arm64_ventura: "e1c9c2bee6e3559729afaf25b2c1e3a96ae3f2fc11897f40aec89d0006eb46bd"
-    sha256 cellar: :any,                 sonoma:        "6415cd4b740d679ddcc1d7b3edbfa9bbfdc7316644473a59da0cd36515104551"
-    sha256 cellar: :any,                 ventura:       "b5c89ee5307ef6c7091f8f6c527222cd0fdce2356c1297d8fa49aa7933ab40ae"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "4f3686b5e99c219bd9214b7fb553c0a33c73b990f492530f25bb33f821396e33"
+    rebuild 5
+    sha256 cellar: :any,                 arm64_sequoia: "74a8a662dc4aee333db1b838cc7f62681b0d3a9fc6e8f8205e20d80d4c2527b1"
+    sha256 cellar: :any,                 arm64_sonoma:  "fe7ad09c56f48d70f3e01b5cd140bb549efbb9853d5563a646a7dd903fe6f59c"
+    sha256 cellar: :any,                 arm64_ventura: "6410fd282b7957ac56b1cfc1af125e719da2cf0abaf0910a3d2de375b17d2b34"
+    sha256 cellar: :any,                 sonoma:        "7cb921528a346d5644a3eabea2ae4e05acb08b03b9f30aa83075c925dbced21c"
+    sha256 cellar: :any,                 ventura:       "138d6d702cd47fb30d49fdb48058c740ac01accac3bb644cc040dbd6542556be"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "ab3e830362e5e1eb5f548506b5ad07f35aa30811715865c2eb084ff5d81b157e"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "8cb71305e97a64921e0676e6be13283a65e4ffe809bf62c1cc31b339396a8bd0"
   end
 
   depends_on "rust" => :build # for bcrypt
@@ -88,6 +89,8 @@ class Flintrock < Formula
 
   def install
     virtualenv_install_with_resources
+
+    generate_completions_from_executable(bin/"flintrock", shell_parameter_format: :click)
   end
 
   test do
@@ -110,5 +113,5 @@ index e95a10e..02925e7 100644
 -        'PyYAML == 6.0.1',
 +        'PyYAML == 6.0.2',
      ],
- 
+
      entry_points={

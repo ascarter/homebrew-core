@@ -10,8 +10,8 @@ class EulerPy < Formula
   head "https://github.com/iKevinY/EulerPy.git", branch: "master"
 
   bottle do
-    rebuild 3
-    sha256 cellar: :any_skip_relocation, all: "0ca0212eae8487870cd46cc5b5252a77aa7d12ff42f11383fab23157d052f3a3"
+    rebuild 5
+    sha256 cellar: :any_skip_relocation, all: "61c7da218aca560f86ce1aae136927319f9d48d07aae107e531c19d3e0350209"
   end
 
   depends_on "python@3.13"
@@ -25,11 +25,13 @@ class EulerPy < Formula
     # Unpin old click version: https://github.com/iKevinY/EulerPy/commit/9923d2ee026608e33026909bb95c444724b08ba2
     inreplace "requirements.txt", "click==4.0", "click"
     virtualenv_install_with_resources
+
+    generate_completions_from_executable(bin/"euler", shell_parameter_format: :click)
   end
 
   test do
-    output = pipe_output("#{bin}/euler", "Y\n")
+    output = pipe_output("#{bin}/euler", "Y\n", 0)
     assert_match 'Successfully created "001.py".', output
-    assert_predicate testpath/"001.py", :exist?
+    assert_path_exists testpath/"001.py"
   end
 end

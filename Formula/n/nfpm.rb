@@ -1,24 +1,24 @@
 class Nfpm < Formula
   desc "Simple deb and rpm packager"
   homepage "https://nfpm.goreleaser.com/"
-  url "https://github.com/goreleaser/nfpm/archive/refs/tags/v2.41.0.tar.gz"
-  sha256 "c08841bdc89373123280f6a2a48775981b70301241bfce4743d2a676394a16cd"
+  url "https://github.com/goreleaser/nfpm/archive/refs/tags/v2.43.0.tar.gz"
+  sha256 "5575a14fc6bd4ce555d3bdfc5453e65bcd62e592a5163aa65ef9f1434bdbb283"
   license "MIT"
   head "https://github.com/goreleaser/nfpm.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "3981673dcb67d44ea45bd37d0b76a6dc32b32c595822b7b416d596ce3ac3482a"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "3981673dcb67d44ea45bd37d0b76a6dc32b32c595822b7b416d596ce3ac3482a"
-    sha256 cellar: :any_skip_relocation, arm64_ventura: "3981673dcb67d44ea45bd37d0b76a6dc32b32c595822b7b416d596ce3ac3482a"
-    sha256 cellar: :any_skip_relocation, sonoma:        "39508812fdafec13c0ecb75038327679995aa929cc41d4dd9907613abde6803c"
-    sha256 cellar: :any_skip_relocation, ventura:       "39508812fdafec13c0ecb75038327679995aa929cc41d4dd9907613abde6803c"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "c56bcda788fad11ef7e22633c0222854fe41247d0ead4e039a19b39ef71cbe0f"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "330ede9afc1032c0f42e600c33d6c1a7f3a2f1558600ee8e560b8513c03d912a"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "330ede9afc1032c0f42e600c33d6c1a7f3a2f1558600ee8e560b8513c03d912a"
+    sha256 cellar: :any_skip_relocation, arm64_ventura: "330ede9afc1032c0f42e600c33d6c1a7f3a2f1558600ee8e560b8513c03d912a"
+    sha256 cellar: :any_skip_relocation, sonoma:        "b38534997ec8301872086c84b74445b1a5cec0960cd195b2d444b6b2b729443c"
+    sha256 cellar: :any_skip_relocation, ventura:       "b38534997ec8301872086c84b74445b1a5cec0960cd195b2d444b6b2b729443c"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "dc22f1ba1f8307683c5075681b37ad011dd41ddfff2d04aee9e72d8ab8eb6c33"
   end
 
   depends_on "go" => :build
 
   def install
-    system "go", "build", *std_go_args(ldflags: "-X main.version=v#{version}"), "./cmd/nfpm"
+    system "go", "build", *std_go_args(ldflags: "-s -w -X main.version=v#{version}"), "./cmd/nfpm"
 
     generate_completions_from_executable(bin/"nfpm", "completion")
   end
@@ -42,6 +42,6 @@ class Nfpm < Formula
     YAML
 
     system bin/"nfpm", "pkg", "--packager", "deb", "--target", "."
-    assert_predicate testpath/"foo_1.0.0_amd64.deb", :exist?
+    assert_path_exists testpath/"foo_1.0.0_amd64.deb"
   end
 end

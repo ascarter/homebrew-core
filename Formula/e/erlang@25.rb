@@ -2,9 +2,10 @@ class ErlangAT25 < Formula
   desc "Programming language for highly scalable real-time systems"
   homepage "https://www.erlang.org/"
   # Download tarball from GitHub; it is served faster than the official tarball.
-  url "https://github.com/erlang/otp/releases/download/OTP-25.3.2.15/otp_src_25.3.2.15.tar.gz"
-  sha256 "5effb0f7d791c9fb216e530f61f3380bf7052a5dfd98b4de2caa05a259abaf05"
+  url "https://github.com/erlang/otp/releases/download/OTP-25.3.2.21/otp_src_25.3.2.21.tar.gz"
+  sha256 "99296fcd97a2053c5fcde7dc0ded2ba261a3baf1491c745fca71bd9804d51443"
   license "Apache-2.0"
+  revision 1
 
   livecheck do
     url :stable
@@ -12,19 +13,24 @@ class ErlangAT25 < Formula
   end
 
   bottle do
-    sha256 cellar: :any,                 arm64_sequoia: "dcce1a6100893654374542ccdfe615c45308563b648f135889d8e025fe8af702"
-    sha256 cellar: :any,                 arm64_sonoma:  "605e1fb6f7a576bf93032d073597ae91cc8029ef09d20a4b1491da34062d73c0"
-    sha256 cellar: :any,                 arm64_ventura: "c4d254a838a33282501b36f86a14d9c4a2ce9dbb01c9962a93e71c45a9539b11"
-    sha256 cellar: :any,                 sonoma:        "cd312decccb484bc043adab387b834d314b3e16e3a373d68b3b86d37e1063bb7"
-    sha256 cellar: :any,                 ventura:       "279a6dc478ab99275a2b62eb94cc05aeb2cc807e32be547f2ff68cb14554ab03"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "e4575bb7b78e3c78e4fca9cf64535251248562ee7fda4876d75445412385dda0"
+    sha256 cellar: :any,                 arm64_sequoia: "33f70df37d2196f26aeac6cfbb090d8d9aee8007ab809e72aad4d41755ce5474"
+    sha256 cellar: :any,                 arm64_sonoma:  "586d85e4927c178beecf49b78dcd9f27ab1624a0d7220195df1c0eaba6ca84ee"
+    sha256 cellar: :any,                 arm64_ventura: "f96554ee4d044b5ed8e24de4b842013884e6c0ecc6f6989b83318d1780eb9578"
+    sha256 cellar: :any,                 sonoma:        "3dc4acb51bb1c44d77972dcf7d6fb6d06e780e897da2f01f33b60450818af277"
+    sha256 cellar: :any,                 ventura:       "5497f5c8323560b7102c5f07e1e2dd197d9aeca4c3897e5d9a373ed09d523025"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "32b3de963e79192d67a7b20cde3f9293b235e4e53755263fb48bbf65cef7ed1a"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "45e3365abc498935ba904303f9a1e81e4354e251d04080984250e8d814835bf2"
   end
 
   keg_only :versioned_formula
 
+  # EOL with OTP-28 release (2025-05-17)
+  deprecate! date: "2025-05-26", because: :unsupported
+  disable! date: "2025-08-26", because: :unsupported
+
   depends_on "openssl@3"
   depends_on "unixodbc"
-  depends_on "wxwidgets" # for GUI apps like observer
+  depends_on "wxwidgets@3.2" # for GUI apps like observer
 
   uses_from_macos "libxslt" => :build # for xsltproc
   uses_from_macos "ncurses"
@@ -35,8 +41,12 @@ class ErlangAT25 < Formula
   end
 
   resource "html" do
-    url "https://github.com/erlang/otp/releases/download/OTP-25.3.2.15/otp_doc_html_25.3.2.15.tar.gz"
-    sha256 "e407dd957663439f78ee7394009f26731ecd25a62dc5ff8dd6cdaffdb73b77d9"
+    url "https://github.com/erlang/otp/releases/download/OTP-25.3.2.21/otp_doc_html_25.3.2.21.tar.gz"
+    sha256 "686fde552fec0cac7a4a100320a1dc82b15e57c663c3c726b3f292f2abfd7e18"
+
+    livecheck do
+      formula :parent
+    end
   end
 
   def install
@@ -49,6 +59,8 @@ class ErlangAT25 < Formula
     # Do this if building from a checkout to generate configure
     system "./otp_build", "autoconf" unless File.exist? "configure"
 
+    wxwidgets = deps.find { |dep| dep.name.match?(/^wxwidgets(@\d+(\.\d+)*)?$/) }.to_formula
+    wx_config = wxwidgets.opt_bin/"wx-config-#{wxwidgets.version.major_minor}"
     args = %W[
       --disable-debug
       --disable-silent-rules
@@ -62,6 +74,7 @@ class ErlangAT25 < Formula
       --with-odbc=#{Formula["unixodbc"].opt_prefix}
       --with-ssl=#{Formula["openssl@3"].opt_prefix}
       --without-javac
+      --with-wx-config=#{wx_config}
     ]
 
     if OS.mac?
@@ -69,6 +82,9 @@ class ErlangAT25 < Formula
       args << "--enable-kernel-poll" if MacOS.version > :el_capitan
       args << "--with-dynamic-trace=dtrace" if MacOS::CLT.installed?
     end
+
+    # The definition of `WX_CC` does not use our configuration of `--with-wx-config`, unfortunately.
+    inreplace "lib/wx/configure", "WX_CC=`wx-config --cc`", "WX_CC=`#{wx_config} --cc`"
 
     system "./configure", *args
     system "make"

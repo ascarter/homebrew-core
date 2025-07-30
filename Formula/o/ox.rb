@@ -1,18 +1,19 @@
 class Ox < Formula
   desc "Independent Rust text editor that runs in your terminal"
   homepage "https://github.com/curlpipe/ox"
-  url "https://github.com/curlpipe/ox/archive/refs/tags/0.7.0.tar.gz"
-  sha256 "921b1210f9b750f10480f0e5b9ed761d9cea063aedc9eb59e66a04664e04eaa1"
+  url "https://github.com/curlpipe/ox/archive/refs/tags/0.7.7.tar.gz"
+  sha256 "9dc869836e92beb5806739da25bf929b45bbb4173a6bffac31b762fcece74a0a"
   license "GPL-2.0-only"
   head "https://github.com/curlpipe/ox.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "d6a09d83cfcd0ab82baba4cd92d7f53c7a73c1b969f1491e74b8d6b0f90c15dd"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "158062947457fd64f569cad4160116871a6a6476aee46c7d09993bc580fad5c4"
-    sha256 cellar: :any_skip_relocation, arm64_ventura: "ab423897c4ea300f3716a99ae578d88c49559b568be78808e44d4847cf06aac2"
-    sha256 cellar: :any_skip_relocation, sonoma:        "1149cf78c2b1de630a6fc968dddf4241e74a747ea94f9dfc143f940e9dac0329"
-    sha256 cellar: :any_skip_relocation, ventura:       "601368f888c7c58e175a745f95f1429a9b298b85ed2afe2440b7caad327244fa"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "e2ba179e1fb335f6ef421444d3d321d0bfeb7bc7eec2844ec4e6d9b2f2620824"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "8f9eb95e6a465fefc00454f9f2df68ca87ef65122639b18f8b65b2ebbf8b5240"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "23832d0a48c0c8362ec6e5794f03aae01781ded51f96f7d8266365ec24c9a3ba"
+    sha256 cellar: :any_skip_relocation, arm64_ventura: "dc6871adc3a09c2ba19334b0fdcaae54ea1eae9d6631763577a613d025385379"
+    sha256 cellar: :any_skip_relocation, sonoma:        "c468c1a3b8020dcc6a5eed5e715c64ed474501016fa48d205a1aa0e8fadadb32"
+    sha256 cellar: :any_skip_relocation, ventura:       "9fd801439a60c7ce8bbcaa72b7c2f69c5fc7d25f58fe392677f07aab9a7ab6c0"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "31fb3bc58c5857cc0aadcef6a5601cc0b4b7bb7ea2fd47b5ca12d3739d044859"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "f56fa97255719ee87aebf29c4ba0b7afdc917e399dd6dcc3788e088699136de9"
   end
 
   depends_on "rust" => :build

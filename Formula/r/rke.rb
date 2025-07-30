@@ -1,8 +1,8 @@
 class Rke < Formula
   desc "Rancher Kubernetes Engine, a Kubernetes installer that works everywhere"
   homepage "https://rke.docs.rancher.com/"
-  url "https://github.com/rancher/rke/archive/refs/tags/v1.6.3.tar.gz"
-  sha256 "7d51c06ff186a8004b5aabb69263bb35763b8ebc5537db8c7d1c7d2d35f0ac32"
+  url "https://github.com/rancher/rke/archive/refs/tags/v1.8.5.tar.gz"
+  sha256 "483f857ee8369bf2063653131ee208f4f4ba397a14e3fa9c6073cdb6322fd16a"
   license "Apache-2.0"
 
   # It's necessary to check releases instead of tags here (to avoid upstream
@@ -16,12 +16,13 @@ class Rke < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "7a2c009c829cf98ded568c1ab7556285e6edb27064077fd4c79b5289b16b124a"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "4527b0479a53da1328d49c1949e12eaa88024abfe31bcd160f5af83ec2c17b23"
-    sha256 cellar: :any_skip_relocation, arm64_ventura: "e587bfcf636f8fd18af7b0e7ba5a0493f8ec8fc7893a91dd0b36a8765753c184"
-    sha256 cellar: :any_skip_relocation, sonoma:        "de0a34fe1579da7ae522e2a38be6d274430215120fdad08b6e9814d11fbfed31"
-    sha256 cellar: :any_skip_relocation, ventura:       "4b7bd398247cdf678f5e74e71ce339c39050c8ca4780af2eb77d23bcb72b7a29"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "e0c7b12a8fe911ce245f68687e66f11bdbe14b3d4b8ff234b73347e85a56e595"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "6b56a92b0177f3227064322a0f3dc8d3baf7cc6888849a4d2102d98e800ea5fc"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "7a43a76eb259e76056d134896b861289d5e2cc39ddbcd62196de3c9243b7c339"
+    sha256 cellar: :any_skip_relocation, arm64_ventura: "78ba3f272a899b7d1ed3c15e57d005451effccda1cda217adc1671c8071a1ff8"
+    sha256 cellar: :any_skip_relocation, sonoma:        "7ef8e9135eef60b8d41e5824053ff149d9286eac7115ed8a9bea0179c75a4b39"
+    sha256 cellar: :any_skip_relocation, ventura:       "9b7bf33818ac5d5678f220b1453c75004d46602619f994427406324cb717fe5b"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "01306371e2662962baebd97edc5cadbd38884c76d588e1de22cdf876e8ff5f36"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "ff4203d4628a97eff13c05dc24a9623786cedd2318e077ccbfa5d3e15f02833d"
   end
 
   depends_on "go" => :build
@@ -33,6 +34,6 @@ class Rke < Formula
 
   test do
     system bin/"rke", "config", "-e"
-    assert_predicate testpath/"cluster.yml", :exist?
+    assert_path_exists testpath/"cluster.yml"
   end
 end

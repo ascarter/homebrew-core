@@ -1,9 +1,9 @@
 class Varnish < Formula
   desc "High-performance HTTP accelerator"
   homepage "https://www.varnish-cache.org/"
-  url "https://varnish-cache.org/_downloads/varnish-7.6.1.tgz"
-  mirror "https://fossies.org/linux/www/varnish-7.6.1.tgz"
-  sha256 "5a9bb5a149ff27867b54a66ce16d2a4b93edffa5473cb87c9c71f7699cf845ba"
+  url "https://varnish-cache.org/_downloads/varnish-7.7.1.tgz"
+  mirror "https://fossies.org/linux/www/varnish-7.7.1.tgz"
+  sha256 "4c06c5c99680a429b72934f9fd513963f7e1ba8553b33ca7ec12c85a5c2b751a"
   license "BSD-2-Clause"
 
   livecheck do
@@ -12,17 +12,19 @@ class Varnish < Formula
   end
 
   bottle do
-    sha256 arm64_sequoia: "c27410d2620eb90cdd55fe2d2f2cb9263e50b7e38f1657ed829933b2ba42d7dd"
-    sha256 arm64_sonoma:  "dca58a2dd40ff2cd995d8ca52be858a63656a37c2098dd676ede5d2fb8ef5fc1"
-    sha256 arm64_ventura: "63ce70bd5ed1b4c5c6fb069732f9619cdacc43d664fe20e6ff036e8a2ada733a"
-    sha256 sonoma:        "bc34ed9be333dbdc5459f969058a42808385e76e3b2ae62bb2cee111b970ebe4"
-    sha256 ventura:       "f67e4e5eb341516ad0229efe39a4012a55e840fe4f38befc9e153baabfae757e"
-    sha256 x86_64_linux:  "edb61c2b757d063387fcb8de36074a1dbfcec2cbe7e0637d0e9cf0966c988109"
+    rebuild 1
+    sha256 arm64_sequoia: "fd568d267ee9b5844a3c2b0233c12a51e8a00022b031cdfb569988aa92fc1f73"
+    sha256 arm64_sonoma:  "4223322b623694e089924b568cd1fae3e9b67c31c1faead969abd8ee323a7825"
+    sha256 arm64_ventura: "322c722503c07ddccb64054f88cb9e2f526dd02aee8069361f36dc7f7b88ec8a"
+    sha256 sonoma:        "88831645eae4467af0e537c506dcf4cdd99078d93cfa9d2fe0c01329c27e1714"
+    sha256 ventura:       "0181d254c66b3b6676b387770bcd38ce6899aeb5d80a68539cb3a319c2bee5ca"
+    sha256 arm64_linux:   "9551bad52ea1d85bd154180a46b38f95d806b3d50b85d74140be235b946607d3"
+    sha256 x86_64_linux:  "dc1f0dbc8fbf3683d83c6e2e324d519b9b30daf7c70744340ff91ef0427aaa9d"
   end
 
   depends_on "docutils" => :build
   depends_on "graphviz" => :build
-  depends_on "pkg-config" => :build
+  depends_on "pkgconf" => :build
   depends_on "sphinx-doc" => :build
   depends_on "pcre2"
 
@@ -30,10 +32,18 @@ class Varnish < Formula
   uses_from_macos "libedit"
   uses_from_macos "ncurses"
 
+  # macos compatibility patches, upstream pr ref, https://github.com/varnishcache/varnish-cache/pull/4339
+  patch do
+    url "https://github.com/varnishcache/varnish-cache/commit/3e679cd0aa093f7b1c426857d24a88d3db747f24.patch?full_index=1"
+    sha256 "677881ed5cd0eda2e1aa799ca54601b44a96675763233966c4d101b83ccdfd73"
+  end
+  patch do
+    url "https://github.com/varnishcache/varnish-cache/commit/acbb1056896f6cf4115cc2a6947c9dbd8003176e.patch?full_index=1"
+    sha256 "915c5b560aa473ed139016b40c9e6c8a0a4cce138dd1126a63e75b58d8345e73"
+  end
+
   def install
-    system "./configure", "--disable-dependency-tracking",
-                          "--prefix=#{prefix}",
-                          "--localstatedir=#{var}"
+    system "./configure", "--localstatedir=#{var}", *std_configure_args
 
     # flags to set the paths used by varnishd to load VMODs and VCL,
     # pointing to the ${HOMEBREW_PREFIX}/ shared structure so other packages
@@ -55,7 +65,7 @@ class Varnish < Formula
 
   service do
     run [opt_sbin/"varnishd", "-n", var/"varnish", "-f", etc/"varnish/default.vcl", "-s", "malloc,1G", "-T",
-         "127.0.0.1:2000", "-a", "0.0.0.0:8080", "-F"]
+         "127.0.0.1:2000", "-a", "127.0.0.1:8080", "-F"]
     keep_alive true
     working_dir HOMEBREW_PREFIX
     log_path var/"varnish/varnish.log"

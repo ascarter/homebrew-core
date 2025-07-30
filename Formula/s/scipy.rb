@@ -1,24 +1,24 @@
 class Scipy < Formula
   desc "Software for mathematics, science, and engineering"
   homepage "https://www.scipy.org"
-  url "https://files.pythonhosted.org/packages/62/11/4d44a1f274e002784e4dbdb81e0ea96d2de2d1045b2132d5af62cc31fd28/scipy-1.14.1.tar.gz"
-  sha256 "5a275584e726026a5699459aa72f828a610821006228e841b94275c4a7c08417"
+  url "https://files.pythonhosted.org/packages/f5/4a/b927028464795439faec8eaf0b03b011005c487bb2d07409f28bf30879c4/scipy-1.16.1.tar.gz"
+  sha256 "44c76f9e8b6e8e488a586190ab38016e4ed2f8a038af7cd3defa903c0a2238b3"
   license "BSD-3-Clause"
-  revision 1
   head "https://github.com/scipy/scipy.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any,                 arm64_sequoia: "25343b0b788c75c936bbbc32ff84330f05b31e495bb577a7399bd8f321d5cb60"
-    sha256 cellar: :any,                 arm64_sonoma:  "1e01d457a52a556d8e2205ea5165fa047535410cd9aab7613687a8e6e37fa74d"
-    sha256 cellar: :any,                 arm64_ventura: "7d9598ba10fbf054aa315858a1c6ea1487bdfb7dc72caf3876906c414e5a92be"
-    sha256 cellar: :any,                 sonoma:        "1af864a096e92b76016cb55ccacbdee0e633847e7f91ea3c8903acec49eebea0"
-    sha256 cellar: :any,                 ventura:       "aeb20853b99a9ecb395477f0025b4748f94018d02e9160c2250005cd44b9fa52"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "c8541dd700f2bd6fc5ee9e289ac286eed998b76823decdb18032f9fb17827ab0"
+    sha256 cellar: :any,                 arm64_sequoia: "cfaca463972c3ea463d3eb63c61c73eae80ede960ecaa25a365eb5b31b4b3935"
+    sha256 cellar: :any,                 arm64_sonoma:  "753153cd23a5aa2ea3f507dd5a19d32547d9f6c5729b3c2ecf69e8992aa7102f"
+    sha256 cellar: :any,                 arm64_ventura: "2dece15a1d2c37ac8df48236819bc941cbdbd69a88591a63780566f6e7b75074"
+    sha256 cellar: :any,                 sonoma:        "d59ccd9807a3351772a5c79c88ee1be5ba5e72f2764fd94a8ea2148c108adc27"
+    sha256 cellar: :any,                 ventura:       "41c92055af315c111135f9485cc37c911fe70e12c161e8e8a89296b40fd177f4"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "61bd2093fa0aa5c578476eee73f756d5e7b18b11730e5b2e268617d438a12d59"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "93531a11bc67bf09d7323a8cba0868d9ef4e516e04cd04da09235d1f3d7741bd"
   end
 
   depends_on "meson" => :build
   depends_on "ninja" => :build
-  depends_on "pkg-config" => :build
+  depends_on "pkgconf" => :build
   depends_on "python@3.12" => [:build, :test]
   depends_on "python@3.13" => [:build, :test]
   depends_on "gcc" # for gfortran
@@ -31,8 +31,6 @@ class Scipy < Formula
   end
 
   cxxstdlib_check :skip
-
-  fails_with gcc: "5"
 
   def pythons
     deps.map(&:to_formula)

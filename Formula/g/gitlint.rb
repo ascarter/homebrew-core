@@ -8,8 +8,8 @@ class Gitlint < Formula
   license "MIT"
 
   bottle do
-    rebuild 5
-    sha256 cellar: :any_skip_relocation, all: "7b347048bcc8bd14d3d1e1cb1ab96d19753c4ccf52c9b37f4fd1f353db79bfc0"
+    rebuild 6
+    sha256 cellar: :any_skip_relocation, all: "36439a03cc83049977c6ff628f75a76a33dd727ebbfc7f824f46329f6f880440"
   end
 
   depends_on "python@3.13"
@@ -47,16 +47,14 @@ class Gitlint < Formula
   def install
     virtualenv_install_with_resources
 
-    # Click does not support bash version older than 4.4
-    generate_completions_from_executable(bin/"gitlint", shells:                 [:fish, :zsh],
-                                                        shell_parameter_format: :click)
+    generate_completions_from_executable(bin/"gitlint", shell_parameter_format: :click)
   end
 
   test do
     # Install gitlint as a git commit-msg hook
     system "git", "init"
     system bin/"gitlint", "install-hook"
-    assert_predicate testpath/".git/hooks/commit-msg", :exist?
+    assert_path_exists testpath/".git/hooks/commit-msg"
 
     # Verifies that the second line of the hook is the title
     output = File.open(testpath/".git/hooks/commit-msg").each_line.take(2).last

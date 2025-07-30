@@ -1,8 +1,8 @@
 class VulkanLoader < Formula
   desc "Vulkan ICD Loader"
   homepage "https://github.com/KhronosGroup/Vulkan-Loader"
-  url "https://github.com/KhronosGroup/Vulkan-Loader/archive/refs/tags/v1.3.301.tar.gz"
-  sha256 "7f6895bb25faaca72b9d75325f1d225ae7f30081d3e81c8c19f2c4556b23d676"
+  url "https://github.com/KhronosGroup/Vulkan-Loader/archive/refs/tags/v1.4.323.tar.gz"
+  sha256 "12b2bd3ec8a61fc939156ac45a82b889edb02262c021798f1496c983ca8a528e"
   license "Apache-2.0"
   head "https://github.com/KhronosGroup/Vulkan-Loader.git", branch: "main"
 
@@ -12,16 +12,18 @@ class VulkanLoader < Formula
   end
 
   bottle do
-    sha256 arm64_sequoia: "574c0970f05a142d12d31248773ff523196a9b88eadcfc64c4f679496fcc3283"
-    sha256 arm64_sonoma:  "5437078201d7c8132c272ffeae98520293c3e8f591c0cc0c228bfc53e4693b27"
-    sha256 arm64_ventura: "82c1d9c15428209675ea59eb91dc027f7a1d47879a293d8434e2f0fce9e722be"
-    sha256 sonoma:        "e22ca56ab3d54db966a5e2648c65a5a2ce741a97613dab8df822ace2e7fe706f"
-    sha256 ventura:       "fc0e509d57ecfe89a3f4196288f9f8478c18a60edec2a99f7d34b83517b2bcd8"
-    sha256 x86_64_linux:  "8f44e893453eec79736ee038ad3e63e21ba4625eeed616c10cd823a2ad229082"
+    sha256 arm64_sequoia: "be391d9e7df459f65bb8b173ab0c70d6ecc3639ad4adb9dbad85e3d4082a88a9"
+    sha256 arm64_sonoma:  "ffab6c1d9c7a2a1d690df6d0fb2ab46460cc54d5506af9bfc568faed76bc71c9"
+    sha256 arm64_ventura: "4ebe1660f42c4baf0d689d3703cdd9b61337e636e4a87b5c0eea6d1476d4fed2"
+    sha256 sequoia:       "fc26f3eb2920510979c9e9dc2b154ed742bc0d0f0b85b697b3f4c353dcb2b659"
+    sha256 sonoma:        "6ff060885611a4e254800a7b7cd34a8ce9668e1fccf7a9ff4e2de46c791ec3fb"
+    sha256 ventura:       "44e8b7509a89d1cb61a10937484510633cc8eea47c5a4c2bf83315df59bbe494"
+    sha256 arm64_linux:   "12280f10bcf0b1ace296d2f24f69f1a229ac5580d4aba5ec69b184434885751d"
+    sha256 x86_64_linux:  "65cf771aa5056b51bb3439e1d580eb1357d7c67b0ab9eb4e444f74ad9c66826b"
   end
 
   depends_on "cmake" => :build
-  depends_on "pkg-config" => :build
+  depends_on "pkgconf" => :build
   depends_on "python@3.13" => :build
   depends_on "vulkan-headers"
 

@@ -1,8 +1,8 @@
 class Open62541 < Formula
   desc "Open source implementation of OPC UA"
   homepage "https://open62541.org/"
-  url "https://github.com/open62541/open62541/archive/refs/tags/v1.4.6.tar.gz"
-  sha256 "bc4ad185fec5c257e15fcb813b7fef9607b7aaa5d355de7b665e1f210556d38e"
+  url "https://github.com/open62541/open62541/archive/refs/tags/v1.4.12.tar.gz"
+  sha256 "4a551ca504d49fd4c87ebe64c82bcd51307d53c982ab5a9f23dbd902b18e9521"
   license "MPL-2.0"
 
   livecheck do
@@ -11,12 +11,13 @@ class Open62541 < Formula
   end
 
   bottle do
-    sha256 cellar: :any,                 arm64_sequoia: "fcb78df771635b393cb6315007592968eaa5512d61c03d58f5e4dd10a6ccf7a9"
-    sha256 cellar: :any,                 arm64_sonoma:  "197c38cbacf127962d28325d32b3551e7603caf61b1d1777ca423ad54f6ad4d0"
-    sha256 cellar: :any,                 arm64_ventura: "26b7ad40542e8c3aad61b974c1b6269f1c97460137f951b5040d1910c848aa85"
-    sha256 cellar: :any,                 sonoma:        "238ff47ff6d3c7f22c0df5821c4ac5918d0f6d9e73b233d933774d61f843d3e5"
-    sha256 cellar: :any,                 ventura:       "22cf5d33e7d21ee238dd3dbbd811472a114e89364cebb85ccd65ef7fe33b8581"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "9194b8510ca203da444ad350c18da3f4231c17632d0ed7fdfe490c4894abff0a"
+    sha256 cellar: :any,                 arm64_sequoia: "0b1646b7c40cfa81afb5d8d698c485b7bda4f0d0ea85cbf3032fca0756bc737c"
+    sha256 cellar: :any,                 arm64_sonoma:  "9e7713dc172579cdd8a37a4b4dcd375012d78bbf13619e6653ca2977c7800526"
+    sha256 cellar: :any,                 arm64_ventura: "44206af81292c7b75535a9e7fc2636f8a70af5b818edec7078cd761ad83a0b21"
+    sha256 cellar: :any,                 sonoma:        "68b278f1c3770de43facf11636d1d67e2aa53c1fab87ef6ba865c1154ccd6b70"
+    sha256 cellar: :any,                 ventura:       "8f0f1b0fbdd8d933db23acfdacf8caab70cf1f7a82d7c996b28e0f0c5f59a2ea"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "2ea8a328474cbfdb06bd0b19d29a12381e4a12dae09366392d87737851c3c6f5"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "c77a81f4455938891f7f5e2c572ec8bed6ed8539cffa3764964db085a173e970"
   end
 
   depends_on "cmake" => :build

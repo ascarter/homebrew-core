@@ -1,9 +1,10 @@
 class Gitleaks < Formula
   desc "Audit git repos for secrets"
-  homepage "https://github.com/gitleaks/gitleaks"
-  url "https://github.com/gitleaks/gitleaks/archive/refs/tags/v8.21.2.tar.gz"
-  sha256 "6ce65414c8f7d5a8871710fcd8ff7300dfe6f74f61db560d53cb09949baa36c1"
+  homepage "https://gitleaks.io/"
+  url "https://github.com/gitleaks/gitleaks/archive/refs/tags/v8.28.0.tar.gz"
+  sha256 "c681af8aeacacf9d14f7ad97d534cf087f6d2d6fbd50dd02020b0f929b7a1c41"
   license "MIT"
+  head "https://github.com/gitleaks/gitleaks.git", branch: "master"
 
   # Upstream creates releases that use a stable tag (e.g., `v1.2.3`) but are
   # labeled as "pre-release" on GitHub before the version is released, so it's
@@ -14,18 +15,18 @@ class Gitleaks < Formula
   end
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "62112f24e46fe80373ec6e25579d4ae90779c206db60c531d19bcc375a720e5a"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "62112f24e46fe80373ec6e25579d4ae90779c206db60c531d19bcc375a720e5a"
-    sha256 cellar: :any_skip_relocation, arm64_ventura: "62112f24e46fe80373ec6e25579d4ae90779c206db60c531d19bcc375a720e5a"
-    sha256 cellar: :any_skip_relocation, sonoma:        "a31cc31c476da2ce3723237b449a0bda931bf801b5ebb1574ff5c05590149477"
-    sha256 cellar: :any_skip_relocation, ventura:       "a31cc31c476da2ce3723237b449a0bda931bf801b5ebb1574ff5c05590149477"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "fe6f29a2d060a3cdc2bba1cae223a12a3f1da974fd6d1bd370bb1acc646da17f"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "dd1443521907f98711778ff09f29bc66fd711fb17ba89df2ff09814466617cd9"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "dd1443521907f98711778ff09f29bc66fd711fb17ba89df2ff09814466617cd9"
+    sha256 cellar: :any_skip_relocation, arm64_ventura: "dd1443521907f98711778ff09f29bc66fd711fb17ba89df2ff09814466617cd9"
+    sha256 cellar: :any_skip_relocation, sonoma:        "06c83ac2bbb8d9744479a77e74c752fbcf50a14ed5671a60704241d0a89022d7"
+    sha256 cellar: :any_skip_relocation, ventura:       "06c83ac2bbb8d9744479a77e74c752fbcf50a14ed5671a60704241d0a89022d7"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "f8c985d9b8ba59fdf4d9e42c4e52aac2189de3a1bbdeae500e28225e41a3b3b9"
   end
 
   depends_on "go" => :build
 
   def install
-    ldflags = "-X github.com/zricethezav/gitleaks/v#{version.major}/cmd.Version=#{version}"
+    ldflags = "-s -w -X github.com/zricethezav/gitleaks/v#{version.major}/cmd.Version=#{version}"
     system "go", "build", *std_go_args(ldflags:)
 
     generate_completions_from_executable(bin/"gitleaks", "completion")
@@ -36,7 +37,7 @@ class Gitleaks < Formula
     system "git", "init"
     system "git", "add", "README"
     system "git", "commit", "-m", "Initial commit"
-    assert_match(/WRN\S* leaks found: [1-9]/, shell_output("#{bin}/gitleaks detect 2>&1", 1))
+    assert_match(/WRN.*leaks found: [1-9]/, shell_output("#{bin}/gitleaks detect 2>&1", 1))
     assert_equal version.to_s, shell_output("#{bin}/gitleaks version").strip
   end
 end

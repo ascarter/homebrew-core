@@ -1,18 +1,18 @@
 class Uftrace < Formula
   desc "Function graph tracer for C/C++/Rust"
   homepage "https://uftrace.github.io/slide/"
-  url "https://github.com/namhyung/uftrace/archive/refs/tags/v0.16.tar.gz"
-  sha256 "dd0549f610d186b6f25fa2334a5e82b6ddc232ec6ca088dbb41b3fe66961d6bb"
+  url "https://github.com/namhyung/uftrace/archive/refs/tags/v0.18.1.tar.gz"
+  sha256 "c089e7f38dab8d17346d41cee0ec69dc60699d5527b54e6765712235577da0db"
   license "GPL-2.0-only"
   head "https://github.com/namhyung/uftrace.git", branch: "master"
 
   bottle do
-    rebuild 1
-    sha256 x86_64_linux: "267f5fe8fd86a47b0d476cbaf2e108a9e50398ba387b6fef89843b7fbffcf7e5"
+    sha256 arm64_linux:  "39854e4f1aec61dcadecca292ba48f3206eec1f410296753652fd11e27232f0b"
+    sha256 x86_64_linux: "ff78ccceb477a3c9d1743442323f61a3abd2c540a779a967cd0a47e7b0d843d3"
   end
 
   depends_on "pandoc" => :build
-  depends_on "pkg-config" => :build
+  depends_on "pkgconf" => :build
   depends_on "capstone"
   depends_on "elfutils"
   depends_on "libunwind"
@@ -30,7 +30,7 @@ class Uftrace < Formula
     # Help pkg-config find python as we only provide `python3-embed` for aliased python formula
     inreplace Dir["check-deps/Makefile{,.check}"], "pkg-config python3", "pkg-config python-#{pyver}"
 
-    system "./configure", *std_configure_args, "--disable-silent-rules"
+    system "./configure", "--disable-silent-rules", *std_configure_args
     system "make", "install", "V=1"
   end
 

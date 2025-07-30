@@ -1,22 +1,23 @@
 class Bettercap < Formula
   desc "Swiss army knife for network attacks and monitoring"
   homepage "https://www.bettercap.org/"
-  url "https://github.com/bettercap/bettercap/archive/refs/tags/v2.40.0.tar.gz"
-  sha256 "33fb079d148bdbf640a6a634873dec7799430b0e949ba45007976e50c1323000"
+  url "https://github.com/bettercap/bettercap/archive/refs/tags/v2.41.1.tar.gz"
+  sha256 "c00a489110a01b799796bfc5701bbaea882e0a1aa675d16ce2aba25bd0d71ad1"
   license "GPL-3.0-only"
   head "https://github.com/bettercap/bettercap.git", branch: "master"
 
   bottle do
-    sha256 cellar: :any,                 arm64_sequoia: "8b8f6447d4dbaad6f2dbb89b801807f4670777f0dc25b905924f985c629288af"
-    sha256 cellar: :any,                 arm64_sonoma:  "5df2c794da75cf37a9edf38351bb405e54320d7d555b7b87b75128dbcfe08587"
-    sha256 cellar: :any,                 arm64_ventura: "c5a137b63baf4aab7e8d297019618615d0fba2d5d789fa9f1bead8349f9b108a"
-    sha256 cellar: :any,                 sonoma:        "dde80720f52ef5c25de0a087ff1c340419048589ffa7b61eab562089c4532ddf"
-    sha256 cellar: :any,                 ventura:       "756e19d68edbd12e72b5d7a5cb14c00c703bce3550f0c1b579d934941d3163fd"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "4c81126dabeec39c55d524922f6ed05644c9e9a2198bcc71b22b669f640390ee"
+    sha256 cellar: :any,                 arm64_sequoia: "621bb685704def4c8be34da96de714b4edf0ac04154bd2c9463695951883e758"
+    sha256 cellar: :any,                 arm64_sonoma:  "901bbb7d7876139268957e5d43a894ab9626455a57883af493c2924b33c6479a"
+    sha256 cellar: :any,                 arm64_ventura: "daba887ac15d63596447f47f0b5abc5f45e20eebc0e67f59ecd63daff671e1d5"
+    sha256 cellar: :any,                 sonoma:        "d04852a37bcc0926d9cda8036024e04f37455239e5d1f735010fc818ccdecb67"
+    sha256 cellar: :any,                 ventura:       "0ab41470bf5828053907cb4d7e7235878950308ea1f42df6289b4360422f0ab7"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "b27de98d5ff8586d70b3a6448d663c7821926bbab32c6c49d0c7ff9abfd1d2d9"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "1b1ce57b33228eb4fbc74f6f384ed0712e56ad4929dff81e13ad9ad2924c7d43"
   end
 
   depends_on "go" => :build
-  depends_on "pkg-config" => :build
+  depends_on "pkgconf" => :build
   depends_on "libusb"
 
   uses_from_macos "libpcap"

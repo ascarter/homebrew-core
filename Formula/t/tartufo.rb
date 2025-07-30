@@ -9,7 +9,8 @@ class Tartufo < Formula
   head "https://github.com/godaddy/tartufo.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, all: "d76cbe253e340e4123cf4bc7caa1a538a6d6affbf3b85b724a32b5312ad78dd4"
+    rebuild 2
+    sha256 cellar: :any_skip_relocation, all: "550f55071ca93f1388cc65d5544ab7024c595b9abb5aeb641c0fcb36352b4ae3"
   end
 
   depends_on "pygit2"
@@ -49,6 +50,8 @@ class Tartufo < Formula
 
   def install
     virtualenv_install_with_resources
+
+    generate_completions_from_executable(bin/"tartufo", shell_parameter_format: :click)
   end
 
   test do

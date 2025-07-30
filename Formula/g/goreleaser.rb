@@ -2,30 +2,24 @@ class Goreleaser < Formula
   desc "Deliver Go binaries as fast and easily as possible"
   homepage "https://goreleaser.com/"
   url "https://github.com/goreleaser/goreleaser.git",
-      tag:      "v2.4.4",
-      revision: "606c0e724fe9b980cd01090d08cbebff63cd0f72"
+      tag:      "v2.11.1",
+      revision: "21eefb16cfc5346f9cbe8fb0513ee1840353c324"
   license "MIT"
   head "https://github.com/goreleaser/goreleaser.git", branch: "main"
 
   bottle do
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "638cd46fc549f4168165db82f1bf882188285eaaca4004aa6229c904676cb5f1"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "638cd46fc549f4168165db82f1bf882188285eaaca4004aa6229c904676cb5f1"
-    sha256 cellar: :any_skip_relocation, arm64_ventura: "638cd46fc549f4168165db82f1bf882188285eaaca4004aa6229c904676cb5f1"
-    sha256 cellar: :any_skip_relocation, sonoma:        "930ff59a0770696683460d2075e501e63c625e8ecefe76ce74bc6348d8516ca9"
-    sha256 cellar: :any_skip_relocation, ventura:       "930ff59a0770696683460d2075e501e63c625e8ecefe76ce74bc6348d8516ca9"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "f605673bca068640a58b786c499af31655659d0b6325f3e27db03fdad67eca09"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "8e3ff91d931da9808742dfc3c649521a5478656235c222d8d0e20871531ed58d"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "8e3ff91d931da9808742dfc3c649521a5478656235c222d8d0e20871531ed58d"
+    sha256 cellar: :any_skip_relocation, arm64_ventura: "8e3ff91d931da9808742dfc3c649521a5478656235c222d8d0e20871531ed58d"
+    sha256 cellar: :any_skip_relocation, sonoma:        "018b68714ef2a6978c62e9016cd894d34b18a69a5a15a48c6df60acbe8085696"
+    sha256 cellar: :any_skip_relocation, ventura:       "64058faacb33100d6f52139310612862e9341214b4f23e3737a340b249c2fc5f"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "5c19c84cfa6c9e78bd1e87cd6ff3733382a0d667051fbdb8a130ef94ec1cab85"
   end
 
   depends_on "go" => :build
 
   def install
-    ldflags = %W[
-      -s -w
-      -X main.version=#{version}
-      -X main.commit=#{Utils.git_head}
-      -X main.builtBy=homebrew
-    ]
-
+    ldflags = "-s -w -X main.version=#{version} -X main.commit=#{Utils.git_head} -X main.builtBy=#{tap.user}"
     system "go", "build", *std_go_args(ldflags:)
 
     # Install shell completions
@@ -34,7 +28,7 @@ class Goreleaser < Formula
 
   test do
     assert_match version.to_s, shell_output("#{bin}/goreleaser -v 2>&1")
-    assert_match "config created", shell_output("#{bin}/goreleaser init --config=.goreleaser.yml 2>&1")
-    assert_predicate testpath/".goreleaser.yml", :exist?
+    assert_match "thanks for using GoReleaser!", shell_output("#{bin}/goreleaser init --config=.goreleaser.yml 2>&1")
+    assert_path_exists testpath/".goreleaser.yml"
   end
 end

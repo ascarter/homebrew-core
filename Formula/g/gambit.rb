@@ -1,9 +1,10 @@
 class Gambit < Formula
   desc "Software tools for game theory"
-  homepage "http://www.gambit-project.org"
-  url "https://github.com/gambitproject/gambit/archive/refs/tags/v16.2.0.tar.gz"
-  sha256 "cf8f36c7031834287a5fdde01af0845065706b11e6388087ef4303b6025221ec"
+  homepage "https://www.gambit-project.org/"
+  url "https://github.com/gambitproject/gambit/archive/refs/tags/v16.3.0.tar.gz"
+  sha256 "d72e991ce935a3dc893947c413410348e2c2eb9cd912ec3b083699a4ccae4d77"
   license all_of: ["GPL-2.0-or-later", "Zlib"]
+  revision 2
 
   livecheck do
     url :stable
@@ -11,27 +12,27 @@ class Gambit < Formula
   end
 
   bottle do
-    sha256 cellar: :any,                 arm64_sequoia:  "15b1cd198277ba97c5d0b78984ae3c0c45f0d657145cd14eb4c0a3e809a80dee"
-    sha256 cellar: :any,                 arm64_sonoma:   "985873c30cbbd722dff28874ebbdeb3e9922eecd232e7290b75e94c208a493c4"
-    sha256 cellar: :any,                 arm64_ventura:  "5d6a7d78addc7083d7b5f15484150750779e2ce484f21e4f7f5d6c0ccb838bd8"
-    sha256 cellar: :any,                 arm64_monterey: "e6f5a8bd927aa99ead958ca5869a2bcf7baaf5b196942cdfbdf4a132da4299c2"
-    sha256 cellar: :any,                 sonoma:         "93075f364cfda3bd6b6fae4712017bda5ece8970c7310c6ffeb946eebe6db6f8"
-    sha256 cellar: :any,                 ventura:        "acbdb8f054368360219bd7bcb33fbbdae6f07f88a30dbe9820f842e6c5ae6c75"
-    sha256 cellar: :any,                 monterey:       "dbc4830a4a97d6836ea77d7152abf3e7ebc20a67f73d1fe1329c64b0d99f168a"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:   "c5ed956661c53f5a426261ec29f9b8aa06ec7c9c370d1265348a22733382d7b2"
+    sha256 cellar: :any,                 arm64_sequoia: "c91f56e59b93918525432ef6d7c4de508e285c6242327b41b0e7f764b18e6f79"
+    sha256 cellar: :any,                 arm64_sonoma:  "38770b102e6d03756573dc1f3dae3300cf34dfdf3ccb34e2f9a5e53a8d42514b"
+    sha256 cellar: :any,                 arm64_ventura: "6ff6cd41a4208309d0dfd948cefd1caebed476eb90a3472ca2138ac16b0ac46b"
+    sha256 cellar: :any,                 sonoma:        "89d98e9c663d56223ceeaceb30861490f597ba6c6575ab091c1e1f04b773aec3"
+    sha256 cellar: :any,                 ventura:       "2f388da13334d5cb6a951640cafd203d80e120047ae2604a2ae016f6c0c4ac87"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "ba82accc53322452a615c8ac767afdf3758f8f71a938139c3109a367a2007675"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "0d78c91153188424cd7adf8f1230c11fc353d25d6db63363b4db816b737654c4"
   end
 
   depends_on "autoconf" => :build
   depends_on "automake" => :build
   depends_on "libtool" => :build
-  depends_on "wxwidgets"
+  depends_on "wxwidgets@3.2"
 
   def install
+    wxwidgets = deps.find { |dep| dep.name.match?(/^wxwidgets(@\d+(\.\d+)*)?$/) }.to_formula
+    wx_config = wxwidgets.opt_bin/"wx-config-#{wxwidgets.version.major_minor}"
     system "autoreconf", "--force", "--install", "--verbose"
-    system "./configure", "--disable-dependency-tracking",
-                          "--disable-silent-rules",
-                          "--prefix=#{prefix}",
-                          "--with-wx-prefix=#{Formula["wxwidgets"].opt_prefix}"
+    system "./configure", "--disable-silent-rules",
+                          "--with-wx-config=#{wx_config}",
+                          *std_configure_args
     system "make", "install"
 
     # Sanitise references to Homebrew shims

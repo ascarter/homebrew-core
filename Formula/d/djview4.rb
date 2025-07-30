@@ -11,6 +11,8 @@ class Djview4 < Formula
     regex(%r{url=.*?/djview[._-]v?(\d+(?:\.\d+)+)\.t}i)
   end
 
+  no_autobump! because: :requires_manual_review
+
   bottle do
     sha256 cellar: :any,                 arm64_sequoia:  "50f358049ae7371431b1640620050d40f9075e998695efc69e3cfc228955d189"
     sha256 cellar: :any,                 arm64_sonoma:   "aeec9249493e568780d0760a7c11d597c51e9a89835d9d7be3a3512510dd6e09"
@@ -27,7 +29,7 @@ class Djview4 < Formula
   depends_on "autoconf" => :build
   depends_on "automake" => :build
   depends_on "libtool" => :build
-  depends_on "pkg-config" => :build
+  depends_on "pkgconf" => :build
   depends_on "djvulibre"
   depends_on "libtiff"
   depends_on "qt@5"
@@ -37,7 +39,7 @@ class Djview4 < Formula
   patch :DATA
 
   def install
-    system "autoreconf", "-fiv"
+    system "autoreconf", "--force", "--install", "--verbose"
 
     system "./configure", "--with-x=no",
                           "--disable-nsdejavu",
@@ -63,7 +65,7 @@ class Djview4 < Formula
     else
       "djview"
     end
-    assert_predicate prefix/name, :exist?
+    assert_path_exists prefix/name
   end
 end
 
